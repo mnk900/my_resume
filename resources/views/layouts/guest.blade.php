@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Innovative IT Solutions in Gilgit-Baltistan for Businesses| MY Resumes Dot Cloud</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,7 +18,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5 text-center mb-4">
                 <a href="/" class="text-decoration-none display-6 fw-bold">
-                    {{ config('app.name', 'Laravel') }}
+                    {{ config('app.name', 'MyResumes') }}
                 </a>
             </div>
             <div class="w-100"></div>

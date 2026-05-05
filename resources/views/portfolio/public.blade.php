@@ -67,6 +67,9 @@
             @endphp
             {{ $initials }}.
         </div>
+        <div class="menu-toggle">
+    <i class="fas fa-bars"></i>
+</div>
         <ul>
             <li><a href="#hero">Home</a></li>
             <li><a href="#about">About</a></li>
@@ -353,7 +356,7 @@
             <a href="#projects">Projects</a>
             <a href="#contact">Contact</a>
         </div>
-        <p class="mb-0">&copy; {{ now()->year }} {{ $profile['name'] }}. All rights reserved.</p>
+        <p class="mb-0">&copy; {{ now()->year }} A product of <a href="https://itechgb.com" target="_blank">I-Tech GB</a>. All rights reserved.</p>
     </footer>
     @else
         <!-- Generic Theme Layout -->
@@ -387,6 +390,9 @@
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         section { padding: 64px 10%; }
+        .menu-toggle{
+            display: none;
+        }
         .hero { min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 0 10%; gap: 4rem; }
         .hero-content { flex: 1; }
         .hero-image { flex: 0 0 400px; height: 400px; border-radius: 30px; overflow: hidden; border: 4px solid var(--glass-border); box-shadow: var(--card-shadow); }
@@ -502,6 +508,142 @@
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.4); opacity: 0.7; }
         }
+
+        /* =========================
+   MOBILE FIRST RESPONSIVE
+========================= */
+
+/* Tablet */
+@media (max-width: 992px) {
+    section { padding: 50px 6%; }
+
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+    .hero h1 {
+        margin-top: 3rem;
+    }
+
+    .hero-image {
+        width: auto;
+        height: auto;
+        margin: auto;
+    }
+
+    .contact-container {
+        grid-template-columns: 1fr;
+    }
+
+    #skills-extra > div {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    /* NAVBAR */
+    nav {
+        padding: 1rem 4%;
+    }
+
+    nav ul {
+        position: fixed;
+        top: 70px;
+        right: -100%;
+        width: 260px;
+        height: calc(100vh - 70px);
+        background: rgba(10, 12, 18, 0.98);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 2rem;
+        transition: 0.3s ease;
+        border-left: 1px solid var(--glass-border);
+    }
+
+    nav ul.active {
+        right: 0;
+    }
+
+    nav ul li {
+        width: 100%;
+    }
+
+    nav ul li a {
+        display: block;
+        padding: 10px 0;
+        font-size: 1rem;
+    }
+
+    /* Hamburger */
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: var(--text-primary);
+    }
+
+    /* HERO */
+    .hero h1 {
+        font-size: 2rem;
+        margin-top: 3rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.9rem;
+    }
+
+    /* GRIDS */
+    .skills-grid,
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* TIMELINE */
+    .timeline-item {
+        padding-left: 2rem;
+    }
+
+    /* IMAGE FIX */
+    .project-img {
+        height: 200px;
+    }
+
+    /* CONTACT */
+    .contact-item {
+        gap: 1rem;
+    }
+
+    .contact-icon {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    section { padding: 40px 5%; }
+
+    .hero-image {
+        width: auto;
+        height: auto;
+    }
+    .hero h1 {
+        font-size: 2rem;
+        margin-top: 3rem;
+    }
+    .btn-primary {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+}
     </style>
     @endif
 @endpush
@@ -571,6 +713,12 @@
                 blob.style.transform = `translate(${x}px, ${y}px)`;
             });
         });
+        const toggle = document.querySelector('.menu-toggle');
+        const navMenu = document.querySelector('nav ul');
+
+        toggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+});
     </script>
     @endif
 @endpush

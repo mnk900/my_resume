@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SaaS Portfolio Builder</title>
+    <title>Innovative IT Solutions in Gilgit-Baltistan for Businesses| MY Resumes Dot Cloud</title>
+    <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -21,7 +22,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-transparent position-absolute w-100">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="/">PortfolioSaaS</a>
+            <a class="navbar-brand fw-bold fs-3" href="/">My Resumes</a>
             <div class="ms-auto">
                 @if (Route::has('login'))
                     <div class="d-flex gap-2">
@@ -42,8 +43,8 @@
     <!-- Intro Section -->
     <header class="hero">
         <div class="container text-center">
-            <h1 class="display-3 fw-800 mb-4">Build Your Professional Presence in Minutes</h1>
-            <p class="lead mb-5 opacity-75">A powerful, multi-tenant portfolio builder for developers, designers, and creators.</p>
+            <h1 class="display-3 fw-800 mb-4">One Platform. Every Professional</h1>
+            <p class="lead mb-5 opacity-75">A unified platform that enables professionals from all fields to create, manage, and showcase their digital portfolios in a structured and impactful way.</p>
         </div>
     </header>
 
@@ -148,7 +149,7 @@
 
     <footer class="bg-white py-5 border-top">
         <div class="container text-center">
-            <p class="mb-0 text-muted">&copy; {{ date('Y') }} PortfolioSaaS Builder. All rights reserved.</p>
+            <p class="mb-0 text-muted">&copy; {{ date('Y') }} A product of <a href="https://itechgb.com" target="_blank">I-Tech GB</a>. All rights reserved.</p>
         </div>
     </footer>
 
