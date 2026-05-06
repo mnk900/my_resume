@@ -15,5 +15,5 @@ View in Dashboard
 </x-mail::button>
 
 Thanks,<br>
-{{ config('app.name') }}
+My Resume Dot Cloud Team
 </x-mail::message>
