@@ -81,6 +81,45 @@
                             </select>
                         </div>
 
+                        <div class="p-3 bg-light rounded border mb-4">
+                            <label class="form-label small fw-bold d-block mb-3">Portfolio Visibility Controls</label>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="mb-2 fw-bold small">Email</div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="show_email" id="show_email_yes" value="show" {{ $portfolio->show_email ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="show_email_yes">Show</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="show_email" id="show_email_no" value="hide" {{ $portfolio->show_email ? '' : 'checked' }}>
+                                        <label class="form-check-label" for="show_email_no">Hide</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-2 fw-bold small">Phone</div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="show_phone" id="show_phone_yes" value="show" {{ $portfolio->show_phone ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="show_phone_yes">Show</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="show_phone" id="show_phone_no" value="hide" {{ $portfolio->show_phone ? '' : 'checked' }}>
+                                        <label class="form-check-label" for="show_phone_no">Hide</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-2 fw-bold small">LinkedIn</div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="show_linkedin" id="show_linkedin_yes" value="show" {{ $portfolio->show_linkedin ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="show_linkedin_yes">Show</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="show_linkedin" id="show_linkedin_no" value="hide" {{ $portfolio->show_linkedin ? '' : 'checked' }}>
+                                        <label class="form-check-label" for="show_linkedin_no">Hide</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn btn-primary w-100 shadow-sm">Update Identity</button>
                     </form>
                 </div>

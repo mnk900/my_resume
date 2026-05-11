@@ -119,7 +119,7 @@
     <section id="about" class="reveal">
         <h2 class="section-title">Profile</h2>
         <div style="max-width: 800px; color: var(--text-secondary); font-size: 1.1rem;">
-            <p>{{ $profile['detailed_profile'] }}</p>
+            <p>{!! $profile['detailed_profile'] !!}</p>
         </div>
     </section>
 
@@ -307,20 +307,36 @@
         <div class="contact-container">
             <div class="contact-info">
                 <h3>Contact Details</h3>
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                    <div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Email</div>
-                        <div style="font-weight: 600;">{{ $profile['email'] }}</div>
+                    @if($portfolio->show_email && $profile['email'])
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Email</div>
+                            <div style="font-weight: 600;">{{ $profile['email'] }}</div>
+                        </div>
                     </div>
-                </div>
-                <div class="contact-item">
-                    <div class="contact-icon"><i class="fas fa-phone"></i></div>
-                    <div>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Contact</div>
-                        <div style="font-weight: 600;">{{ $profile['phone'] }}</div>
+                @endif
+
+                @if($portfolio->show_phone && $profile['phone'])
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Contact</div>
+                            <div style="font-weight: 600;">{{ $profile['phone'] }}</div>
+                        </div>
                     </div>
-                </div>
+                @endif
+
+                @if($portfolio->show_linkedin && $profile['linkedin'])
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fab fa-linkedin"></i></div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);">LinkedIn</div>
+                            <div style="font-weight: 600;"><a href="{{ $profile['linkedin'] }}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">{{ $profile['linkedin'] }}</a></div>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="contact-item">
                     <div class="contact-icon"><i class="fas fa-location-dot"></i></div>
                     <div>
@@ -328,6 +344,10 @@
                         <div style="font-weight: 600;">{{ $profile['location'] }}</div>
                     </div>
                 </div>
+
+                @if(!$portfolio->show_email && !$portfolio->show_phone && !$portfolio->show_linkedin)
+                    <p class="text-muted mt-3">Contact details are hidden by the portfolio owner.</p>
+                @endif
             </div>
             <div class="contact-form" style="background: var(--glass-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--glass-border);">
                 <h4 style="margin-bottom: 2rem; color: #fff;">Send a Message</h4>

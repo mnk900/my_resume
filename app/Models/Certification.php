@@ -9,4 +9,9 @@ class Certification extends Model
 {
     use HasFactory;
     protected $fillable = ['portfolio_id', 'name', 'issuer', 'date', 'link'];
+
+    public function portfolio()
+    {
+        return $this->belongsTo(Portfolio::class);
+    }
 }

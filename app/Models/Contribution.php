@@ -9,4 +9,7 @@ class Contribution extends Model
 {
     use HasFactory;
     protected $fillable = ['portfolio_id', 'title', 'description', 'link'];
-}
+    public function portfolio()
+    {
+        return $this->belongsTo(Portfolio::class);
+    }}

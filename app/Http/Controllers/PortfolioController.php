@@ -66,7 +66,9 @@ class PortfolioController extends Controller
             'description' => 'nullable|string',
             'detailed_bio' => 'nullable|string',
             'theme' => 'required|string|max:50',
-            'show_contact_info' => 'nullable|boolean',
+            'show_email' => 'required|in:show,hide',
+            'show_phone' => 'required|in:show,hide',
+            'show_linkedin' => 'required|in:show,hide',
             'position' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
             'organization' => 'nullable|string|max:255',
@@ -77,8 +79,10 @@ class PortfolioController extends Controller
         ]);
 
         $data = $request->only(['title', 'description', 'detailed_bio', 'theme', 'position', 'city', 'organization', 'country', 'contact_number', 'linkedin_url']);
-        $data['show_contact_info'] = $request->has('show_contact_info');
-        
+        $data['show_email'] = $request->input('show_email') === 'show';
+        $data['show_phone'] = $request->input('show_phone') === 'show';
+        $data['show_linkedin'] = $request->input('show_linkedin') === 'show';
+
         if ($request->hasFile('profile_image')) {
             $data['profile_image'] = $request->file('profile_image');
         }

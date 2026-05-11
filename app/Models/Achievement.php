@@ -9,4 +9,9 @@ class Achievement extends Model
 {
     use HasFactory;
     protected $fillable = ['portfolio_id', 'title', 'description'];
+
+    public function portfolio()
+    {
+        return $this->belongsTo(Portfolio::class);
+    }
 }

@@ -58,19 +58,20 @@
             </div>
         </div>
     </nav>
+    <div>
+        @if (isset($header))
+            <header class="bg-white shadow-sm py-3 mb-4">
+                <div class="container">
+                    {{ $header }}
+                </div>
+            </header>
+        @endif
 
-    @if (isset($header))
-        <header class="bg-white shadow-sm py-3 mb-4">
-            <div class="container">
-                {{ $header }}
-            </div>
-        </header>
-    @endif
-
-    <main class="container py-4">
-        {{ $slot ?? '' }}
-        @yield('content')
-    </main>
+        <main class="container py-4">
+            {{ $slot ?? '' }}
+            @yield('content')
+        </main>
+    </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

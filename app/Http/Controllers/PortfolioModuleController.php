@@ -36,8 +36,13 @@ class PortfolioModuleController extends Controller
     }
     public function storeSkill(Request $request)
     {
-        $request->validate(['name' => 'required|string', 'percentage' => 'required|integer|min:0|max:100']);
-        Auth::user()->portfolio->skills()->create($request->all());
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'percentage' => 'required|integer|min:0|max:100',
+            'category' => 'nullable|string|max:255',
+            'icon' => 'nullable|string|max:100'
+        ]);
+        Auth::user()->portfolio->skills()->create($request->only(['name', 'percentage', 'category', 'icon']));
         $this->bustCache();
         return back()->with('status', 'skill-added');
     }
@@ -68,8 +73,14 @@ class PortfolioModuleController extends Controller
 
     public function storeExperience(Request $request)
     {
-        $request->validate(['company' => 'required|string', 'position' => 'required|string', 'start_date' => 'required|date']);
-        Auth::user()->portfolio->experiences()->create($request->all());
+        $request->validate([
+            'company' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'description' => 'nullable|string'
+        ]);
+        Auth::user()->portfolio->experiences()->create($request->only(['company', 'position', 'start_date', 'end_date', 'description']));
         $this->bustCache();
         return back()->with('status', 'experience-added');
     }
@@ -92,8 +103,13 @@ class PortfolioModuleController extends Controller
 
     public function storeEducation(Request $request)
     {
-        $request->validate(['institution' => 'required|string', 'degree' => 'required|string', 'start_date' => 'required|date']);
-        Auth::user()->portfolio->education()->create($request->all());
+        $request->validate([
+            'institution' => 'required|string|max:255',
+            'degree' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date'
+        ]);
+        Auth::user()->portfolio->education()->create($request->only(['institution', 'degree', 'start_date', 'end_date']));
         $this->bustCache();
         return back()->with('status', 'education-added');
     }
@@ -249,14 +265,83 @@ class PortfolioModuleController extends Controller
     }
 
     // Destroy methods
-    public function destroySkill(Skill $skill) { if($skill->portfolio->user_id == Auth::id()) { $skill->delete(); $this->bustCache(); } return back(); }
-    public function destroyProject(Project $project) { if($project->portfolio->user_id == Auth::id()) { $project->delete(); $this->bustCache(); } return back(); }
-    public function destroyExperience(Experience $experience) { if($experience->portfolio->user_id == Auth::id()) { $experience->delete(); $this->bustCache(); } return back(); }
-    public function destroyService(Service $service) { if($service->portfolio->user_id == Auth::id()) { $service->delete(); $this->bustCache(); } return back(); }
-    public function destroyCertification(Certification $certification) { if($certification->portfolio->user_id == Auth::id()) { $certification->delete(); $this->bustCache(); } return back(); }
-    public function destroyEducation(Education $education) { if($education->portfolio->user_id == Auth::id()) { $education->delete(); $this->bustCache(); } return back(); }
-    public function destroyAchievement(Achievement $achievement) { if($achievement->portfolio->user_id == Auth::id()) { $achievement->delete(); $this->bustCache(); } return back(); }
-    public function destroyContribution(Contribution $contribution) { if($contribution->portfolio->user_id == Auth::id()) { $contribution->delete(); $this->bustCache(); } return back(); }
-    public function destroyTestimonial(Testimonial $testimonial) { if($testimonial->portfolio->user_id == Auth::id()) { $testimonial->delete(); $this->bustCache(); } return back(); }
-    public function destroyTraining(Training $training) { if($training->portfolio->user_id == Auth::id()) { $training->delete(); $this->bustCache(); } return back(); }
+    public function destroySkill(Skill $skill)
+    {
+        $this->authorizePortfolioOwner($skill);
+        $skill->delete();
+        $this->bustCache();
+        return back()->with('status', 'skill-deleted');
+    }
+
+    public function destroyProject(Project $project)
+    {
+        $this->authorizePortfolioOwner($project);
+        $project->delete();
+        $this->bustCache();
+        return back()->with('status', 'project-deleted');
+    }
+
+    public function destroyExperience(Experience $experience)
+    {
+        $this->authorizePortfolioOwner($experience);
+        $experience->delete();
+        $this->bustCache();
+        return back()->with('status', 'experience-deleted');
+    }
+
+    public function destroyService(Service $service)
+    {
+        $this->authorizePortfolioOwner($service);
+        $service->delete();
+        $this->bustCache();
+        return back()->with('status', 'service-deleted');
+    }
+
+    public function destroyCertification(Certification $certification)
+    {
+        $this->authorizePortfolioOwner($certification);
+        $certification->delete();
+        $this->bustCache();
+        return back()->with('status', 'certification-deleted');
+    }
+
+    public function destroyEducation(Education $education)
+    {
+        $this->authorizePortfolioOwner($education);
+        $education->delete();
+        $this->bustCache();
+        return back()->with('status', 'education-deleted');
+    }
+
+    public function destroyAchievement(Achievement $achievement)
+    {
+        $this->authorizePortfolioOwner($achievement);
+        $achievement->delete();
+        $this->bustCache();
+        return back()->with('status', 'achievement-deleted');
+    }
+
+    public function destroyContribution(Contribution $contribution)
+    {
+        $this->authorizePortfolioOwner($contribution);
+        $contribution->delete();
+        $this->bustCache();
+        return back()->with('status', 'contribution-deleted');
+    }
+
+    public function destroyTestimonial(Testimonial $testimonial)
+    {
+        $this->authorizePortfolioOwner($testimonial);
+        $testimonial->delete();
+        $this->bustCache();
+        return back()->with('status', 'testimonial-deleted');
+    }
+
+    public function destroyTraining(Training $training)
+    {
+        $this->authorizePortfolioOwner($training);
+        $training->delete();
+        $this->bustCache();
+        return back()->with('status', 'training-deleted');
+    }
 }
