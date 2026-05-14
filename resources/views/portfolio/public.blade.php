@@ -425,6 +425,8 @@
         .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
         .skill-card { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 2rem; border-radius: 15px; transition: var(--transition); }
         .skill-card h3 { color: var(--accent-color); margin-bottom: 1rem; }
+        .skill-list { list-style: none; padding: 0; margin: 0; }
+        .skill-list li { padding: 0.5rem 0; border-bottom: 1px solid var(--glass-border); }
         .timeline { position: relative; max-width: 800px; }
         .timeline-item { margin-bottom: 4rem; padding-left: 3rem; position: relative; }
         .timeline-item::before { content: ''; position: absolute; left: 0; top: 0; width: 2px; height: 100%; background: var(--glass-border); }
