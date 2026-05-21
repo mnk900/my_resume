@@ -1,0 +1,404 @@
+<!DOCTYPE html> 
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Muhammad Naeem Khan - CV</title>
+    <style>
+        * { margin: 0; padding: 0; }
+        html, body { margin: 0; padding: 0; }
+        @page {
+            size: A4 portrait;
+            margin: 12px;
+        }
+
+        body { 
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 9pt;
+            color: #333;
+            line-height: 1.3;
+        }
+
+        .cv-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .sidebar-cell {
+            width: 30%;
+            background: #1a365d;
+            color: white;
+            padding: 12px;
+            font-size: 7.8pt;
+            line-height: 1.3;
+            vertical-align: top;
+        }
+
+        .main-cell {
+            width: 70%;
+            padding: 12px 0 12px 18px;
+            font-size: 8.8pt;
+            line-height: 1.4;
+            vertical-align: top;
+        }
+
+        .item,
+        .project,
+        .skill-category {
+            page-break-inside: auto;
+        }
+
+        .name {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #1a365d;
+            margin-bottom: 4px;
+            line-height: 1.1;
+        }
+
+        .title {
+            font-size: 10pt;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .summary {
+            background: #f5f5f5;
+            padding: 8px;
+            border-left: 3px solid #1a365d;
+            margin-bottom: 12px;
+            font-size: 8.5pt;
+            line-height: 1.4;
+            color: #4a5568;
+            text-align: justify;
+        }
+
+        .section-title {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #1a365d;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 3px;
+            margin-top: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .sidebar-cell .section-title {
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            font-size: 8pt;
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+
+        .contact-item {
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .contact-label {
+            font-size: 7.5pt;
+            font-weight: 700;
+            color: #b0c4de;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .contact-value {
+            font-size: 8.5pt;
+            color: #edf2f7;
+            word-wrap: break-word;
+        }
+
+        .skill-category {
+            margin-bottom: 12px;
+        }
+
+        .skill-cat-title {
+            font-weight: bold;
+            font-size: 7.8pt;
+            color: #b0c4de;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .skill-item {
+            font-size: 8pt;
+            margin-bottom: 3px;
+        }
+
+        .item {
+            margin-bottom: 16px;
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 10pt;
+            color: #1a365d;
+            margin-bottom: 2px;
+        }
+
+        .item-subtitle {
+            font-size: 8.5pt;
+            color: #2d3748;
+            margin-bottom: 2px;
+        }
+
+        .item-meta {
+            font-size: 7.8pt;
+            color: #718096;
+            margin-bottom: 6px;
+        }
+
+        .item-description {
+            font-size: 8.8pt;
+            color: #4a5568;
+            line-height: 1.45;
+            text-align: justify;
+        }
+
+        .project {
+            background: #f8fafc;
+            border-left: 4px solid #1a365d;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+        }
+
+        .project-title {
+            font-weight: bold;
+            font-size: 9.5pt;
+            color: #1a365d;
+            margin-bottom: 3px;
+        }
+
+        .project-desc {
+            font-size: 8.8pt;
+            color: #4a5568;
+            line-height: 1.45;
+            text-align: justify;
+        }
+
+        .edu-item {
+            margin-bottom: 12px;
+        }
+
+        .edu-degree {
+            font-weight: bold;
+            font-size: 8.8pt;
+            margin-bottom: 2px;
+        }
+
+        .edu-institution {
+            font-size: 8pt;
+            font-style: italic;
+            color: #b0c4de;
+        }
+
+        .edu-year {
+            font-size: 7.5pt;
+            color: rgba(255,255,255,0.75);
+        }
+    </style>
+</head>
+<body>
+
+<table class="cv-table">
+    <tr>
+        <td class="sidebar-cell">
+            <div class="section-title" style="margin-top:0;">Contact</div>
+                                    <div class="contact-item">
+                <span class="contact-label">Email</span>
+                <div class="contact-value">mhd.naeem90@gmail.com</div>
+            </div>
+                                    <div class="contact-item">
+                <span class="contact-label">LinkedIn</span>
+                <div class="contact-value">https://www.linkedin.com/in/muhammad-naeem-khan-8672ab93/</div>
+            </div>
+                                    <div class="contact-item">
+                <span class="contact-label">Location</span>
+                <div class="contact-value">Gilgit, Pakistan</div>
+            </div>
+            
+                        <div class="section-title">Technical Skills</div>
+                            <div class="skill-category">
+                    <div class="skill-cat-title">Programming Languages</div>
+                                            <div class="skill-item">• Python</div>
+                                            <div class="skill-item">• C#</div>
+                                            <div class="skill-item">• PHP</div>
+                                            <div class="skill-item">• C</div>
+                                            <div class="skill-item">• C++</div>
+                                            <div class="skill-item">• JAVA</div>
+                                    </div>
+                            <div class="skill-category">
+                    <div class="skill-cat-title">Web Frameworks</div>
+                                            <div class="skill-item">• Laravel</div>
+                                            <div class="skill-item">• Yii</div>
+                                            <div class="skill-item">• ASP .NET</div>
+                                            <div class="skill-item">• Symfony</div>
+                                            <div class="skill-item">• CodeIgniter</div>
+                                            <div class="skill-item">• Django</div>
+                                            <div class="skill-item">• Flask</div>
+                                            <div class="skill-item">• WordPress</div>
+                                    </div>
+                            <div class="skill-category">
+                    <div class="skill-cat-title">Frontend Technologies</div>
+                                            <div class="skill-item">• HTML5</div>
+                                            <div class="skill-item">• CSS3</div>
+                                            <div class="skill-item">• Bootstrap</div>
+                                            <div class="skill-item">• JavaScript</div>
+                                            <div class="skill-item">• jQuery</div>
+                                    </div>
+                            <div class="skill-category">
+                    <div class="skill-cat-title">Databases</div>
+                                            <div class="skill-item">• Microsoft SQL Server</div>
+                                            <div class="skill-item">• MySQL</div>
+                                            <div class="skill-item">• Postgress</div>
+                                            <div class="skill-item">• Oracle</div>
+                                    </div>
+                            <div class="skill-category">
+                    <div class="skill-cat-title">Version Control</div>
+                                            <div class="skill-item">• Git</div>
+                                            <div class="skill-item">• GitHub / GitLab</div>
+                                    </div>
+                            <div class="skill-category">
+                    <div class="skill-cat-title">CI/CD &amp; DevOps</div>
+                                            <div class="skill-item">• CI/CD Pipelines, GitHub Actions / GitLab CI, Jenkins (basic)</div>
+                                    </div>
+                            <div class="skill-category">
+                    <div class="skill-cat-title">Web &amp; API Technologies</div>
+                                            <div class="skill-item">• RESTful APIs, AJAX, JSON</div>
+                                    </div>
+                            <div class="skill-category">
+                    <div class="skill-cat-title">Servers &amp; Deployment</div>
+                                            <div class="skill-item">• Apache, Nginx, Linux (basic)</div>
+                                    </div>
+                            <div class="skill-category">
+                    <div class="skill-cat-title">Survey Tools</div>
+                                            <div class="skill-item">• Open Data Kit (ODK), Kobo Toolbox, Survey to Go</div>
+                                    </div>
+                            <div class="skill-category">
+                    <div class="skill-cat-title">Server Management</div>
+                                            <div class="skill-item">• Windows Server 2014, Window Server 2016</div>
+                                    </div>
+                            <div class="skill-category">
+                    <div class="skill-cat-title">Other Tools</div>
+                                            <div class="skill-item">• Docker, Composer, npm</div>
+                                    </div>
+                        
+                        <div class="section-title">Certifications</div>
+                            <div class="skill-item">• Microsoft SQL Server Database Administration</div>
+                            <div class="skill-item">• Python Developer Certification</div>
+                            <div class="skill-item">• Data Science with Python</div>
+                            <div class="skill-item">• Foundations: Data, Data, Everywhere</div>
+                            <div class="skill-item">• Ask Questions to Make Data-Driven Decisions</div>
+                            <div class="skill-item">• Prepare Data for Exploration</div>
+                        
+                        <div class="section-title">Training</div>
+                            <div class="skill-item">• ODK Surveys: Survey data collection trainings in Open Data Kit (ODK) for staff.</div>
+                            <div class="skill-item">• Google Career Certifications: Register, enroll and manage leaners in Coursera.</div>
+                            <div class="skill-item">• MIS Trainings: Management Information System (MIS) related trainings for staff</div>
+                            <div class="skill-item">• Data Entry &amp; Management: Capacity building of staff on online data entry, data visualization and extraction.</div>
+                        
+                        <div class="section-title">Education</div>
+                            <div class="edu-item">
+                    <div class="edu-degree">B.Sc. Computer System Engineering</div>
+                    <div class="edu-institution">Mirpur University of Science and Technologys</div>
+                    <div class="edu-year">2009 - 2013</div>
+                </div>
+                                </td>
+        <td class="main-cell">
+            <div class="name">MUHAMMAD NAEEM KHAN</div>
+            <div class="title">Senior Full Stack Developer</div>
+                        <div class="summary">
+                Senior Full Stack Developer delivering scalable web and MIS solutions with cross-sector expertise, leveraging modern frameworks and data-driven architectures to build high-performance, end-to-end systems.
+            </div>
+                                    <div class="section-title">Professional Experience</div>
+                        <div class="item">
+                <div class="item-title">Full Stack Developer</div>
+                <div class="item-subtitle">Information Technology Department Government of Gilgit-Baltisan</div>
+                <div class="item-meta">Oct 2026 - Present</div>
+                <div class="item-description">Support e-governance initiatives to automate and digitize government departments in<br />
+Gilgit-Baltistan by leading the design, development, and implementation of end-to-end web<br />
+applications, ensuring scalable front-end and back-end architectures using technologies<br />
+such as ASP.NET MVC, Laravel, and the latest JavaScript frameworks. Design, optimize and<br />
+manage databases such as MySQL, Microsoft SQL Server, PostgreSQL to facilitate a uniform,<br />
+efficient and reliable data flow across these applications. Guide the team, coordinate with<br />
+stakeholders, manage deployments and maintenance, and adhere to best practices in the<br />
+software development lifecycle.</div>
+            </div>
+                        <div class="item">
+                <div class="item-title">Management Information Systems Officer (PINS ER3)</div>
+                <div class="item-subtitle">Rural Support Programmes Network</div>
+                <div class="item-meta">Feb 2018 - Sep 2022</div>
+                <div class="item-description">Designed, developed, deployed, and maintained an end-to-end web-based management<br />
+information system to track the programme activities in real time using modern backend<br />
+and front-end frameworks such as ASP.NET MVC and jQuery. Managed data flow by<br />
+designing and optimizing the database utilizing the latest Database Management Systems<br />
+such as Microsoft SQL Server. Used the Highcharts library to design an interactive and realtime progress monitoring dashboard for key performance indicators. Organized, conducted,<br />
+and led in providing technical training for the programme team, organization, and key<br />
+stakeholders.</div>
+            </div>
+                        <div class="item">
+                <div class="item-title">Xamp/Wamp Web Developer</div>
+                <div class="item-subtitle">Medialinkers</div>
+                <div class="item-meta">Feb 2016 - Apr 2017</div>
+                <div class="item-description">Developed web applications in PHP using the CodeIgniter framework, MySQL database,<br />
+jQuery, and Bootstrap. Gathered requirements and created customized websites for clients<br />
+using content management systems such as WordPress.</div>
+            </div>
+                        <div class="item">
+                <div class="item-title">Software Executive Engineer</div>
+                <div class="item-subtitle">Cogilent Solutions</div>
+                <div class="item-meta">Oct 2015 - Jan 2016</div>
+                <div class="item-description">Planned, Designed and implemented web-based portals in Symphony MVC PHP Framework<br />
+and PostgreSQL database. Utilized Bitbucket for a cloud-based storage, management, and<br />
+collaboration of code.</div>
+            </div>
+                        <div class="item">
+                <div class="item-title">Junior Software Engineer</div>
+                <div class="item-subtitle">Electronic Solutions Islamabad</div>
+                <div class="item-meta">Nov 2014 - Oct 2015</div>
+                <div class="item-description">Designed, developed, deployed and maintained websites and applications in Core PHP,<br />
+JQuery, HTML and CSS by using XAMPP cross-platform web server.</div>
+            </div>
+                        <div class="item">
+                <div class="item-title">Web Developer Internee</div>
+                <div class="item-subtitle">UEXEL Pakistan</div>
+                <div class="item-meta">Jan 2014 - Sep 2014</div>
+                <div class="item-description">Learned core web fundamentals and implemented the concepts on live projects<br />
+productively. Built and delivered a real client application by using the Yii Framework,<br />
+Bootstrap, Javascript Library and MySQL Database.</div>
+            </div>
+                        
+                        <div class="section-title">Flagship Projects</div>
+                        <div class="project">
+                <div class="project-title">Lease Management Information System</div>
+                <div class="project-desc">Technology Stack: PHP – Laravel Framework – Jquery – Open Street Map – HighCharts –<br />
+Bootstrap – MySQL</div>
+            </div>
+                        <div class="project">
+                <div class="project-title">Management Information System, Health Endowment Fund Government of Gilgit-Baltistan</div>
+                <div class="project-desc">Technology Stack: C# – ASP.NET Core MVC – Highcharts – Microsoft SQL Server</div>
+            </div>
+                        <div class="project">
+                <div class="project-title">Management Information System, Programme for Improved Nutrition in Sindh(PINS)</div>
+                <div class="project-desc">Technology Stack: C# – ASP.NET Core MVC – Highcharts – Microsoft SQL Server</div>
+            </div>
+                        <div class="project">
+                <div class="project-title">Web Portal, Gilgit Baltistan House Islamabad</div>
+                <div class="project-desc">Technology Stack: PHP – Laravel – HighCharts – MySQL - Bootstrap</div>
+            </div>
+                        <div class="project">
+                <div class="project-title">Zakat Management Information System, Zakat &amp; Ushr Department Gilgit Baltistan</div>
+                <div class="project-desc">Technology Stack: PHP – Laravel – HighCharts – MySQL – Bootstrap</div>
+            </div>
+                                </td>
+    </tr>
+</table>
+
+</body>
+</html>

@@ -97,3 +97,7 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\IsAdmin::class])->pr
 });
 
 Route::get('/{username}', [PortfolioController::class, 'show'])->name('portfolio.show');
+
+// CV Download Routes
+Route::get('/{username}/cv/pdf', [App\Http\Controllers\CVController::class, 'downloadPDF'])->name('cv.download.pdf');
+Route::get('/{username}/cv/word', [App\Http\Controllers\CVController::class, 'downloadWord'])->name('cv.download.word');

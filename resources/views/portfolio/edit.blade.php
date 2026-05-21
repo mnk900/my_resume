@@ -2,9 +2,14 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center w-100">
             <h2 class="h4 mb-0">{{ __('Elite Portfolio CMS') }}</h2>
-            <a href="{{ route('portfolio.show', Auth::user()->username) }}" target="_blank" class="btn btn-dark shadow-sm">
-                <i class="bi bi-eye me-2"></i>View Live Portfolio
-            </a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('cv.download.pdf', Auth::user()->username) }}" class="btn btn-success shadow-sm">
+                    <i class="bi bi-file-earmark-pdf me-2"></i>Download PDF CV
+                </a>
+                <a href="{{ route('portfolio.show', Auth::user()->username) }}" target="_blank" class="btn btn-dark shadow-sm">
+                    <i class="bi bi-eye me-2"></i>View Live Portfolio
+                </a>
+            </div>
         </div>
     </x-slot>
 
