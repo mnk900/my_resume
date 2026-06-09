@@ -6,6 +6,9 @@
                 <a href="{{ route('cv.download.pdf', Auth::user()->username) }}" class="btn btn-success shadow-sm">
                     <i class="bi bi-file-earmark-pdf me-2"></i>Download PDF CV
                 </a>
+                <a href="{{ route('cv.download.word', Auth::user()->username) }}" class="btn btn-primary shadow-sm">
+                    <i class="bi bi-file-earmark-word me-2"></i>Download Word CV
+                </a>
                 <a href="{{ route('portfolio.show', Auth::user()->username) }}" target="_blank" class="btn btn-dark shadow-sm">
                     <i class="bi bi-eye me-2"></i>View Live Portfolio
                 </a>

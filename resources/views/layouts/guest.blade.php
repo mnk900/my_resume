@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="google-site-verification" content="aXfEfGQlRSIdI5rnEFY8C7E_mEVDa91sqz9bPKLSBg4" />
     <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
@@ -12,13 +13,33 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #467ba7;
+            --brand-hover: #37638a;
+        }
+        .btn-primary {
+            background-color: var(--brand-primary) !important;
+            border-color: var(--brand-primary) !important;
+        }
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            background-color: var(--brand-hover) !important;
+            border-color: var(--brand-hover) !important;
+        }
+        .text-primary, a {
+            color: var(--brand-primary);
+        }
+        a:hover {
+            color: var(--brand-hover);
+        }
+    </style>
 </head>
 <body class="bg-light">
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5 text-center mb-4">
-                <a href="/" class="text-decoration-none display-6 fw-bold">
-                    {{ config('app.name', 'MyResumes') }}
+                <a href="/" class="text-decoration-none d-flex flex-column align-items-center">
+                    <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" style="height: 90px; max-height: 90px; object-fit: contain;" class="rounded shadow-sm">
                 </a>
             </div>
             <div class="w-100"></div>

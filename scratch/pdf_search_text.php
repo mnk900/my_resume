@@ -1,5 +1,5 @@
 <?php
-$pdfPath = __DIR__ . '/../public/test_cv.pdf';
+$pdfPath = __DIR__ . '/../public/Fazal_Ali_Khan_CV.pdf';
 $pdf = file_get_contents($pdfPath);
 
 preg_match('/\/Type\s*\/Pages\s*\/Kids\s*\[(.*?)\]/s', $pdf, $kidsMatch);

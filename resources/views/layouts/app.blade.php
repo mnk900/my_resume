@@ -12,11 +12,31 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        :root {
+            --brand-primary: #467ba7;
+            --brand-hover: #37638a;
+        }
         .dropdown-menu {
             z-index: 1050;
         }
         .dropdown-item {
             cursor: pointer;
+        }
+        /* Custom dashboard brand styling */
+        .btn-primary {
+            background-color: var(--brand-primary) !important;
+            border-color: var(--brand-primary) !important;
+        }
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            background-color: var(--brand-hover) !important;
+            border-color: var(--brand-hover) !important;
+        }
+        .text-primary {
+            color: var(--brand-primary) !important;
+        }
+        .nav-link.active {
+            color: var(--brand-primary) !important;
+            font-weight: bold;
         }
     </style>
     @stack('styles')
@@ -27,8 +47,8 @@
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('dashboard') }}">
-                {{ config('app.name', 'MyResumes') }}
+            <a class="navbar-brand d-flex align-items-center py-1" href="{{ route('dashboard') }}">
+                <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" style="height: 48px; max-height: 48px; object-fit: contain;" class="rounded shadow-sm">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

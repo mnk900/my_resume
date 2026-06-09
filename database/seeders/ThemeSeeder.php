@@ -14,12 +14,13 @@ class ThemeSeeder extends Seeder
     {
         $themes = [
             ['name' => 'Classic Clean', 'slug' => 'classic', 'is_active' => true],
-            ['name' => 'Modern Dark', 'slug' => 'modern', 'is_active' => true],
             ['name' => 'Elegant Indigo', 'slug' => 'elegant', 'is_active' => true],
-            ['name' => 'Vibrant Gradient', 'slug' => 'vibrant', 'is_active' => true],
-            ['name' => 'Glassmorphism Dark', 'slug' => 'glass', 'is_active' => true],
             ['name' => 'Premium Professional', 'slug' => 'premium', 'is_active' => true],
         ];
+
+        // Clean up deleted themes
+        $slugs = array_column($themes, 'slug');
+        Theme::whereNotIn('slug', $slugs)->delete();
 
         foreach ($themes as $theme) {
             Theme::updateOrCreate(['slug' => $theme['slug']], $theme);

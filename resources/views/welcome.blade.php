@@ -8,30 +8,88 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --brand-primary: #467ba7;
+            --brand-hover: #37638a;
+            --brand-gradient: linear-gradient(135deg, #467ba7 0%, #72a1c9 100%);
+        }
         body { font-family: 'Inter', sans-serif; }
-        .hero { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; padding: 100px 0; }
+        .hero { background: var(--brand-gradient); color: white; padding: 100px 0; }
         .search-card { margin-top: -50px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         .portfolio-card { transition: all 0.3s; border: none; border-radius: 12px; height: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .portfolio-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .badge-role { background-color: #6366f1; }
+        .badge-role { background-color: var(--brand-primary); }
+
+        /* Brand override for buttons and text */
+        .btn-primary {
+            background-color: var(--brand-primary) !important;
+            border-color: var(--brand-primary) !important;
+        }
+        .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+            background-color: var(--brand-hover) !important;
+            border-color: var(--brand-hover) !important;
+        }
+        .btn-outline-primary {
+            color: var(--brand-primary) !important;
+            border-color: var(--brand-primary) !important;
+        }
+        .btn-outline-primary:hover, .btn-outline-primary:active, .btn-outline-primary:focus {
+            background-color: var(--brand-primary) !important;
+            border-color: var(--brand-primary) !important;
+            color: #fff !important;
+        }
+        .text-primary {
+            color: var(--brand-primary) !important;
+        }
+
+        /* Custom Pagination styles matching brand */
+        .pagination .page-item.active .page-link {
+            background-color: var(--brand-primary) !important;
+            border-color: var(--brand-primary) !important;
+            color: #fff !important;
+        }
+        .pagination .page-link {
+            color: var(--brand-primary);
+        }
+        .pagination .page-link:hover {
+            color: var(--brand-hover);
+            background-color: #f8f9fa;
+        }
+        .pagination .page-link:focus {
+            box-shadow: 0 0 0 0.25rem rgba(70, 123, 167, 0.25);
+        }
+
+        /* Custom Footer Style helper */
+        .text-light-50 {
+            color: rgba(255, 255, 255, 0.65) !important;
+        }
+        .hover-white {
+            transition: color 0.2s ease-in-out;
+        }
+        .hover-white:hover {
+            color: #ffffff !important;
+        }
     </style>
 </head>
 <body class="bg-light">
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-transparent position-absolute w-100">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="/">My Resumes</a>
+            <a class="navbar-brand d-flex align-items-center fw-bold fs-3" href="/">
+                <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" style="height: 48px; max-height: 48px; object-fit: contain;" class="rounded shadow-sm">
+            </a>
             <div class="ms-auto">
                 @if (Route::has('login'))
-                    <div class="d-flex gap-2">
+                    <div class="d-flex gap-2 align-items-center">
                         @auth
-                            <a href="{{ route('dashboard') }}" class="btn btn-light">Dashboard</a>
+                            <a href="{{ route('dashboard') }}" class="btn btn-primary shadow-sm">Dashboard</a>
                         @else
-                            <a href="{{ route('login') }}" class="btn text-white">Log in</a>
+                            <a href="{{ route('login') }}" class="btn btn-link text-decoration-none text-dark fw-semibold me-2">Log in</a>
                             @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="btn btn-light shadow-sm">Get Started</a>
+                                <a href="{{ route('register') }}" class="btn btn-primary shadow-sm">Get Started</a>
                             @endif
                         @endauth
                     </div>
@@ -147,9 +205,58 @@
         </div>
     </main>
 
-    <footer class="bg-white py-5 border-top">
-        <div class="container text-center">
-            <p class="mb-0 text-muted">&copy; {{ date('Y') }} A product of <a href="https://itechgb.com" target="_blank">I-Tech GB</a>. All rights reserved.</p>
+    <footer class="bg-dark text-light py-5 mt-5 border-top border-secondary">
+        <div class="container">
+            <div class="row g-4 justify-content-between">
+                <!-- Column 1: Brand -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="mb-3">
+                        <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" style="height: 48px; max-height: 48px; object-fit: contain; filter: brightness(0.9) contrast(1.1);" class="rounded bg-white p-1">
+                    </div>
+                    <p class="text-light-50 small mb-4">
+                        A unified platform that enables professionals from all fields to create, manage, and showcase their digital portfolios in a structured and impactful way.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-light-50 hover-white"><i class="fab fa-twitter fs-5"></i></a>
+                        <a href="#" class="text-light-50 hover-white"><i class="fab fa-linkedin fs-5"></i></a>
+                        <a href="#" class="text-light-50 hover-white"><i class="fab fa-github fs-5"></i></a>
+                    </div>
+                </div>
+
+                <!-- Column 2: Platform Links -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-uppercase fw-bold mb-3" style="color: #72a1c9;">Platform</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="/" class="text-light-50 text-decoration-none hover-white small">Home</a></li>
+                        <li class="mb-2"><a href="{{ route('login') }}" class="text-light-50 text-decoration-none hover-white small">Sign In</a></li>
+                        <li class="mb-2"><a href="{{ route('register') }}" class="text-light-50 text-decoration-none hover-white small">Get Started</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Contact & Support -->
+                <div class="col-lg-4 col-md-6">
+                    <h6 class="text-uppercase fw-bold mb-3" style="color: #72a1c9;">Brought to you by</h6>
+                    <p class="text-light-50 small mb-2">
+                        <strong>I-Tech GB</strong> — Empowering digital innovation and professional growth in Gilgit-Baltistan.
+                    </p>
+                    <ul class="list-unstyled mb-0 text-light-50 small">
+                        <li class="mb-1"><i class="fas fa-envelope me-2"></i> info@itechgb.com</li>
+                        <li class="mb-1"><i class="fas fa-globe me-2"></i> <a href="https://itechgb.com" target="_blank" class="text-light-50 text-decoration-none hover-white">itechgb.com</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="my-4 border-secondary opacity-25">
+
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <span class="text-light-50 small">&copy; {{ date('Y') }} MyResumes. All rights reserved.</span>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+                    <a href="#" class="text-light-50 text-decoration-none hover-white small me-3">Privacy Policy</a>
+                    <a href="#" class="text-light-50 text-decoration-none hover-white small">Terms of Service</a>
+                </div>
+            </div>
         </div>
     </footer>
 

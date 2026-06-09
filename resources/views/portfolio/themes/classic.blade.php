@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Portfolio')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; color: #212529; font-family: 'Inter', sans-serif; }
-        .hero { background: white; border-bottom: 1px solid #dee2e6; padding: 100px 0; }
-        .section-title { font-weight: 700; border-bottom: 2px solid #0d6efd; display: inline-block; padding-bottom: 5px; margin-bottom: 30px; }
-        .card { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        body { background-color: #f8f9fa; color: #1e293b; font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
+    @stack('styles')
 </head>
 <body>
     @yield('content')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
 </body>
 </html>

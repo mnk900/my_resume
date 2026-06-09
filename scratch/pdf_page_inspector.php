@@ -2,7 +2,7 @@
 // PDF Page Inspector
 // Parses the PDF structure page by page and prints out the text found on each page.
 
-$pdfPath = __DIR__ . '/../public/test_cv.pdf';
+$pdfPath = __DIR__ . '/../public/Fazal_Ali_Khan_CV.pdf';
 if (!file_exists($pdfPath)) {
     die("PDF file not found.\n");
 }

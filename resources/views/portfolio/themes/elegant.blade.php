@@ -4,17 +4,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Portfolio')</title>
+    <!-- Bootstrap 5 for Layout Grids -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Elegant Google Fonts: Cormorant Garamond & DM Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #fdfdfd; color: #444; font-family: 'Garamond', serif; }
-        .hero { background: #6610f2; color: white; padding: 150px 0; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
-        .section-title { font-family: sans-serif; text-transform: uppercase; letter-spacing: 2px; color: #6610f2; margin-bottom: 40px; text-align: center;}
-        .card { border-radius: 0; border: 1px solid #eee; transition: all 0.3s; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(102, 16, 242, 0.1); }
+        body { 
+            background-color: #f8f9fc; 
+            color: #1e1b4b; 
+            font-family: 'DM Sans', sans-serif; 
+            margin: 0; 
+            padding: 0;
+            overflow-x: hidden;
+        }
     </style>
+    @stack('styles')
 </head>
 <body>
     @yield('content')
+    
+    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @stack('scripts')
 </body>
 </html>

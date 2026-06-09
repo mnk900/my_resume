@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Portfolio;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-$user = User::where('name', 'like', '%Wasim%')->first() ?? User::first();
+$user = User::where('username', 'muhammad-naeem-khan')->first() ?? User::where('name', 'like', '%Wasim%')->first() ?? User::first();
 if (!$user) {
     echo "ERROR: No users found in database.\n";
     exit(1);
@@ -20,64 +20,9 @@ if (!$portfolio) {
     exit(1);
 }
 
-// Replicate prepareCVData logic
-$skillsData = [];
-if ($portfolio->skills) {
-    foreach ($portfolio->skills->groupBy('category') as $category => $items) {
-        $categorySkills = [];
-        foreach ($items as $item) {
-            $categorySkills[] = $item->name;
-        }
-        if (!empty($categorySkills)) {
-            $skillsData[$category] = $categorySkills;
-        }
-    }
-}
-
-$projectsData = [];
-if ($portfolio->projects) {
-    $count = 0;
-    foreach ($portfolio->projects as $project) {
-        if ($count >= 5) break;
-        $projectsData[] = [
-            'title' => $project->title,
-            'description' => $project->description,
-            'technologies' => $project->technologies ?? []
-        ];
-        $count++;
-    }
-}
-
-$data = [
-    'name' => $user->name,
-    'title' => $portfolio->position ?? 'Professional',
-    'email' => $portfolio->show_email ? $user->email : null,
-    'phone' => $portfolio->show_phone ? $portfolio->contact_number : null,
-    'linkedin' => $portfolio->show_linkedin ? $portfolio->linkedin_url : null,
-    'location' => ($portfolio->city ?? 'Gilgit-Baltistan') . ', ' . ($portfolio->country ?? 'Pakistan'),
-    'summary' => $portfolio->description,
-    'experience' => $portfolio->experiences ? $portfolio->experiences->map(function($exp) {
-        return [
-            'position' => $exp->position,
-            'company' => $exp->company,
-            'start_date' => $exp->start_date->format('M Y'),
-            'end_date' => $exp->end_date ? $exp->end_date->format('M Y') : 'Present',
-            'description' => $exp->description
-        ];
-    })->toArray() : [],
-    'education' => $portfolio->education ? $portfolio->education->map(function($edu) {
-        return [
-            'degree' => $edu->degree,
-            'institution' => $edu->institution,
-            'start_date' => $edu->start_date->format('Y'),
-            'end_date' => $edu->end_date->format('Y')
-        ];
-    })->toArray() : [],
-    'skills' => $skillsData,
-    'certifications' => $portfolio->certifications ? $portfolio->certifications->pluck('name')->toArray() : [],
-    'trainings' => $portfolio->trainings ? $portfolio->trainings->pluck('title')->toArray() : [],
-    'projects' => $projectsData
-];
+// Use CVController's prepareCVData method
+$cvController = new \App\Http\Controllers\CVController();
+$data = $cvController->prepareCVData($user, $portfolio);
 
 try {
     echo "Rendering PDF for user: {$user->name}...\n";
