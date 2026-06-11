@@ -215,37 +215,75 @@
                         </div>
                     </div>
 
-                    <!-- Recent User Registrations Feed -->
-                    <div class="card border-0 shadow-sm rounded-3 mb-4 bg-white">
-                        <div class="card-header bg-white py-3">
-                            <h5 class="mb-0 fw-bold"><i class="bi bi-activity me-2 text-warning"></i>Recent Registrations Activity Log</h5>
+                    <!-- Row for logs and activity feeds -->
+                    <div class="row g-4">
+                        <!-- Column 1: Recent User Registrations Feed -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm rounded-3 mb-4 bg-white h-100">
+                                <div class="card-header bg-white py-3">
+                                    <h5 class="mb-0 fw-bold"><i class="bi bi-activity me-2 text-warning"></i>Recent Registrations Activity Log</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>User Name</th>
+                                                    <th>Registration Date</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($users->take(5) as $u)
+                                                    <tr>
+                                                        <td class="fw-bold">
+                                                            <div>{{ $u->name }}</div>
+                                                            <small class="text-muted" style="font-size: 0.75rem;">{{ $u->email }}</small>
+                                                        </td>
+                                                        <td>{{ $u->created_at->diffForHumans() }}</td>
+                                                        <td>
+                                                            <span class="badge bg-{{ $u->portfolio ? 'success-subtle text-success' : 'secondary-subtle text-secondary' }}">
+                                                                {{ $u->portfolio ? 'Profile Created' : 'No Profile' }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>User Name</th>
-                                            <th>Email Address</th>
-                                            <th>Registration Date</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($users->take(5) as $u)
-                                            <tr>
-                                                <td class="fw-bold">{{ $u->name }}</td>
-                                                <td>{{ $u->email }}</td>
-                                                <td>{{ $u->created_at->diffForHumans() }}</td>
-                                                <td>
-                                                    <span class="badge bg-{{ $u->portfolio ? 'success-subtle text-success' : 'secondary-subtle text-secondary' }}">
-                                                        {{ $u->portfolio ? 'Profile Created' : 'No Profile' }}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+
+                        <!-- Column 2: Recent Platform-Wide Messages Feed -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm rounded-3 mb-4 bg-white h-100">
+                                <div class="card-header bg-white py-3">
+                                    <h5 class="mb-0 fw-bold"><i class="bi bi-bell me-2 text-primary"></i>Recent Platform Notifications</h5>
+                                </div>
+                                <div class="card-body p-3">
+                                    @if($messages->isEmpty())
+                                        <div class="text-center py-5 text-muted">
+                                            <i class="bi bi-chat-left-dots fs-1 d-block mb-3 text-secondary"></i>
+                                            <p class="mb-0">No contact messages submitted across portfolios yet.</p>
+                                        </div>
+                                    @else
+                                        <div class="list-group list-group-flush">
+                                            @foreach($messages as $msg)
+                                                <div class="list-group-item px-0 py-2 border-0 border-bottom">
+                                                    <div class="d-flex w-100 justify-content-between align-items-center mb-1">
+                                                        <strong class="text-dark small">{{ $msg->name }} ({{ $msg->email }})</strong>
+                                                        <small class="text-muted" style="font-size: 0.75rem;">{{ $msg->created_at->diffForHumans() }}</small>
+                                                    </div>
+                                                    <p class="mb-1 text-secondary small text-truncate" style="max-width: 450px;">{{ strip_tags($msg->message) }}</p>
+                                                    <small class="text-primary-emphasis bg-primary-subtle px-2 py-0.5 rounded-pill" style="font-size: 0.7rem;">
+                                                        To: {{ $msg->portfolio->user->name ?? 'User' }}
+                                                    </small>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>

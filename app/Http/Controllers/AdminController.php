@@ -16,6 +16,7 @@ class AdminController extends Controller
     {
         $users = User::with('portfolio')->latest()->get();
         $themes = Theme::all();
+        $messages = \App\Models\Message::with('portfolio.user')->latest()->take(5)->get();
         
         $stats = [
             'total_users' => User::count(),
@@ -24,7 +25,7 @@ class AdminController extends Controller
             'total_themes' => Theme::count(),
         ];
 
-        return view('admin.index', compact('users', 'themes', 'stats'));
+        return view('admin.index', compact('users', 'themes', 'stats', 'messages'));
     }
 
     public function togglePortfolioStatus(Portfolio $portfolio)
@@ -126,8 +127,8 @@ class AdminController extends Controller
 
     public function toggleVerification(User $user)
     {
-        $newVerifiedAt = $user->email_verified_at ? null : now();
-        $user->update(['email_verified_at' => $newVerifiedAt]);
+        $user->email_verified_at = $user->email_verified_at ? null : now();
+        $user->save();
 
         return back()->with('status', 'verification-updated')->with('notified_user', $user->name);
     }
