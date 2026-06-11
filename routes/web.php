@@ -10,6 +10,9 @@ use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'index'])->name('welcome');
 
+
+
+
 // Public Messaging - Absolute simplest path
 Route::get('/contact/submit/{portfolio}/', function() { return 'Contact endpoint is reachable'; });
 Route::post('/contact/submit/{portfolio}/', [\App\Http\Controllers\MessageController::class, 'store'])->name('portfolio.contact.store');
@@ -72,6 +75,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/trainings', [\App\Http\Controllers\PortfolioModuleController::class, 'storeTraining'])->name('trainings.store');
         Route::patch('/trainings/{training}', [\App\Http\Controllers\PortfolioModuleController::class, 'updateTraining'])->name('trainings.update');
         Route::delete('/trainings/{training}', [\App\Http\Controllers\PortfolioModuleController::class, 'destroyTraining'])->name('trainings.destroy');
+
+        Route::post('/media', [\App\Http\Controllers\PortfolioModuleController::class, 'storeMedia'])->name('media.store');
+        Route::patch('/media/{media}', [\App\Http\Controllers\PortfolioModuleController::class, 'updateMedia'])->name('media.update');
+        Route::delete('/media/{media}', [\App\Http\Controllers\PortfolioModuleController::class, 'destroyMedia'])->name('media.destroy');
+        
+        Route::post('/publications', [\App\Http\Controllers\PortfolioModuleController::class, 'storePublication'])->name('publications.store');
+        Route::patch('/publications/{publication}', [\App\Http\Controllers\PortfolioModuleController::class, 'updatePublication'])->name('publications.update');
+        Route::delete('/publications/{publication}', [\App\Http\Controllers\PortfolioModuleController::class, 'destroyPublication'])->name('publications.destroy');
     });
 
     // Keep generic for backward compatibility or simple text sections
@@ -94,6 +105,7 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\IsAdmin::class])->pr
     Route::post('/broadcast', [AdminController::class, 'broadcast'])->name('admin.broadcast');
     Route::post('/themes', [AdminController::class, 'storeTheme'])->name('admin.themes.store');
     Route::post('/themes/{theme}/toggle', [AdminController::class, 'toggleTheme'])->name('admin.themes.toggle');
+    Route::post('/send-email', [AdminController::class, 'sendEmail'])->name('admin.send-email');
 });
 
 Route::get('/{username}', [PortfolioController::class, 'show'])->name('portfolio.show');

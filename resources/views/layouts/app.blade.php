@@ -56,12 +56,6 @@
             
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active fw-bold' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('portfolio.edit') ? 'active fw-bold' : '' }}" href="{{ route('portfolio.edit') }}">Manage Portfolio</a>
-                    </li>
                     @if(Auth::check() && Auth::user()->isAdmin())
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.index') ? 'active fw-bold' : '' }}" href="{{ route('admin.index') }}">Admin Users</a>

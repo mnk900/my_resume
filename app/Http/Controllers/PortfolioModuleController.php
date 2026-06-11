@@ -12,9 +12,12 @@ use App\Models\Achievement;
 use App\Models\Contribution;
 use App\Models\Testimonial;
 use App\Models\Training;
+use App\Models\Media;
+use App\Models\Publication;
 use App\Services\PortfolioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PortfolioModuleController extends Controller
 {
@@ -343,5 +346,119 @@ class PortfolioModuleController extends Controller
         $training->delete();
         $this->bustCache();
         return back()->with('status', 'training-deleted');
+    }
+
+    // Media CRUD
+    public function storeMedia(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|string|in:tv,oped',
+            'title' => 'required|string|max:255',
+            'channel_platform' => 'required_if:type,tv|nullable|string|max:255',
+            'newspaper_name' => 'required_if:type,oped|nullable|string|max:255',
+            'date' => 'required|date',
+            'link' => 'required|url|max:500'
+        ]);
+
+        Auth::user()->portfolio->media()->create($request->only([
+            'type', 'title', 'channel_platform', 'newspaper_name', 'date', 'link'
+        ]));
+
+        $this->bustCache();
+        return back()->with('status', 'media-added');
+    }
+
+    public function updateMedia(Request $request, Media $media)
+    {
+        $this->authorizePortfolioOwner($media);
+
+        $request->validate([
+            'type' => 'required|string|in:tv,oped',
+            'title' => 'required|string|max:255',
+            'channel_platform' => 'required_if:type,tv|nullable|string|max:255',
+            'newspaper_name' => 'required_if:type,oped|nullable|string|max:255',
+            'date' => 'required|date',
+            'link' => 'required|url|max:500'
+        ]);
+
+        $media->update($request->only([
+            'type', 'title', 'channel_platform', 'newspaper_name', 'date', 'link'
+        ]));
+
+        $this->bustCache();
+        return back()->with('status', 'media-updated');
+    }
+
+    public function destroyMedia(Media $media)
+    {
+        $this->authorizePortfolioOwner($media);
+        $media->delete();
+        $this->bustCache();
+        return back()->with('status', 'media-deleted');
+    }
+
+    // Publication CRUD
+    public function storePublication(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|string|max:255',
+            'authors' => 'required|string|max:255',
+            'year' => 'required|string|max:100',
+            'title' => 'required|string|max:255',
+            'publisher' => 'required|string|max:255',
+            'link' => 'nullable|url|max:500',
+            'report' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,zip|max:10240'
+        ]);
+
+        $data = $request->only(['type', 'authors', 'year', 'title', 'publisher', 'link']);
+        if ($request->hasFile('report')) {
+            $data['report_path'] = $request->file('report')->store('reports', 'public');
+        }
+
+        Auth::user()->portfolio->publications()->create($data);
+
+        $this->bustCache();
+        return back()->with('status', 'publication-added');
+    }
+
+    public function updatePublication(Request $request, Publication $publication)
+    {
+        $this->authorizePortfolioOwner($publication);
+
+        $request->validate([
+            'type' => 'required|string|max:255',
+            'authors' => 'required|string|max:255',
+            'year' => 'required|string|max:100',
+            'title' => 'required|string|max:255',
+            'publisher' => 'required|string|max:255',
+            'link' => 'nullable|url|max:500',
+            'report' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,zip|max:10240'
+        ]);
+
+        $data = $request->only(['type', 'authors', 'year', 'title', 'publisher', 'link']);
+        if ($request->hasFile('report')) {
+            if ($publication->report_path) {
+                Storage::disk('public')->delete($publication->report_path);
+            }
+            $data['report_path'] = $request->file('report')->store('reports', 'public');
+        }
+
+        $publication->update($data);
+
+        $this->bustCache();
+        return back()->with('status', 'publication-updated');
+    }
+
+    public function destroyPublication(Publication $publication)
+    {
+        $this->authorizePortfolioOwner($publication);
+
+        if ($publication->report_path) {
+            Storage::disk('public')->delete($publication->report_path);
+        }
+
+        $publication->delete();
+        $this->bustCache();
+        return back()->with('status', 'publication-deleted');
     }
 }

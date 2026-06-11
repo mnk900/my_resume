@@ -80,6 +80,7 @@
                         <a href="#skills-extra">Education</a>
                         <a href="#skills-extra">Achievements</a>
                         <a href="#contributions">Contributions</a>
+                        <a href="#publications">Publications</a>
                     </div>
                 </li>
                 <li class="dropdown">
@@ -89,6 +90,7 @@
                         <a href="#trainings">Certifications</a>
                         <a href="#trainings">Trainings</a>
                         <a href="#testimonials">Testimonials</a>
+                        <a href="#media">Media</a>
                     </div>
                 </li>
                 <li><a href="#contact">Contact</a></li>
@@ -184,6 +186,7 @@
         </div>
     </section>
 
+    @if($portfolio->show_skills)
     <div class="section-divider"><span></span></div>
 
     <section id="skills" class="reveal">
@@ -205,7 +208,9 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_services)
     <div class="section-divider"><span></span></div>
 
     <section id="services" class="reveal">
@@ -223,7 +228,9 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_experience)
     <div class="section-divider"><span></span></div>
 
     <section id="experience" class="reveal">
@@ -253,12 +260,15 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_achievements || $portfolio->show_education)
     <div class="section-divider"><span></span></div>
 
     <section id="skills-extra" class="reveal">
         <div class="premium-container">
-            <div class="premium-skills-extra-grid">
+            <div class="premium-skills-extra-grid" style="{{ !$portfolio->show_achievements || !$portfolio->show_education ? 'grid-template-columns: 1fr;' : '' }}">
+                @if($portfolio->show_achievements)
                 <div>
                     <h3 class="premium-extra-title">Soft Skills & Achievements</h3>
                     <div class="premium-tags-flex">
@@ -270,6 +280,8 @@
                         @endif
                     </div>
                 </div>
+                @endif
+                @if($portfolio->show_education)
                 <div>
                     <h3 class="premium-extra-title">Education</h3>
                     <div class="premium-edu-list" data-limit="9">
@@ -284,16 +296,20 @@
                         @endforelse
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_certifications || $portfolio->show_trainings)
     <div class="section-divider"><span></span></div>
 
     <section id="trainings" class="reveal">
         <div class="premium-container">
             <h2 class="section-title">Certifications & Trainings</h2>
-            <div class="premium-grid-2col">
+            <div class="premium-grid-2col" style="{{ !$portfolio->show_certifications || !$portfolio->show_trainings ? 'grid-template-columns: 1fr;' : '' }}">
+                @if($portfolio->show_certifications)
                 <div class="skill-card">
                     <h3>Certifications</h3>
                     <ul class="skill-list" data-limit="9">
@@ -304,6 +320,8 @@
                         @endforelse
                     </ul>
                 </div>
+                @endif
+                @if($portfolio->show_trainings)
                 <div class="skill-card">
                     <h3>Trainings</h3>
                     <ul class="skill-list" data-limit="9">
@@ -314,10 +332,13 @@
                         @endforelse
                     </ul>
                 </div>
+                @endif
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_projects)
     <div class="section-divider"><span></span></div>
 
     <section id="projects" class="reveal">
@@ -367,7 +388,9 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_contributions)
     <div class="section-divider"><span></span></div>
 
     <section id="contributions" class="reveal">
@@ -385,7 +408,9 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_testimonials)
     <div class="section-divider"><span></span></div>
 
     <section id="testimonials" class="reveal">
@@ -404,6 +429,88 @@
             </div>
         </div>
     </section>
+    @endif
+
+    @if($portfolio->show_media && $portfolio->media->isNotEmpty())
+    <div class="section-divider"><span></span></div>
+
+    <section id="media" class="reveal">
+        <div class="premium-container">
+            <h2 class="section-title">Media Appearances</h2>
+            <div class="premium-grid-2col">
+                <!-- TV & Talk Show Appearances -->
+                <div class="skill-card">
+                    <h3><i class="fas fa-tv"></i> TV & Talk Show Appearances</h3>
+                    <ul class="skill-list" data-limit="9" style="list-style: none; padding-left: 0; margin-top: 1.5rem;">
+                        @forelse($portfolio->media->where('type', 'tv') as $tv)
+                            <li style="margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem;">
+                                <div class="fw-bold" style="font-size: 1.1rem; color: var(--text-primary);">{{ $tv->title }}</div>
+                                <div style="color: var(--accent-color); font-size: 0.9rem; margin-top: 0.2rem;">
+                                    <i class="fas fa-broadcast-tower me-1"></i> {{ $tv->channel_platform }} &bull; {{ \Carbon\Carbon::parse($tv->date)->format('M d, Y') }}
+                                </div>
+                                <div style="margin-top: 0.5rem;">
+                                    <a href="{{ $tv->link }}" target="_blank" class="tag" style="background: rgba(255,255,255,0.05); text-decoration: none; color: var(--text-primary); font-size: 0.8rem; display: inline-block;"><i class="fas fa-play-circle me-1"></i> Watch Appearance</a>
+                                </div>
+                            </li>
+                        @empty
+                            <li class="text-muted">No TV appearances listed yet.</li>
+                        @endforelse
+                    </ul>
+                </div>
+
+                <!-- Newspaper Op-eds -->
+                <div class="skill-card">
+                    <h3><i class="fas fa-newspaper"></i> Newspaper Op-eds</h3>
+                    <ul class="skill-list" data-limit="9" style="list-style: none; padding-left: 0; margin-top: 1.5rem;">
+                        @forelse($portfolio->media->where('type', 'oped') as $oped)
+                            <li style="margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem;">
+                                <div class="fw-bold" style="font-size: 1.1rem; color: var(--text-primary);">{{ $oped->title }}</div>
+                                <div style="color: var(--accent-color); font-size: 0.9rem; margin-top: 0.2rem;">
+                                    <i class="fas fa-pen-nib me-1"></i> {{ $oped->newspaper_name }} &bull; {{ \Carbon\Carbon::parse($oped->date)->format('M d, Y') }}
+                                </div>
+                                <div style="margin-top: 0.5rem;">
+                                    <a href="{{ $oped->link }}" target="_blank" class="tag" style="background: rgba(255,255,255,0.05); text-decoration: none; color: var(--text-primary); font-size: 0.8rem; display: inline-block;"><i class="fas fa-book-open me-1"></i> Read Article</a>
+                                </div>
+                            </li>
+                        @empty
+                            <li class="text-muted">No newspaper op-eds listed yet.</li>
+                        @endforelse
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    @endif
+
+    @if($portfolio->show_publications && $portfolio->publications->isNotEmpty())
+    <div class="section-divider"><span></span></div>
+
+    <section id="publications" class="reveal">
+        <div class="premium-container">
+            <h2 class="section-title">Publications</h2>
+            <div class="skills-grid" data-limit="9">
+                @foreach($portfolio->publications as $pub)
+                <div class="skill-card">
+                    <span class="tag" style="background: var(--accent-color); color: #000; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.8rem; display: inline-block;">{{ $pub->type }}</span>
+                    <h3 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.3rem;">{{ $pub->title }}</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">
+                        <strong>Authors:</strong> {{ $pub->authors }} <br>
+                        <strong>Publisher:</strong> {{ $pub->publisher }} ({{ $pub->year }})
+                    </p>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        @if($pub->link)
+                            <a href="{{ $pub->link }}" target="_blank" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem; border-radius: 20px; text-decoration: none; display: inline-block; font-weight: 600;">Online Link</a>
+                        @endif
+                        @if($pub->report_path)
+                            <a href="{{ Storage::url($pub->report_path) }}" target="_blank" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem; border-radius: 20px; text-decoration: none; display: inline-block; font-weight: 600; background: #28a745; color: #fff;">Download Report</a>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
 
     <div class="section-divider"><span></span></div>
 
@@ -532,6 +639,8 @@
                     <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#education">Education</a></li>
                     <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#projects">Projects</a></li>
                     <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#testimonials">Testimonials</a></li>
+                    <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#media">Media</a></li>
+                    <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#publications">Publications</a></li>
                     <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#contact">Contact</a></li>
                 </ul>
             </div>
@@ -549,12 +658,6 @@
                     <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3">
                         <a href="#projects" class="btn btn-dark btn-lg px-4 py-3 rounded-pill shadow-sm">View Work</a>
                         <a href="#contact" class="btn btn-outline-dark btn-lg px-4 py-3 rounded-pill">Contact Me</a>
-                        <a href="{{ route('cv.download.pdf', $user->username) }}" class="btn btn-link text-dark text-decoration-none d-flex align-items-center gap-2 fw-semibold ms-2">
-                            <i class="fas fa-file-pdf text-danger"></i> PDF CV
-                        </a>
-                        <a href="{{ route('cv.download.word', $user->username) }}" class="btn btn-link text-dark text-decoration-none d-flex align-items-center gap-2 fw-semibold ms-2">
-                            <i class="fas fa-file-word text-primary"></i> Word CV
-                        </a>
                     </div>
                 </div>
                 <div class="col-lg-5 text-center">
@@ -584,7 +687,7 @@
         </div>
     </section>
 
-    <!-- Skills Section -->
+    @if($portfolio->show_skills)
     <section id="skills" class="py-5 bg-white border-top border-bottom">
         <div class="container py-5">
             <h6 class="text-uppercase tracking-widest text-primary-accent fw-bold mb-3">02 / Expertise</h6>
@@ -618,7 +721,9 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_services)
     <!-- Services Offered -->
     <section id="services" class="py-5 bg-light">
         <div class="container py-5">
@@ -639,7 +744,9 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_experience)
     <!-- Work Experience Timeline -->
     <section id="experience" class="py-5 bg-white border-top border-bottom">
         <div class="container py-5">
@@ -673,12 +780,15 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_education || $portfolio->show_achievements)
     <!-- Education, Soft Skills & Achievements -->
     <section id="education" class="py-5 bg-light">
         <div class="container py-5">
             <div class="row g-5">
                 <!-- Education Column -->
+                @if($portfolio->show_education)
                 <div class="col-lg-6">
                     <h6 class="text-uppercase tracking-widest text-primary-accent fw-bold mb-3">05 / Education</h6>
                     <h2 class="serif-heading mb-5 text-dark fs-2">Education Credentials</h2>
@@ -696,8 +806,10 @@
                         @endforelse
                     </div>
                 </div>
+                @endif
                 
                 <!-- Achievements Column -->
+                @if($portfolio->show_achievements)
                 <div class="col-lg-6">
                     <h6 class="text-uppercase tracking-widest text-primary-accent fw-bold mb-3">06 / Soft Skills</h6>
                     <h2 class="serif-heading mb-5 text-dark fs-2">Achievements</h2>
@@ -709,15 +821,19 @@
                         @endforelse
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </section>
+    @endif
 
     <!-- Certifications & Trainings -->
+    @if($portfolio->show_certifications || $portfolio->show_trainings)
     <section id="trainings" class="py-5 bg-white border-top border-bottom">
         <div class="container py-5">
             <div class="row g-5">
-                <div class="col-lg-6">
+                @if($portfolio->show_certifications)
+                <div class="{{ $portfolio->show_trainings ? 'col-lg-6' : 'col-lg-12' }}">
                     <h6 class="text-uppercase tracking-widest text-primary-accent fw-bold mb-3">07 / Verification</h6>
                     <h2 class="serif-heading mb-5 text-dark fs-2">Certifications</h2>
                     <ul class="list-group list-group-flush" data-limit="9">
@@ -734,7 +850,9 @@
                         @endforelse
                     </ul>
                 </div>
-                <div class="col-lg-6">
+                @endif
+                @if($portfolio->show_trainings)
+                <div class="{{ $portfolio->show_certifications ? 'col-lg-6' : 'col-lg-12' }}">
                     <h6 class="text-uppercase tracking-widest text-primary-accent fw-bold mb-3">08 / Training</h6>
                     <h2 class="serif-heading mb-5 text-dark fs-2">Registrations & Trainings</h2>
                     <ul class="list-group list-group-flush" data-limit="9">
@@ -751,10 +869,13 @@
                         @endforelse
                     </ul>
                 </div>
+                @endif
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_projects)
     <!-- Flagship Projects -->
     <section id="projects" class="py-5 bg-light">
         <div class="container py-5">
@@ -805,8 +926,9 @@
             </div>
         </div>
     </section>
+    @endif
 
-    <!-- Contributions -->
+    @if($portfolio->show_contributions)
     <section id="contributions" class="py-5 bg-white border-top border-bottom">
         <div class="container py-5">
             <h6 class="text-uppercase tracking-widest text-primary-accent fw-bold mb-3">10 / Contributions</h6>
@@ -825,8 +947,9 @@
             </div>
         </div>
     </section>
+    @endif
 
-    <!-- Testimonials -->
+    @if($portfolio->show_testimonials)
     <section id="testimonials" class="py-5 bg-light">
         <div class="container py-5">
             <h6 class="text-uppercase tracking-widest text-primary-accent fw-bold mb-3">11 / Testimonials</h6>
@@ -846,6 +969,90 @@
             </div>
         </div>
     </section>
+    @endif
+
+    <!-- Media Appearances (Classic) -->
+    @if($portfolio->show_media && $portfolio->media->isNotEmpty())
+    <section id="media" class="py-5 bg-white border-top">
+        <div class="container py-5">
+            <h6 class="text-uppercase tracking-widest text-primary-accent fw-bold mb-3">12 / Media</h6>
+            <h2 class="serif-heading mb-5 text-dark fs-1">Media Appearances</h2>
+            <div class="row g-4" data-limit="9">
+                <!-- TV appearances -->
+                <div class="col-md-6">
+                    <div class="card h-100 p-4 border rounded-3 bg-light shadow-none hover-shadow-classic transition">
+                        <h4 class="fw-bold text-dark fs-5 mb-4"><i class="fas fa-tv me-2 text-dark"></i>TV & Talk Shows</h4>
+                        <div class="list-group list-group-flush bg-transparent">
+                            @forelse($portfolio->media->where('type', 'tv') as $tv)
+                                <div class="list-group-item bg-transparent px-0 border-0 mb-3">
+                                    <h5 class="fw-bold fs-6 mb-1 text-dark">{{ $tv->title }}</h5>
+                                    <div class="text-muted small mb-2">
+                                        <i class="fas fa-broadcast-tower me-1"></i>{{ $tv->channel_platform }} &bull; {{ \Carbon\Carbon::parse($tv->date)->format('M d, Y') }}
+                                    </div>
+                                    <a href="{{ $tv->link }}" target="_blank" class="btn btn-sm btn-outline-dark rounded-pill"><i class="fas fa-play-circle me-1"></i>Watch</a>
+                                </div>
+                            @empty
+                                <p class="text-muted small">No TV appearances listed yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Newspaper opeds -->
+                <div class="col-md-6">
+                    <div class="card h-100 p-4 border rounded-3 bg-light shadow-none hover-shadow-classic transition">
+                        <h4 class="fw-bold text-dark fs-5 mb-4"><i class="fas fa-newspaper me-2 text-dark"></i>Newspaper Op-eds</h4>
+                        <div class="list-group list-group-flush bg-transparent">
+                            @forelse($portfolio->media->where('type', 'oped') as $oped)
+                                <div class="list-group-item bg-transparent px-0 border-0 mb-3">
+                                    <h5 class="fw-bold fs-6 mb-1 text-dark">{{ $oped->title }}</h5>
+                                    <div class="text-muted small mb-2">
+                                        <i class="fas fa-pen-nib me-1"></i>{{ $oped->newspaper_name }} &bull; {{ \Carbon\Carbon::parse($oped->date)->format('M d, Y') }}
+                                    </div>
+                                    <a href="{{ $oped->link }}" target="_blank" class="btn btn-sm btn-outline-dark rounded-pill"><i class="fas fa-book-open me-1"></i>Read Article</a>
+                                </div>
+                            @empty
+                                <p class="text-muted small">No newspaper op-eds listed yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    @endif
+
+    <!-- Publications (Classic) -->
+    @if($portfolio->show_publications && $portfolio->publications->isNotEmpty())
+    <section id="publications" class="py-5 bg-light border-top border-bottom">
+        <div class="container py-5">
+            <h6 class="text-uppercase tracking-widest text-primary-accent fw-bold mb-3">13 / Publications</h6>
+            <h2 class="serif-heading mb-5 text-dark fs-1">Publications & Reports</h2>
+            <div class="row g-4" data-limit="9">
+                @foreach($portfolio->publications as $pub)
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 p-4 border-0 rounded-3 bg-white shadow-sm hover-shadow-classic transition">
+                        <span class="badge bg-secondary align-self-start mb-3">{{ $pub->type }}</span>
+                        <h4 class="fw-bold text-dark fs-5 mb-2">{{ $pub->title }}</h4>
+                        <p class="text-secondary small mb-3">
+                            <strong>Authors:</strong> {{ $pub->authors }}<br>
+                            <strong>Publisher:</strong> {{ $pub->publisher }} ({{ $pub->year }})
+                        </p>
+                        <div class="mt-auto d-flex gap-2">
+                            @if($pub->link)
+                                <a href="{{ $pub->link }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill"><i class="fas fa-external-link-alt me-1"></i>Online Link</a>
+                            @endif
+                            @if($pub->report_path)
+                                <a href="{{ Storage::url($pub->report_path) }}" target="_blank" class="btn btn-sm btn-success rounded-pill text-white"><i class="fas fa-download me-1"></i>Report</a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
 
     <!-- Contact Form -->
     <section id="contact" class="py-5 bg-white border-top">
@@ -1004,6 +1211,7 @@
                         <a href="#education">Education</a>
                         <a href="#skills-extra">Achievements</a>
                         <a href="#contributions">Contributions</a>
+                        <a href="#publications">Publications</a>
                     </div>
                 </li>
                 <li class="elegant-dropdown">
@@ -1013,6 +1221,7 @@
                         <a href="#trainings">Certifications</a>
                         <a href="#trainings">Trainings</a>
                         <a href="#testimonials">Testimonials</a>
+                        <a href="#media">Media</a>
                     </div>
                 </li>
                 <li><a href="#contact">Contact</a></li>
@@ -1107,8 +1316,8 @@
         </div>
     </section>
 
+    @if($portfolio->show_skills)
     {!! $elegantDivider !!}
-
     <!-- Skills Section -->
     <section id="skills" class="elegant-section elegant-bg-alt">
         <div class="elegant-container">
@@ -1134,9 +1343,10 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_services)
     {!! $elegantDivider !!}
-
     <!-- Services Offered -->
     <section id="services" class="elegant-section">
         <div class="elegant-container">
@@ -1161,9 +1371,10 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_experience)
     {!! $elegantDivider !!}
-
     <!-- Work Experience Timeline -->
     <section id="experience" class="elegant-section elegant-bg-alt">
         <div class="elegant-container">
@@ -1191,9 +1402,10 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_education)
     {!! $elegantDivider !!}
-
     <!-- Academic & Credentials -->
     <section id="education" class="elegant-section">
         <div class="elegant-container">
@@ -1220,9 +1432,10 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_achievements)
     {!! $elegantDivider !!}
-
     <!-- Achievements & Soft Skills -->
     <section id="skills-extra" class="elegant-section elegant-bg-alt">
         <div class="elegant-container">
@@ -1240,9 +1453,10 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_certifications || $portfolio->show_trainings)
     {!! $elegantDivider !!}
-
     <!-- Certifications & Trainings -->
     <section id="trainings" class="elegant-section">
         <div class="elegant-container">
@@ -1253,7 +1467,8 @@
             
             <div class="row g-5">
                 <!-- Certifications Column -->
-                <div class="col-lg-6">
+                @if($portfolio->show_certifications)
+                <div class="{{ $portfolio->show_trainings ? 'col-lg-6' : 'col-lg-12' }}">
                     <h4 class="elegant-column-title"><i class="fas fa-certificate text-indigo me-2"></i> Certifications</h4>
                     <div class="elegant-card-divider mb-4"></div>
                     <ul class="elegant-list-group" data-limit="9">
@@ -1267,9 +1482,11 @@
                         @endforelse
                     </ul>
                 </div>
+                @endif
                 
                 <!-- Trainings Column -->
-                <div class="col-lg-6">
+                @if($portfolio->show_trainings)
+                <div class="{{ $portfolio->show_certifications ? 'col-lg-6' : 'col-lg-12' }}">
                     <h4 class="elegant-column-title"><i class="fas fa-chalkboard-teacher text-indigo me-2"></i> Professional Trainings</h4>
                     <div class="elegant-card-divider mb-4"></div>
                     <ul class="elegant-list-group" data-limit="9">
@@ -1283,12 +1500,14 @@
                         @endforelse
                     </ul>
                 </div>
+                @endif
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_projects)
     {!! $elegantDivider !!}
-
     <!-- Flagship Projects -->
     <section id="projects" class="elegant-section elegant-bg-alt">
         <div class="elegant-container">
@@ -1344,9 +1563,10 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_contributions)
     {!! $elegantDivider !!}
-
     <!-- Contributions -->
     <section id="contributions" class="elegant-section">
         <div class="elegant-container">
@@ -1370,9 +1590,10 @@
             </div>
         </div>
     </section>
+    @endif
 
+    @if($portfolio->show_testimonials)
     {!! $elegantDivider !!}
-
     <!-- Testimonials -->
     <section id="testimonials" class="elegant-section elegant-bg-alt">
         <div class="elegant-container">
@@ -1396,6 +1617,105 @@
             </div>
         </div>
     </section>
+    @endif
+
+    <!-- Media Appearances (Elegant) -->
+    @if($portfolio->show_media && $portfolio->media->isNotEmpty())
+    {!! $elegantDivider !!}
+
+    <section id="media" class="elegant-section">
+        <div class="elegant-container">
+            <div class="text-center mb-5">
+                <h6 class="elegant-section-tag">11 / Media</h6>
+                <h2 class="elegant-section-title">Media Appearances</h2>
+            </div>
+            
+            <div class="row g-4" data-limit="9">
+                <!-- TV appearances -->
+                <div class="col-md-6">
+                    <div class="elegant-contrib-card h-100">
+                        <h4 class="elegant-contrib-title"><i class="fas fa-tv me-2 text-indigo"></i> TV & Talk Shows</h4>
+                        <div class="elegant-card-divider"></div>
+                        <div style="margin-top: 1.5rem;">
+                            @forelse($portfolio->media->where('type', 'tv') as $tv)
+                                <div style="margin-bottom: 1.5rem;">
+                                    <h5 class="fw-bold fs-6 mb-1 text-dark">{{ $tv->title }}</h5>
+                                    <div class="text-muted small mb-2" style="font-size: 0.85rem;">
+                                        <i class="fas fa-broadcast-tower me-1"></i>{{ $tv->channel_platform }} &bull; {{ \Carbon\Carbon::parse($tv->date)->format('M d, Y') }}
+                                    </div>
+                                    <a href="{{ $tv->link }}" target="_blank" style="color: var(--elegant-indigo); text-decoration: none; font-size: 0.9rem; font-weight: 600;"><i class="fas fa-play-circle me-1"></i> Watch Appearance</a>
+                                </div>
+                            @empty
+                                <p class="text-muted small">No TV appearances listed.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Newspaper opeds -->
+                <div class="col-md-6">
+                    <div class="elegant-contrib-card h-100">
+                        <h4 class="elegant-contrib-title"><i class="fas fa-newspaper me-2 text-indigo"></i> Newspaper Op-eds</h4>
+                        <div class="elegant-card-divider"></div>
+                        <div style="margin-top: 1.5rem;">
+                            @forelse($portfolio->media->where('type', 'oped') as $oped)
+                                <div style="margin-bottom: 1.5rem;">
+                                    <h5 class="fw-bold fs-6 mb-1 text-dark">{{ $oped->title }}</h5>
+                                    <div class="text-muted small mb-2" style="font-size: 0.85rem;">
+                                        <i class="fas fa-pen-nib me-1"></i>{{ $oped->newspaper_name }} &bull; {{ \Carbon\Carbon::parse($oped->date)->format('M d, Y') }}
+                                    </div>
+                                    <a href="{{ $oped->link }}" target="_blank" style="color: var(--elegant-indigo); text-decoration: none; font-size: 0.9rem; font-weight: 600;"><i class="fas fa-book-open me-1"></i> Read Article</a>
+                                </div>
+                            @empty
+                                <p class="text-muted small">No newspaper op-eds listed.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    @endif
+
+    <!-- Publications (Elegant) -->
+    @if($portfolio->show_publications && $portfolio->publications->isNotEmpty())
+    {!! $elegantDivider !!}
+
+    <section id="publications" class="elegant-section elegant-bg-alt">
+        <div class="elegant-container">
+            <div class="text-center mb-5">
+                <h6 class="elegant-section-tag">12 / Publications</h6>
+                <h2 class="elegant-section-title">Publications & Reports</h2>
+            </div>
+            
+            <div class="row g-4" data-limit="9">
+                @foreach($portfolio->publications as $pub)
+                <div class="col-md-6 col-lg-4">
+                    <div class="elegant-contrib-card d-flex flex-column h-100">
+                        <div class="mb-2">
+                            <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: var(--elegant-indigo-light); color: var(--elegant-indigo); padding: 4px 10px; border-radius: 20px;">{{ $pub->type }}</span>
+                        </div>
+                        <h4 class="elegant-contrib-title" style="margin-top: 0.5rem; line-height: 1.4;">{{ $pub->title }}</h4>
+                        <div class="elegant-card-divider"></div>
+                        <p class="elegant-contrib-desc" style="font-size: 0.9rem; color: var(--elegant-dark-muted);">
+                            <strong>Authors:</strong> {{ $pub->authors }} <br>
+                            <strong>Publisher:</strong> {{ $pub->publisher }} ({{ $pub->year }})
+                        </p>
+                        <div class="mt-auto pt-3 d-flex gap-2">
+                            @if($pub->link)
+                                <a href="{{ $pub->link }}" target="_blank" style="color: var(--elegant-indigo); text-decoration: none; font-size: 0.85rem; font-weight: 600;"><i class="fas fa-external-link-alt me-1"></i> Online Link</a>
+                            @endif
+                            @if($pub->report_path)
+                                <a href="{{ Storage::url($pub->report_path) }}" target="_blank" style="color: #28a745; text-decoration: none; font-size: 0.85rem; font-weight: 600; margin-left: auto;"><i class="fas fa-download me-1"></i> Report</a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
 
     {!! $elegantDivider !!}
 

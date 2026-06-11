@@ -7,7 +7,7 @@ use App\Models\User;
 
 foreach (User::all() as $user) {
     $p = $user->portfolio;
-    echo "User: " . $user->name . " (" . $user->username . ")\n";
+    echo "User: " . $user->name . " (" . $user->username . ") - Email: " . $user->email . "\n";
     if ($p) {
         echo "  - Position: " . $p->position . "\n";
         echo "  - Experiences: " . ($p->experiences ? $p->experiences->count() : 0) . "\n";

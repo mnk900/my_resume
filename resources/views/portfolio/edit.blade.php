@@ -1,672 +1,1589 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center w-100">
-            <h2 class="h4 mb-0">{{ __('Elite Portfolio CMS') }}</h2>
-            <div class="d-flex gap-2">
-                <a href="{{ route('cv.download.pdf', Auth::user()->username) }}" class="btn btn-success shadow-sm">
-                    <i class="bi bi-file-earmark-pdf me-2"></i>Download PDF CV
-                </a>
-                <a href="{{ route('cv.download.word', Auth::user()->username) }}" class="btn btn-primary shadow-sm">
-                    <i class="bi bi-file-earmark-word me-2"></i>Download Word CV
-                </a>
-                <a href="{{ route('portfolio.show', Auth::user()->username) }}" target="_blank" class="btn btn-dark shadow-sm">
-                    <i class="bi bi-eye me-2"></i>View Live Portfolio
-                </a>
-            </div>
-        </div>
-    </x-slot>
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <style>
+            /* Fluid main container */
+            @media (min-width: 1200px) {
+                main.container {
+                    max-width: 100% !important;
+                    width: 100% !important;
+                    padding-left: 0 !important;
+                    padding-right: 0 !important;
+                }
+            }
 
-    <div class="row gx-4 gy-4">
-        <!-- Main Configuration -->
-        <div class="col-md-12 col-lg-4">
-            <div class="card shadow-sm mb-4 border-0">
-                <div class="card-header bg-white py-3">
-                    <h5 class="mb-0 fw-bold">Identity & Theme</h5>
+            #sidebarMenu {
+                background-color: #222d32 !important;
+                width: 260px;
+                min-width: 260px;
+            }
+
+            @media (min-width: 768px) {
+                #sidebarMenu {
+                    min-height: calc(100vh - 56px);
+                }
+            }
+
+            .sidebar-menu .nav-link {
+                color: #b8c7ce !important;
+                border-radius: 4px;
+                transition: all 0.2s;
+                font-weight: 500;
+            }
+
+            .sidebar-menu .nav-link:hover {
+                color: #fff !important;
+                background-color: rgba(255, 255, 255, 0.1) !important;
+            }
+
+            .sidebar-menu .nav-link.active {
+                color: #fff !important;
+                background-color: #3c8dbc !important;
+                border-left: 3px solid #00c0ef;
+            }
+
+            /* Stat boxes inspired by AdminLTE */
+            .small-box {
+                position: relative;
+                display: block;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                border-radius: 8px;
+                color: #fff;
+                padding: 20px;
+                overflow: hidden;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .small-box:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            }
+
+            .small-box .inner h3 {
+                font-size: 2.5rem;
+                font-weight: bold;
+                margin: 0 0 5px 0;
+            }
+
+            .small-box .inner p {
+                font-size: 0.95rem;
+                margin: 0;
+                opacity: 0.9;
+            }
+
+            .small-box .icon {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                z-index: 0;
+                font-size: 4rem;
+                color: rgba(0, 0, 0, 0.15);
+                transition: all 0.3s linear;
+            }
+
+            .small-box:hover .icon {
+                font-size: 4.5rem;
+                transform: scale(1.1);
+            }
+
+            /* Module Grid Cards */
+            .module-card {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .module-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+            }
+
+            .hover-lift {
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+            .hover-lift:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+            }
+
+            .note-editor.note-frame {
+                border-color: #dee2e6;
+            }
+        </style>
+    @endpush
+
+    <!-- Mobile Dashboard Header (Visible only on mobile) -->
+    <div class="bg-white border-bottom p-2 d-md-none d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <button class="btn btn-outline-secondary me-2 py-1 px-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+                <i class="bi bi-list fs-5"></i>
+            </button>
+            <span class="fw-bold">Elite Portfolio CMS</span>
+        </div>
+        <div class="small-badge text-success small"><i class="bi bi-circle-fill me-1" style="font-size: 0.5rem;"></i> Active</div>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row" id="dashboard-wrapper">
+        <!-- Sidebar Navigation (Responsive Offcanvas) -->
+        <div class="offcanvas-md offcanvas-start bg-dark text-white p-3 d-flex flex-column" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel" style="width: 260px; min-width: 260px;">
+            <div class="offcanvas-header d-md-none border-bottom mb-3">
+                <h5 class="offcanvas-title text-white fw-bold" id="sidebarMenuLabel">Menu Navigation</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
+            </div>
+            <div class="brand-link text-center mb-4 pb-3 border-bottom text-white text-decoration-none d-none d-md-block">
+                <span class="brand-text fw-bold fs-5">Elite Portfolio CMS</span>
+            </div>
+            <div class="user-panel d-flex align-items-center mb-4 pb-3 border-bottom">
+                <div class="image me-3">
+                    @if($portfolio->profile_image)
+                        <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle shadow-sm" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid rgba(255,255,255,0.2);">
+                    @else
+                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px;">
+                            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                        </div>
+                    @endif
                 </div>
-                <div class="card-body">
-                    <form method="post" action="{{ route('portfolio.update') }}" enctype="multipart/form-data">
-                        @csrf
-                        @if (session('status'))
-                            <div class="alert alert-success alert-dismissible shadow-sm border-0 fade show" role="alert">
-                                <i class="bi bi-check-circle-fill me-2"></i>
-                                {{ str_replace('-', ' ', ucfirst(session('status'))) }} successfully.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
+                <div class="info">
+                    <a href="#" class="d-block text-white text-decoration-none fw-semibold text-truncate" style="max-width: 160px;">{{ Auth::user()->name }}</a>
+                    <span class="text-success small d-block mb-1"><i class="bi bi-circle-fill me-1" style="font-size: 0.6rem;"></i> Active</span>
+                    <a href="{{ route('portfolio.show', Auth::user()->username) }}" target="_blank" class="text-info small text-decoration-none d-flex align-items-center gap-1">
+                        <i class="bi bi-box-arrow-up-right"></i> Live Portfolio
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sidebar Menu Links mapping to Tab Panes -->
+            <ul class="nav nav-pills flex-column mb-auto sidebar-menu" id="dashboardTabs" role="tablist">
+                <li class="nav-item mb-2">
+                    <button class="nav-link active text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboardPane" type="button" role="tab">
+                        <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
+                    </button>
+                </li>
+                <li class="nav-item mb-2">
+                    <button class="nav-link text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="modules-tab" data-bs-toggle="tab" data-bs-target="#modulesPane" type="button" role="tab">
+                        <i class="bi bi-grid-3x3-gap"></i> <span>Modules / Sections</span>
+                    </button>
+                </li>
+                <li class="nav-item mb-2">
+                    <button class="nav-link text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settingsPane" type="button" role="tab">
+                        <i class="bi bi-gear"></i> <span>Settings</span>
+                    </button>
+                </li>
+                <li class="nav-item mb-2">
+                    <button class="nav-link text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="inbox-tab" data-bs-toggle="tab" data-bs-target="#inboxPane" type="button" role="tab">
+                        <i class="bi bi-envelope"></i> <span>Inbox / Messages</span>
+                        @php $unread = $portfolio->messages->where('is_read', false)->count(); @endphp
+                        @if($unread > 0)
+                            <span class="badge bg-danger rounded-pill ms-auto">{{ $unread }}</span>
                         @endif
-
-                        <div class="mb-3 text-center">
-                            @if($portfolio->profile_image)
-                                <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle shadow-sm mb-2" style="width: 100px; height: 100px; object-fit: cover;">
-                            @endif
-                            <input type="file" name="profile_image" class="form-control form-control-sm">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Full Name Display</label>
-                            <input name="title" type="text" class="form-control" value="{{ $portfolio->title }}" required>
-                        </div>
-
-                        <div class="p-3 bg-light rounded border mb-3">
-                            <label class="form-label small fw-bold d-block mb-2">Account Information</label>
-                            <div class="row g-2">
-                                <div class="col-12">
-                                    <input name="position" type="text" class="form-control" value="{{ $portfolio->position }}" placeholder="Position / Hero Subtitle">
-                                </div>
-                                <div class="col-12">
-                                    <input name="organization" type="text" class="form-control" value="{{ $portfolio->organization }}" placeholder="Organization">
-                                </div>
-                                <div class="col-md-6">
-                                    <input name="city" type="text" class="form-control" value="{{ $portfolio->city }}" placeholder="City">
-                                </div>
-                                <div class="col-md-6">
-                                    <input name="country" type="text" class="form-control" value="{{ $portfolio->country }}" placeholder="Country">
-                                </div>
-                                <div class="col-md-6">
-                                    <input name="contact_number" type="text" class="form-control" value="{{ $portfolio->contact_number }}" placeholder="Contact Number">
-                                </div>
-                                <div class="col-md-6">
-                                    <input name="linkedin_url" type="url" class="form-control" value="{{ $portfolio->linkedin_url }}" placeholder="LinkedIn Profile URL">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Hero Tagline / Short Intro</label>
-                            <textarea name="description" class="form-control js-summernote" data-height="140" rows="2" placeholder="Brief hook for the top section...">{{ $portfolio->description }}</textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-bold">Full Professional Profile</label>
-                            <textarea name="detailed_bio" class="form-control js-summernote" data-height="220" rows="5" placeholder="Deep dive into your journey...">{{ $portfolio->detailed_bio }}</textarea>
-                        </div>
-
-                        <div class="p-3 bg-light rounded border mb-3">
-                            <label class="form-label small fw-bold">Active Design Theme</label>
-                            <select name="theme" class="form-select border-primary shadow-sm">
-                                @foreach($themes as $t)
-                                    <option value="{{ $t->slug }}" {{ $portfolio->theme == $t->slug ? 'selected' : '' }}>{{ $t->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="p-3 bg-light rounded border mb-4">
-                            <label class="form-label small fw-bold d-block mb-3">Portfolio Visibility Controls</label>
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <div class="mb-2 fw-bold small">Email</div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="show_email" id="show_email_yes" value="show" {{ $portfolio->show_email ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="show_email_yes">Show</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="show_email" id="show_email_no" value="hide" {{ $portfolio->show_email ? '' : 'checked' }}>
-                                        <label class="form-check-label" for="show_email_no">Hide</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-2 fw-bold small">Phone</div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="show_phone" id="show_phone_yes" value="show" {{ $portfolio->show_phone ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="show_phone_yes">Show</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="show_phone" id="show_phone_no" value="hide" {{ $portfolio->show_phone ? '' : 'checked' }}>
-                                        <label class="form-check-label" for="show_phone_no">Hide</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="mb-2 fw-bold small">LinkedIn</div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="show_linkedin" id="show_linkedin_yes" value="show" {{ $portfolio->show_linkedin ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="show_linkedin_yes">Show</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="show_linkedin" id="show_linkedin_no" value="hide" {{ $portfolio->show_linkedin ? '' : 'checked' }}>
-                                        <label class="form-check-label" for="show_linkedin_no">Hide</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 shadow-sm">Update Identity</button>
-                    </form>
-                </div>
-            </div>
+                    </button>
+                </li>
+            </ul>
         </div>
 
-        <!-- Specialized Module Management -->
-        <div class="col-md-12 col-lg-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white p-0 overflow-hidden">
-                    <ul class="nav nav-tabs border-0" id="moduleTabs" role="tablist">
-                        <li class="nav-item"><button class="nav-link active px-4 py-3" data-bs-toggle="tab" data-bs-target="#skillsTab">Skills</button></li>
-                        <li class="nav-item"><button class="nav-link px-4 py-3" data-bs-toggle="tab" data-bs-target="#projectsTab">Projects</button></li>
-                        <li class="nav-item"><button class="nav-link px-4 py-3" data-bs-toggle="tab" data-bs-target="#expTab">Experience</button></li>
-                        <li class="nav-item"><button class="nav-link px-4 py-3" data-bs-toggle="tab" data-bs-target="#eduTab">Education</button></li>
-                        <li class="nav-item"><button class="nav-link px-4 py-3" data-bs-toggle="tab" data-bs-target="#inboxTab">Inbox 
-                            @php $unread = $portfolio->messages->where('is_read', false)->count(); @endphp
-                            @if($unread > 0) <span class="badge bg-danger rounded-pill ms-1">{{ $unread }}</span> @endif
-                        </button></li>
-                        <li class="nav-item"><button class="nav-link px-4 py-3" data-bs-toggle="tab" data-bs-target="#moreTab">More</button></li>
-                    </ul>
+        <!-- Right Content Wrapper -->
+        <div class="flex-grow-1 p-4 bg-light overflow-auto" id="content-pane-wrapper">
+            @if (session('status'))
+                <div class="alert alert-success alert-dismissible shadow-sm border-0 fade show mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    {{ str_replace('-', ' ', ucfirst(session('status'))) }} successfully.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <div class="card-body p-4">
-                    <div class="tab-content" id="moduleTabsContent">
-                        <!-- Skills -->
-                        <div class="tab-pane fade show active" id="skillsTab">
-                            <form action="{{ route('modules.skills.store') }}" method="POST" class="p-3 bg-light rounded border mb-4">
-                                @csrf
-                                <div class="row g-2">
-                                    <div class="col-md-3"><input name="name" class="form-control" placeholder="Skill Name" required></div>
-                                    <div class="col-md-2"><input name="percentage" type="number" class="form-control" placeholder="%" required></div>
-                                    <div class="col-md-3">
-                                        <input name="category" class="form-control" placeholder="Category (e.g. Programming)" required>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select name="icon" class="form-select">
-                                            <option value="code">Icon: Code</option>
-                                            <option value="layer-group">Icon: Layers</option>
-                                            <option value="database">Icon: Database</option>
-                                            <option value="tools">Icon: Tools</option>
-                                            <option value="laptop-code">Icon: Laptop</option>
-                                            <option value="server">Icon: Server</option>
-                                            <option value="mobile-alt">Icon: Mobile</option>
-                                            <option value="palette">Icon: Design</option>
-                                            <option value="terminal">Icon: Terminal</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-1"><button class="btn btn-dark w-100"><i class="bi bi-plus-lg"></i></button></div>
+            @endif
+
+            <div class="tab-content" id="dashboardTabsContent">
+                <!-- 1. DASHBOARD TAB PANE -->
+                <div class="tab-pane fade show active" id="dashboardPane" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold mb-0">Overview Dashboard</h3>
+                        <a href="{{ route('portfolio.show', Auth::user()->username) }}" target="_blank" class="btn btn-outline-primary btn-sm shadow-sm d-flex align-items-center gap-1 fw-bold">
+                            <i class="bi bi-eye"></i> View Live Portfolio
+                        </a>
+                    </div>
+
+                    <!-- Small Infographics widgets -->
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-3 mb-4">
+                        <div class="col">
+                            <div class="small-box" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6);">
+                                <div class="inner">
+                                    <h3>{{ $portfolio->projects->count() }}</h3>
+                                    <p>Projects</p>
                                 </div>
-                            </form>
+                                <div class="icon"><i class="bi bi-laptop"></i></div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="small-box" style="background: linear-gradient(135deg, #065f46, #10b981);">
+                                <div class="inner">
+                                    <h3>{{ $portfolio->experiences->count() }}</h3>
+                                    <p>Work Records</p>
+                                </div>
+                                <div class="icon"><i class="bi bi-briefcase"></i></div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="small-box" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">
+                                <div class="inner">
+                                    <h3>{{ $portfolio->services->count() }}</h3>
+                                    <p>Services Offered</p>
+                                </div>
+                                <div class="icon"><i class="bi bi-gear-fill"></i></div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="small-box" style="background: linear-gradient(135deg, #7c2d12, #f97316);">
+                                <div class="inner">
+                                    <h3>{{ $portfolio->certifications->count() + $portfolio->publications->count() }}</h3>
+                                    <p>Certs & Pubs</p>
+                                </div>
+                                <div class="icon"><i class="bi bi-award"></i></div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="small-box" style="background: linear-gradient(135deg, #991b1b, #ef4444);">
+                                <div class="inner">
+                                    <h3>{{ $portfolio->messages->count() }}</h3>
+                                    <p>Inquiries</p>
+                                </div>
+                                <div class="icon"><i class="bi bi-envelope"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Alerts & Notifications / Recent Inbox Messages -->
+                    <div class="card border-0 shadow-sm rounded-3 mb-4">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-bold"><i class="bi bi-bell me-2 text-warning"></i>Recent Public Inquiries & Messages</h5>
+                            <button onclick="document.getElementById('inbox-tab').click();" class="btn btn-sm btn-outline-primary">Open Inbox</button>
+                        </div>
+                        <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle">
+                                <table class="table table-hover align-middle mb-0">
                                     <thead class="table-light">
                                         <tr>
-                                            <th class="small py-2">Category</th>
-                                            <th class="small py-2">Skill</th>
-                                            <th class="small py-2">Proficiency</th>
-                                            <th class="small py-2 text-end">Action</th>
+                                            <th>Sender Name</th>
+                                            <th>Email Address</th>
+                                            <th>Message Snippet</th>
+                                            <th>Status</th>
+                                            <th>Date Received</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($portfolio->skills as $skill)
+                                        @forelse($portfolio->messages->sortByDesc('created_at')->take(5) as $msg)
                                             <tr>
-                                                <td class="small"><i class="fas fa-{{ $skill->icon }} me-2 text-muted"></i>{{ $skill->category }}</td>
-                                                <td class="fw-bold">{{ $skill->name }}</td>
-                                                <td><div class="progress" style="height: 8px;"><div class="progress-bar" style="width: {{ $skill->percentage }}%"></div></div></td>
-                                                <td class="text-end">
-                                                    <button class="btn btn-sm btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#editSkill{{ $skill->id }}">Edit</button>
-                                                    <form action="{{ route('modules.skills.destroy', $skill) }}" method="POST" class="d-inline">
-                                                        @csrf @method('delete')
-                                                        <button class="btn btn-sm btn-link text-danger">Remove</button>
-                                                    </form>
+                                                <td class="fw-bold">{{ $msg->name }}</td>
+                                                <td>{{ $msg->email }}</td>
+                                                <td><small class="text-muted">{{ Str::limit($msg->message, 80) }}</small></td>
+                                                <td>
+                                                    <span class="badge rounded-pill bg-{{ $msg->is_read ? 'secondary' : 'danger' }}">
+                                                        {{ $msg->is_read ? 'Read' : 'New' }}
+                                                    </span>
                                                 </td>
+                                                <td>{{ $msg->created_at->diffForHumans() }}</td>
                                             </tr>
-                                            <tr class="collapse" id="editSkill{{ $skill->id }}">
-                                                <td colspan="4">
-                                                    <form action="{{ route('modules.skills.update', $skill) }}" method="POST" class="p-3 bg-light rounded border">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <div class="row g-2">
-                                                            <div class="col-md-3"><input name="name" class="form-control form-control-sm" value="{{ $skill->name }}" required></div>
-                                                            <div class="col-md-2"><input name="percentage" type="number" min="0" max="100" class="form-control form-control-sm" value="{{ $skill->percentage }}" required></div>
-                                                            <div class="col-md-3"><input name="category" class="form-control form-control-sm" value="{{ $skill->category }}"></div>
-                                                            <div class="col-md-2"><input name="icon" class="form-control form-control-sm" value="{{ $skill->icon }}"></div>
-                                                            <div class="col-md-2 text-end"><button class="btn btn-sm btn-primary w-100">Update</button></div>
-                                                        </div>
-                                                    </form>
-                                                </td>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5" class="text-center py-4 text-muted">No messages received yet.</td>
                                             </tr>
-                                        @endforeach
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Projects -->
-                        <div class="tab-pane fade" id="projectsTab">
-                            <button class="btn btn-primary mb-3" data-bs-toggle="collapse" data-bs-target="#newProjectForm">+ New Project</button>
-                            <form action="{{ route('modules.projects.store') }}" method="POST" enctype="multipart/form-data" class="collapse mb-4 p-3 border rounded" id="newProjectForm">
-                                @csrf
-                                <div class="mb-3"><input name="title" class="form-control" placeholder="Project Title" required></div>
-                                <div class="mb-3"><textarea name="description" class="form-control js-summernote" data-height="160" placeholder="Short Project Description"></textarea></div>
-                                <div class="mb-3"><input name="link" class="form-control" placeholder="URL Link"></div>
-                                <div class="mb-3"><input type="file" name="image" class="form-control"></div>
-                                <button class="btn btn-primary">Save Project</button>
-                            </form>
-                            <div class="row g-3">
-                                @foreach($portfolio->projects as $project)
-                                    <div class="col-md-6">
-                                        <div class="p-3 border rounded shadow-sm h-100 d-flex justify-content-between flex-column">
+                <!-- 2. MODULES / SECTIONS TAB PANE -->
+                <div class="tab-pane fade" id="modulesPane" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold mb-0">Portfolio Sections & Modules</h3>
+                    </div>
+
+                    <!-- Grid of 13 cards (12 modules + CV) -->
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3" id="modulesGrid">
+                        @php
+                            $modulesConfig = [
+                                'skills' => ['title' => 'Skills', 'icon' => 'bi-gear-fill', 'count' => $portfolio->skills->count(), 'desc' => 'Add technical expertise, bars & categories.'],
+                                'projects' => ['title' => 'Projects', 'icon' => 'bi-laptop', 'count' => $portfolio->projects->count(), 'desc' => 'Flagship projects, descriptions, taglines.'],
+                                'experience' => ['title' => 'Work Experience', 'icon' => 'bi-briefcase', 'count' => $portfolio->experiences->count(), 'desc' => 'Job history, roles, responsibilities.'],
+                                'education' => ['title' => 'Education', 'icon' => 'bi-book', 'count' => $portfolio->education->count(), 'desc' => 'Academic records, degrees, institutions.'],
+                                'services' => ['title' => 'Services Offered', 'icon' => 'bi-window-stack', 'count' => $portfolio->services->count(), 'desc' => 'Freelance / consultancy service listings.'],
+                                'certifications' => ['title' => 'Certifications', 'icon' => 'bi-patch-check', 'count' => $portfolio->certifications->count(), 'desc' => 'Industry licenses and certifications.'],
+                                'trainings' => ['title' => 'Trainings', 'icon' => 'bi-person-workspace', 'count' => $portfolio->trainings->count(), 'desc' => 'Seminars, bootcamps and workshops.'],
+                                'achievements' => ['title' => 'Achievements', 'icon' => 'bi-trophy', 'count' => $portfolio->achievements->count(), 'desc' => 'Awards, honors, and soft skills.'],
+                                'contributions' => ['title' => 'Contributions', 'icon' => 'bi-github', 'count' => $portfolio->contributions->count(), 'desc' => 'Open-source or social contribution links.'],
+                                'testimonials' => ['title' => 'Testimonials', 'icon' => 'bi-chat-quote', 'count' => $portfolio->testimonials->count(), 'desc' => 'Recommendations from clients/managers.'],
+                                'media' => ['title' => 'Media Appearances', 'icon' => 'bi-tv', 'count' => $portfolio->media->count(), 'desc' => 'TV shows, channel links, newspaper op-eds.'],
+                                'publications' => ['title' => 'Publications', 'icon' => 'bi-journal-text', 'count' => $portfolio->publications->count(), 'desc' => 'Books, research papers, journal articles.'],
+                                'resume' => ['title' => 'Resume / CV File', 'icon' => 'bi-file-earmark-pdf', 'count' => $portfolio->sections->where('type', 'resume')->count(), 'desc' => 'Upload direct PDF version of CV document.'],
+                            ];
+                        @endphp
+
+                        @foreach($modulesConfig as $key => $config)
+                            <div class="col">
+                                <div class="card h-100 shadow-sm border-0 module-card hover-lift">
+                                    <div class="card-body d-flex flex-column p-4">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="bg-primary-subtle text-primary p-3 rounded-3 me-3 fs-3"><i class="bi {{ $config['icon'] }}"></i></div>
                                             <div>
-                                                <h6 class="fw-bold">{{ $project->title }}</h6>
-                                                <small class="text-muted d-block mb-2">{{ Str::limit(strip_tags($project->description), 60) }}</small>
+                                                <h5 class="card-title mb-0 fw-bold">{{ $config['title'] }}</h5>
+                                                <small class="badge bg-secondary-subtle text-secondary rounded-pill">{{ $config['count'] }} records</small>
                                             </div>
-                                            <button class="btn btn-sm btn-outline-secondary w-100 mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#editProject{{ $project->id }}">Edit</button>
-                                            <form action="{{ route('modules.projects.update', $project) }}" method="POST" enctype="multipart/form-data" class="collapse border rounded p-2 mb-2" id="editProject{{ $project->id }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input name="title" class="form-control form-control-sm mb-2" value="{{ $project->title }}" required>
-                                                <textarea name="description" class="form-control form-control-sm mb-2 js-summernote" data-height="140">{{ $project->description }}</textarea>
-                                                <input name="link" class="form-control form-control-sm mb-2" value="{{ $project->link }}" placeholder="URL Link">
-                                                <input type="file" name="image" class="form-control form-control-sm mb-2">
-                                                <button class="btn btn-sm btn-primary w-100">Update Project</button>
-                                            </form>
-                                            <form action="{{ route('modules.projects.destroy', $project) }}" method="POST">
-                                                @csrf @method('delete')
-                                                <button class="btn btn-sm btn-outline-danger w-100 mt-2">Delete</button>
-                                            </form>
                                         </div>
+                                        <p class="card-text text-secondary small mb-4">{{ $config['desc'] }}</p>
+                                        <div class="mt-auto d-flex gap-2">
+                                            <button class="btn btn-outline-dark btn-sm flex-grow-1 js-manage-section" data-module="{{ $key }}">Manage</button>
+                                            @if($key !== 'resume')
+                                                <button class="btn btn-dark btn-sm js-add-section-btn" data-module="{{ $key }}"><i class="bi bi-plus-lg"></i> Add</button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Dynamic Details Panel Container (Switched via JS) -->
+                    <div id="modulesDetailPanel" style="display: none;">
+                        <button class="btn btn-sm btn-outline-dark mb-4" id="backToModulesBtn"><i class="bi bi-arrow-left"></i> Back to Sections Grid</button>
+                        
+                        <!-- 2.1 SKILLS DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-skills" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Skills</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addSkillsCollapse"><i class="bi bi-plus-lg"></i> Add New Skill</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addSkillsCollapse">
+                                <form action="{{ route('modules.skills.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                    @csrf
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-md-3"><label class="small fw-bold">Skill Name</label><input name="name" class="form-control form-control-sm" placeholder="Skill Name" required></div>
+                                        <div class="col-md-2"><label class="small fw-bold">Proficiency (%)</label><input name="percentage" type="number" class="form-control form-control-sm" placeholder="%" required></div>
+                                        <div class="col-md-3"><label class="small fw-bold">Category</label><input name="category" class="form-control form-control-sm" placeholder="Category (e.g. Programming)" required></div>
+                                        <div class="col-md-3">
+                                            <label class="small fw-bold">Icon Class</label>
+                                            <select name="icon" class="form-select form-select-sm">
+                                                <option value="code">Code</option>
+                                                <option value="layer-group">Layers</option>
+                                                <option value="database">Database</option>
+                                                <option value="tools">Tools</option>
+                                                <option value="laptop-code">Laptop</option>
+                                                <option value="server">Server</option>
+                                                <option value="mobile-alt">Mobile</option>
+                                                <option value="palette">Design</option>
+                                                <option value="terminal">Terminal</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1"><button class="btn btn-sm btn-dark w-100">Add</button></div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter skills...">
+                                    </div>
+                                    <div class="ms-auto js-module-pagination"></div>
+                                </div>
+                            </div>
+
+                            <div class="js-module-list">
+                                @foreach($portfolio->skills as $skill)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div>
+                                                <span class="fw-bold">{{ $skill->name }}</span>
+                                                <span class="badge bg-secondary-subtle text-secondary ms-2">{{ $skill->category }} ({{ $skill->percentage }}%)</span>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editSkill{{ $skill->id }}">Edit</button>
+                                                <form action="{{ route('modules.skills.destroy', $skill) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <form action="{{ route('modules.skills.update', $skill) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editSkill{{ $skill->id }}">
+                                            @csrf @method('PATCH')
+                                            <div class="row g-2 align-items-end">
+                                                <div class="col-md-3"><input name="name" class="form-control form-control-sm" value="{{ $skill->name }}" required></div>
+                                                <div class="col-md-2"><input name="percentage" type="number" class="form-control form-control-sm" value="{{ $skill->percentage }}" required></div>
+                                                <div class="col-md-3"><input name="category" class="form-control form-control-sm" value="{{ $skill->category }}" required></div>
+                                                <div class="col-md-3">
+                                                    <select name="icon" class="form-select form-select-sm">
+                                                        <option value="code" {{ $skill->icon == 'code' ? 'selected' : '' }}>Code</option>
+                                                        <option value="layer-group" {{ $skill->icon == 'layer-group' ? 'selected' : '' }}>Layers</option>
+                                                        <option value="database" {{ $skill->icon == 'database' ? 'selected' : '' }}>Database</option>
+                                                        <option value="tools" {{ $skill->icon == 'tools' ? 'selected' : '' }}>Tools</option>
+                                                        <option value="laptop-code" {{ $skill->icon == 'laptop-code' ? 'selected' : '' }}>Laptop</option>
+                                                        <option value="server" {{ $skill->icon == 'server' ? 'selected' : '' }}>Server</option>
+                                                        <option value="mobile-alt" {{ $skill->icon == 'mobile-alt' ? 'selected' : '' }}>Mobile</option>
+                                                        <option value="palette" {{ $skill->icon == 'palette' ? 'selected' : '' }}>Design</option>
+                                                        <option value="terminal" {{ $skill->icon == 'terminal' ? 'selected' : '' }}>Terminal</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-1"><button class="btn btn-sm btn-primary w-100">Update</button></div>
+                                            </div>
+                                        </form>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
 
-                        <!-- Experience -->
-                        <div class="tab-pane fade" id="expTab">
-                            <form action="{{ route('modules.experiences.store') }}" method="POST" class="p-3 bg-light rounded border mb-4">
-                                @csrf
-                                <div class="row g-3">
-                                    <div class="col-md-6"><input name="company" class="form-control" placeholder="Company Name" required></div>
-                                    <div class="col-md-6"><input name="position" class="form-control" placeholder="Job Title" required></div>
-                                    <div class="col-md-6"><label class="small fw-bold">Start Date</label><input name="start_date" type="date" class="form-control" required></div>
-                                    <div class="col-md-6"><label class="small fw-bold">End Date (Leave blank if Present)</label><input name="end_date" type="date" class="form-control"></div>
-                                    <div class="col-12"><textarea name="description" class="form-control js-summernote" data-height="180" placeholder="Job Responsibilities"></textarea></div>
-                                    <div class="col-12 text-end"><button class="btn btn-dark">+ Add Experience</button></div>
-                                </div>
-                            </form>
-                            @foreach($portfolio->experiences as $exp)
-                                <div class="border-bottom py-3">
-                                    <div class="d-flex justify-content-between align-items-start gap-2">
-                                        <div><div class="fw-bold">{{ $exp->position }}</div><small>{{ $exp->company }} | {{ $exp->start_date->format('M Y') }} - {{ $exp->end_date ? $exp->end_date->format('M Y') : 'Present' }}</small></div>
-                                        <div class="d-flex gap-2">
-                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#editExp{{ $exp->id }}">Edit</button>
-                                            <form action="{{ route('modules.experiences.destroy', $exp) }}" method="POST">
-                                                @csrf @method('delete')
-                                                <button class="btn btn-sm text-danger">Remove</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <form action="{{ route('modules.experiences.update', $exp) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editExp{{ $exp->id }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <div class="row g-2">
-                                            <div class="col-md-6"><input name="company" class="form-control form-control-sm" value="{{ $exp->company }}" required></div>
-                                            <div class="col-md-6"><input name="position" class="form-control form-control-sm" value="{{ $exp->position }}" required></div>
-                                            <div class="col-md-6"><input name="start_date" type="date" class="form-control form-control-sm" value="{{ $exp->start_date?->format('Y-m-d') }}" required></div>
-                                            <div class="col-md-6"><input name="end_date" type="date" class="form-control form-control-sm" value="{{ $exp->end_date?->format('Y-m-d') }}"></div>
-                                            <div class="col-12"><textarea name="description" class="form-control form-control-sm js-summernote" data-height="150">{{ $exp->description }}</textarea></div>
-                                            <div class="col-12 text-end"><button class="btn btn-sm btn-primary">Update Experience</button></div>
-                                        </div>
-                                    </form>
-                                </div>
-                            @endforeach
-                        </div>
+                        <!-- 2.2 PROJECTS DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-projects" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Projects</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addProjectsCollapse"><i class="bi bi-plus-lg"></i> Add Project</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addProjectsCollapse">
+                                <form action="{{ route('modules.projects.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                    @csrf
+                                    <input name="title" class="form-control mb-2 form-control-sm" placeholder="Project Name" required>
+                                    <div class="mb-3"><textarea name="description" class="form-control js-summernote" data-height="160" placeholder="Short Project Description"></textarea></div>
+                                    <button class="btn btn-sm btn-dark w-100">Add Project</button>
+                                </form>
+                            </div>
 
-                        <!-- Education -->
-                        <div class="tab-pane fade" id="eduTab">
-                            <form action="{{ route('modules.education.store') }}" method="POST" class="p-3 bg-light rounded border mb-4">
-                                @csrf
-                                <div class="row g-3">
-                                    <div class="col-md-6"><input name="institution" class="form-control" placeholder="University" required></div>
-                                    <div class="col-md-6"><input name="degree" class="form-control" placeholder="Degree" required></div>
-                                    <div class="col-md-6"><label class="small fw-bold">Start Date</label><input name="start_date" type="date" class="form-control" required></div>
-                                    <div class="col-md-6"><label class="small fw-bold">End Date</label><input name="end_date" type="date" class="form-control" required></div>
-                                    <div class="col-12 text-end"><button class="btn btn-dark">+ Add Education</button></div>
-                                </div>
-                            </form>
-                            @foreach($portfolio->education as $edu)
-                                <div class="border-bottom py-3">
-                                    <div class="d-flex justify-content-between align-items-start gap-2">
-                                        <div><div class="fw-bold">{{ $edu->degree }}</div><small>{{ $edu->institution }} | {{ $edu->start_date->format('Y') }} - {{ $edu->end_date->format('Y') }}</small></div>
-                                        <div class="d-flex gap-2">
-                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#editEdu{{ $edu->id }}">Edit</button>
-                                            <form action="{{ route('modules.education.destroy', $edu) }}" method="POST">
-                                                @csrf @method('delete')
-                                                <button class="btn btn-sm text-danger">Remove</button>
-                                            </form>
-                                        </div>
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter projects...">
                                     </div>
-                                    <form action="{{ route('modules.education.update', $edu) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editEdu{{ $edu->id }}">
-                                        @csrf
-                                        @method('PATCH')
-                                        <div class="row g-2">
-                                            <div class="col-md-6"><input name="institution" class="form-control form-control-sm" value="{{ $edu->institution }}" required></div>
-                                            <div class="col-md-6"><input name="degree" class="form-control form-control-sm" value="{{ $edu->degree }}" required></div>
-                                            <div class="col-md-6"><input name="start_date" type="date" class="form-control form-control-sm" value="{{ $edu->start_date?->format('Y-m-d') }}" required></div>
-                                            <div class="col-md-6"><input name="end_date" type="date" class="form-control form-control-sm" value="{{ $edu->end_date?->format('Y-m-d') }}" required></div>
-                                            <div class="col-12 text-end"><button class="btn btn-sm btn-primary">Update Education</button></div>
-                                        </div>
-                                    </form>
+                                    <div class="ms-auto js-module-pagination"></div>
                                 </div>
-                            @endforeach
-                        </div>
+                            </div>
 
-                        <!-- Inbox -->
-                        <div class="tab-pane fade" id="inboxTab">
-                            <h5 class="fw-bold mb-4">Inquiries & Messages</h5>
-                            @foreach($portfolio->messages->sortByDesc('created_at') as $msg)
-                                <div class="card mb-3 border {{ $msg->is_read ? 'bg-light' : 'border-primary shadow-sm' }}">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="js-module-list">
+                                @foreach($portfolio->projects as $project)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
                                             <div>
-                                                <h6 class="fw-bold mb-0">{{ $msg->name }}</h6>
-                                                <small class="text-muted">{{ $msg->email }} | {{ $msg->created_at->diffForHumans() }}</small>
+                                                <div class="fw-bold">{{ $project->title }}</div>
+                                                <small class="text-muted d-block mb-2">{{ Str::limit(strip_tags($project->description), 80) }}</small>
                                             </div>
                                             <div class="d-flex gap-2">
-                                                @if(!$msg->is_read)
-                                                    <form action="{{ route('messages.read', $msg) }}" method="POST">@csrf <button class="btn btn-sm btn-outline-primary">Mark Read</button></form>
-                                                @endif
-                                                <form action="{{ route('messages.destroy', $msg) }}" method="POST">@csrf @method('delete') <button class="btn btn-sm btn-outline-danger">Delete</button></form>
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editProject{{ $project->id }}">Edit</button>
+                                                <form action="{{ route('modules.projects.destroy', $project) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
+                                                </form>
                                             </div>
                                         </div>
-                                        <p class="mb-3 p-3 bg-white border rounded">"{{ $msg->message }}"</p>
-                                        
-                                        @if($msg->reply)
-                                            <div class="alert alert-secondary py-2 small mb-0">
-                                                <strong>My Reply:</strong> {{ $msg->reply }}
-                                            </div>
-                                        @else
-                                            <button class="btn btn-sm btn-dark" data-bs-toggle="collapse" data-bs-target="#replyForm{{ $msg->id }}">Reply via Email</button>
-                                            <form action="{{ route('messages.reply', $msg) }}" method="POST" class="collapse mt-3" id="replyForm{{ $msg->id }}">
-                                                @csrf
-                                                <textarea name="reply" class="form-control mb-2" rows="3" placeholder="Write your response here..."></textarea>
-                                                <button class="btn btn-primary btn-sm">Send Reply</button>
-                                            </form>
-                                        @endif
+                                        <form action="{{ route('modules.projects.update', $project) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editProject{{ $project->id }}">
+                                            @csrf @method('PATCH')
+                                            <input name="title" class="form-control mb-2 form-control-sm" value="{{ $project->title }}" required>
+                                            <textarea name="description" class="form-control form-control-sm mb-2 js-summernote" data-height="140">{{ $project->description }}</textarea>
+                                            <button class="btn btn-sm btn-primary">Update Project</button>
+                                        </form>
                                     </div>
-                                </div>
-                            @endforeach
-                            @if($portfolio->messages->isEmpty())
-                                <div class="text-center py-5 text-muted">
-                                    <i class="bi bi-inbox display-1 mb-3"></i>
-                                    <p>Your inbox is currently empty.</p>
-                                </div>
-                            @endif
+                                @endforeach
+                            </div>
                         </div>
 
-                        <!-- More -->
-                        <div class="tab-pane fade" id="moreTab">
-                            <div class="accordion border-0" id="moreAccordion">
-                                <!-- Services -->
-                                <div class="accordion-item border-0 mb-3 shadow-sm rounded">
-                                    <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold rounded" data-bs-toggle="collapse" data-bs-target="#servCol">Services Offered</button></h2>
-                                    <div id="servCol" class="accordion-collapse collapse p-3">
-                                        <form action="{{ route('modules.services.store') }}" method="POST" class="mb-3">
-                                            @csrf
-                                            <input name="title" class="form-control mb-2" placeholder="Service Name" required>
-                                            <textarea name="description" class="form-control mb-2 js-summernote" data-height="150" placeholder="What you offer..."></textarea>
-                                            <button class="btn btn-sm btn-dark w-100">Add Service</button>
-                                        </form>
-                                        @foreach($portfolio->services as $serv)
-                                            <div class="small border-bottom py-2">
-                                                <div class="d-flex justify-content-between align-items-start gap-2">
-                                                    <span>{{ $serv->title }}</span>
-                                                    <div class="d-flex gap-2">
-                                                        <button class="btn btn-link py-0 small" type="button" data-bs-toggle="collapse" data-bs-target="#editService{{ $serv->id }}">Edit</button>
-                                                        <form action="{{ route('modules.services.destroy', $serv) }}" method="POST">@csrf @method('delete')<button class="btn btn-link py-0 text-danger small">Delete</button></form>
-                                                    </div>
-                                                </div>
-                                                <form action="{{ route('modules.services.update', $serv) }}" method="POST" class="collapse mt-2" id="editService{{ $serv->id }}">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input name="title" class="form-control form-control-sm mb-2" value="{{ $serv->title }}" required>
-                                                    <textarea name="description" class="form-control form-control-sm mb-2 js-summernote" data-height="130">{{ $serv->description }}</textarea>
-                                                    <button class="btn btn-sm btn-primary">Update Service</button>
+                        <!-- 2.3 WORK EXPERIENCE DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-experience" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Work Experience</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addExpCollapse"><i class="bi bi-plus-lg"></i> Add Experience</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addExpCollapse">
+                                <form action="{{ route('modules.experiences.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                    @csrf
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-md-6"><input name="position" class="form-control form-control-sm" placeholder="Job Title" required></div>
+                                        <div class="col-md-6"><input name="company" class="form-control form-control-sm" placeholder="Company Name" required></div>
+                                        <div class="col-md-6"><label class="small fw-bold">Start Date</label><input name="start_date" type="date" class="form-control form-control-sm" required></div>
+                                        <div class="col-md-6"><label class="small fw-bold">End Date (Keep empty if current)</label><input name="end_date" type="date" class="form-control form-control-sm"></div>
+                                    </div>
+                                    <div class="col-12 mb-3"><textarea name="description" class="form-control js-summernote" data-height="180" placeholder="Job Responsibilities"></textarea></div>
+                                    <button class="btn btn-sm btn-dark w-100">Add Experience</button>
+                                </form>
+                            </div>
+
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter experience...">
+                                    </div>
+                                    <div class="ms-auto js-module-pagination"></div>
+                                </div>
+                            </div>
+
+                            <div class="js-module-list">
+                                @foreach($portfolio->experiences as $exp)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div>
+                                                <div class="fw-bold">{{ $exp->position }} at {{ $exp->company }}</div>
+                                                <small class="text-muted d-block mb-2">{{ $exp->start_date->format('M Y') }} - {{ $exp->end_date ? $exp->end_date->format('M Y') : 'Present' }}</small>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editExp{{ $exp->id }}">Edit</button>
+                                                <form action="{{ route('modules.experiences.destroy', $exp) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
                                                 </form>
                                             </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <!-- Certifications -->
-                                <div class="accordion-item border-0 mb-3 shadow-sm rounded">
-                                    <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold rounded" data-bs-toggle="collapse" data-bs-target="#certCol">Certifications</button></h2>
-                                    <div id="certCol" class="accordion-collapse collapse p-3">
-                                        <form action="{{ route('modules.certifications.store') }}" method="POST" class="mb-3">
-                                            @csrf
-                                            <input name="name" class="form-control mb-2" placeholder="Certification Name" required>
-                                            <input name="issuer" class="form-control mb-2" placeholder="Issuing Body" required>
-                                            <button class="btn btn-sm btn-dark w-100">Add Certification</button>
+                                        </div>
+                                        <form action="{{ route('modules.experiences.update', $exp) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editExp{{ $exp->id }}">
+                                            @csrf @method('PATCH')
+                                            <div class="row g-2 mb-2">
+                                                <div class="col-md-6"><input name="position" class="form-control form-control-sm" value="{{ $exp->position }}" required></div>
+                                                <div class="col-md-6"><input name="company" class="form-control form-control-sm" value="{{ $exp->company }}" required></div>
+                                                <div class="col-md-6"><input name="start_date" type="date" class="form-control form-control-sm" value="{{ $exp->start_date?->format('Y-m-d') }}" required></div>
+                                                <div class="col-md-6"><input name="end_date" type="date" class="form-control form-control-sm" value="{{ $exp->end_date?->format('Y-m-d') }}"></div>
+                                            </div>
+                                            <div class="col-12 mb-2"><textarea name="description" class="form-control form-control-sm js-summernote" data-height="150">{{ $exp->description }}</textarea></div>
+                                            <button class="btn btn-sm btn-primary">Update Experience</button>
                                         </form>
-                                        @foreach($portfolio->certifications as $cert)
-                                            <div class="small border-bottom py-2">
-                                                <div class="d-flex justify-content-between align-items-start gap-2">
-                                                    <span>{{ $cert->name }} ({{ $cert->issuer }})</span>
-                                                    <div class="d-flex gap-2">
-                                                        <button class="btn btn-link py-0 small" type="button" data-bs-toggle="collapse" data-bs-target="#editCert{{ $cert->id }}">Edit</button>
-                                                        <form action="{{ route('modules.certifications.destroy', $cert) }}" method="POST">@csrf @method('delete')<button class="btn btn-link py-0 text-danger small">Delete</button></form>
-                                                    </div>
-                                                </div>
-                                                <form action="{{ route('modules.certifications.update', $cert) }}" method="POST" class="collapse mt-2" id="editCert{{ $cert->id }}">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input name="name" class="form-control form-control-sm mb-2" value="{{ $cert->name }}" required>
-                                                    <input name="issuer" class="form-control form-control-sm mb-2" value="{{ $cert->issuer }}" required>
-                                                    <button class="btn btn-sm btn-primary">Update Certification</button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 2.4 EDUCATION DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-education" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Education</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addEduCollapse"><i class="bi bi-plus-lg"></i> Add Education</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addEduCollapse">
+                                <form action="{{ route('modules.education.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                    @csrf
+                                    <div class="row g-3">
+                                        <div class="col-md-6"><input name="institution" class="form-control form-control-sm" placeholder="University/School" required></div>
+                                        <div class="col-md-6"><input name="degree" class="form-control form-control-sm" placeholder="Degree" required></div>
+                                        <div class="col-md-6"><label class="small fw-bold">Start Date</label><input name="start_date" type="date" class="form-control form-control-sm" required></div>
+                                        <div class="col-md-6"><label class="small fw-bold">End Date</label><input name="end_date" type="date" class="form-control form-control-sm" required></div>
+                                        <div class="col-12 text-end"><button class="btn btn-sm btn-dark">Add Education</button></div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter education...">
+                                    </div>
+                                    <div class="ms-auto js-module-pagination"></div>
+                                </div>
+                            </div>
+
+                            <div class="js-module-list">
+                                @foreach($portfolio->education as $edu)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div>
+                                                <div class="fw-bold">{{ $edu->degree }}</div>
+                                                <small class="text-muted d-block mb-1">{{ $edu->institution }} | {{ $edu->start_date?->format('Y') }} - {{ $edu->end_date?->format('Y') }}</small>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editEdu{{ $edu->id }}">Edit</button>
+                                                <form action="{{ route('modules.education.destroy', $edu) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
                                                 </form>
                                             </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <!-- Achievements -->
-                                <div class="accordion-item border-0 mb-3 shadow-sm rounded">
-                                    <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold rounded" data-bs-toggle="collapse" data-bs-target="#achCol">Achievements</button></h2>
-                                    <div id="achCol" class="accordion-collapse collapse p-3">
-                                        <form action="{{ route('modules.achievements.store') }}" method="POST" class="mb-3">
-                                            @csrf
-                                            <input name="title" class="form-control mb-2" placeholder="Award/Title" required>
-                                            <button class="btn btn-sm btn-dark w-100">Add Achievement</button>
+                                        </div>
+                                        <form action="{{ route('modules.education.update', $edu) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editEdu{{ $edu->id }}">
+                                            @csrf @method('PATCH')
+                                            <div class="row g-2">
+                                                <div class="col-md-6"><input name="institution" class="form-control form-control-sm" value="{{ $edu->institution }}" required></div>
+                                                <div class="col-md-6"><input name="degree" class="form-control form-control-sm" value="{{ $edu->degree }}" required></div>
+                                                <div class="col-md-6"><input name="start_date" type="date" class="form-control form-control-sm" value="{{ $edu->start_date?->format('Y-m-d') }}" required></div>
+                                                <div class="col-md-6"><input name="end_date" type="date" class="form-control form-control-sm" value="{{ $edu->end_date?->format('Y-m-d') }}" required></div>
+                                                <div class="col-12 text-end"><button class="btn btn-sm btn-primary">Update Education</button></div>
+                                            </div>
                                         </form>
-                                        @foreach($portfolio->achievements as $ach)
-                                            <div class="small border-bottom py-2">
-                                                <div class="d-flex justify-content-between align-items-start gap-2">
-                                                    <span>{{ $ach->title }}</span>
-                                                    <div class="d-flex gap-2">
-                                                        <button class="btn btn-link py-0 small" type="button" data-bs-toggle="collapse" data-bs-target="#editAch{{ $ach->id }}">Edit</button>
-                                                        <form action="{{ route('modules.achievements.destroy', $ach) }}" method="POST">@csrf @method('delete')<button class="btn btn-link py-0 text-danger small">Delete</button></form>
-                                                    </div>
-                                                </div>
-                                                <form action="{{ route('modules.achievements.update', $ach) }}" method="POST" class="collapse mt-2" id="editAch{{ $ach->id }}">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input name="title" class="form-control form-control-sm mb-2" value="{{ $ach->title }}" required>
-                                                    <button class="btn btn-sm btn-primary">Update Achievement</button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 2.5 SERVICES DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-services" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Services</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addServicesCollapse"><i class="bi bi-plus-lg"></i> Add Service</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addServicesCollapse">
+                                <form action="{{ route('modules.services.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                    @csrf
+                                    <input name="title" class="form-control mb-2 form-control-sm" placeholder="Service Name" required>
+                                    <textarea name="description" class="form-control mb-2 js-summernote" data-height="150" placeholder="What you offer..."></textarea>
+                                    <button class="btn btn-sm btn-dark w-100">Add Service</button>
+                                </form>
+                            </div>
+
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter services...">
+                                    </div>
+                                    <div class="ms-auto js-module-pagination"></div>
+                                </div>
+                            </div>
+
+                            <div class="js-module-list">
+                                @foreach($portfolio->services as $serv)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div>
+                                                <div class="fw-bold">{{ $serv->title }}</div>
+                                                <small class="text-muted d-block mb-1">{{ Str::limit(strip_tags($serv->description), 80) }}</small>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editService{{ $serv->id }}">Edit</button>
+                                                <form action="{{ route('modules.services.destroy', $serv) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
                                                 </form>
                                             </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <!-- Trainings -->
-                                <div class="accordion-item border-0 mb-3 shadow-sm rounded">
-                                    <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold rounded" data-bs-toggle="collapse" data-bs-target="#trainCol">Trainings & Capacity Building</button></h2>
-                                    <div id="trainCol" class="accordion-collapse collapse p-3">
-                                        <form action="{{ route('modules.trainings.store') }}" method="POST" class="mb-3">
-                                            @csrf
-                                            <input name="title" class="form-control mb-2" placeholder="Training Title" required>
-                                            <input name="institution" class="form-control mb-2" placeholder="Institution" required>
-                                            <button class="btn btn-sm btn-dark w-100">Add Training</button>
+                                        </div>
+                                        <form action="{{ route('modules.services.update', $serv) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editService{{ $serv->id }}">
+                                            @csrf @method('PATCH')
+                                            <input name="title" class="form-control form-control-sm mb-2" value="{{ $serv->title }}" required>
+                                            <textarea name="description" class="form-control form-control-sm mb-2 js-summernote" data-height="130">{{ $serv->description }}</textarea>
+                                            <button class="btn btn-sm btn-primary">Update Service</button>
                                         </form>
-                                        @foreach($portfolio->trainings as $train)
-                                            <div class="small border-bottom py-2">
-                                                <div class="d-flex justify-content-between align-items-start gap-2">
-                                                    <span>{{ $train->title }} ({{ $train->institution }})</span>
-                                                    <div class="d-flex gap-2">
-                                                        <button class="btn btn-link py-0 small" type="button" data-bs-toggle="collapse" data-bs-target="#editTrain{{ $train->id }}">Edit</button>
-                                                        <form action="{{ route('modules.trainings.destroy', $train) }}" method="POST">@csrf @method('delete')<button class="btn btn-link py-0 text-danger small">Delete</button></form>
-                                                    </div>
-                                                </div>
-                                                <form action="{{ route('modules.trainings.update', $train) }}" method="POST" class="collapse mt-2" id="editTrain{{ $train->id }}">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input name="title" class="form-control form-control-sm mb-2" value="{{ $train->title }}" required>
-                                                    <input name="institution" class="form-control form-control-sm mb-2" value="{{ $train->institution }}" required>
-                                                    <button class="btn btn-sm btn-primary">Update Training</button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 2.6 CERTIFICATIONS DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-certifications" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Certifications</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addCertsCollapse"><i class="bi bi-plus-lg"></i> Add Certification</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addCertsCollapse">
+                                <form action="{{ route('modules.certifications.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                    @csrf
+                                    <input name="name" class="form-control mb-2 form-control-sm" placeholder="Certification Name" required>
+                                    <input name="issuer" class="form-control mb-2 form-control-sm" placeholder="Issuing Body" required>
+                                    <button class="btn btn-sm btn-dark w-100">Add Certification</button>
+                                </form>
+                            </div>
+
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter certifications...">
+                                    </div>
+                                    <div class="ms-auto js-module-pagination"></div>
+                                </div>
+                            </div>
+
+                            <div class="js-module-list">
+                                @foreach($portfolio->certifications as $cert)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div>
+                                                <div class="fw-bold">{{ $cert->name }}</div>
+                                                <small class="text-muted d-block mb-1">Issuer: {{ $cert->issuer }}</small>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editCert{{ $cert->id }}">Edit</button>
+                                                <form action="{{ route('modules.certifications.destroy', $cert) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
                                                 </form>
                                             </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <!-- Contributions -->
-                                <div class="accordion-item border-0 mb-3 shadow-sm rounded">
-                                    <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold rounded" data-bs-toggle="collapse" data-bs-target="#contribCol">Contributions</button></h2>
-                                    <div id="contribCol" class="accordion-collapse collapse p-3">
-                                        <form action="{{ route('modules.contributions.store') }}" method="POST" class="mb-3">
-                                            @csrf
-                                            <input name="title" class="form-control mb-2" placeholder="Contribution Title (e.g. Open Source, Community Work)" required>
-                                            <textarea name="description" class="form-control mb-2 js-summernote" data-height="150" rows="2" placeholder="Describe your contribution..."></textarea>
-                                            <button class="btn btn-sm btn-dark w-100">Add Contribution</button>
+                                        </div>
+                                        <form action="{{ route('modules.certifications.update', $cert) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editCert{{ $cert->id }}">
+                                            @csrf @method('PATCH')
+                                            <input name="name" class="form-control form-control-sm mb-2" value="{{ $cert->name }}" required>
+                                            <input name="issuer" class="form-control form-control-sm mb-2" value="{{ $cert->issuer }}" required>
+                                            <button class="btn btn-sm btn-primary">Update Certification</button>
                                         </form>
-                                        @foreach($portfolio->contributions as $contrib)
-                                            <div class="small border-bottom py-2">
-                                                <div class="d-flex justify-content-between align-items-start gap-2">
-                                                    <div>
-                                                        <div class="fw-bold">{{ $contrib->title }}</div>
-                                                        <div class="text-muted">{{ Str::limit(strip_tags($contrib->description), 80) }}</div>
-                                                    </div>
-                                                    <div class="d-flex gap-2">
-                                                        <button class="btn btn-link py-0 small" type="button" data-bs-toggle="collapse" data-bs-target="#editContrib{{ $contrib->id }}">Edit</button>
-                                                        <form action="{{ route('modules.contributions.destroy', $contrib) }}" method="POST">@csrf @method('delete')<button class="btn btn-link py-0 text-danger small">Delete</button></form>
-                                                    </div>
-                                                </div>
-                                                <form action="{{ route('modules.contributions.update', $contrib) }}" method="POST" class="collapse mt-2" id="editContrib{{ $contrib->id }}">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input name="title" class="form-control form-control-sm mb-2" value="{{ $contrib->title }}" required>
-                                                    <textarea name="description" class="form-control form-control-sm mb-2 js-summernote" data-height="130">{{ $contrib->description }}</textarea>
-                                                    <button class="btn btn-sm btn-primary">Update Contribution</button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 2.7 TRAININGS DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-trainings" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Trainings</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addTrainCollapse"><i class="bi bi-plus-lg"></i> Add Training</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addTrainCollapse">
+                                <form action="{{ route('modules.trainings.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                    @csrf
+                                    <input name="title" class="form-control mb-2 form-control-sm" placeholder="Training Title" required>
+                                    <input name="institution" class="form-control mb-2 form-control-sm" placeholder="Institution" required>
+                                    <button class="btn btn-sm btn-dark w-100">Add Training</button>
+                                </form>
+                            </div>
+
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter trainings...">
+                                    </div>
+                                    <div class="ms-auto js-module-pagination"></div>
+                                </div>
+                            </div>
+
+                            <div class="js-module-list">
+                                @foreach($portfolio->trainings as $train)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div>
+                                                <div class="fw-bold">{{ $train->title }}</div>
+                                                <small class="text-muted d-block mb-1">Institution: {{ $train->institution }}</small>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editTrain{{ $train->id }}">Edit</button>
+                                                <form action="{{ route('modules.trainings.destroy', $train) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
                                                 </form>
                                             </div>
-                                        @endforeach
-                                        @if($portfolio->contributions->isEmpty())
-                                            <p class="text-muted small text-center py-2">No contributions added yet.</p>
-                                        @endif
-                                    </div>
-                                </div>
-                                <!-- Testimonials -->
-                                <div class="accordion-item border-0 mb-3 shadow-sm rounded">
-                                    <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold rounded" data-bs-toggle="collapse" data-bs-target="#testiCol">Testimonials</button></h2>
-                                    <div id="testiCol" class="accordion-collapse collapse p-3">
-                                        <form action="{{ route('modules.testimonials.store') }}" method="POST" class="mb-3">
-                                            @csrf
-                                            <input name="client_name" class="form-control mb-2" placeholder="Person's Name" required>
-                                            <textarea name="content" class="form-control mb-2 js-summernote" data-height="170" rows="3" placeholder="What did they say about you?" required></textarea>
-                                            <button class="btn btn-sm btn-dark w-100">Add Testimonial</button>
+                                        </div>
+                                        <form action="{{ route('modules.trainings.update', $train) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editTrain{{ $train->id }}">
+                                            @csrf @method('PATCH')
+                                            <input name="title" class="form-control form-control-sm mb-2" value="{{ $train->title }}" required>
+                                            <input name="institution" class="form-control form-control-sm mb-2" value="{{ $train->institution }}" required>
+                                            <button class="btn btn-sm btn-primary">Update Training</button>
                                         </form>
-                                        @foreach($portfolio->testimonials as $testi)
-                                            <div class="small border-bottom py-2">
-                                                <div class="d-flex justify-content-between align-items-start gap-2">
-                                                    <div>
-                                                        <div class="fw-bold">{{ $testi->client_name }}</div>
-                                                        <div class="text-muted fst-italic">{{ Str::limit(strip_tags($testi->content), 80) }}</div>
-                                                    </div>
-                                                    <div class="d-flex gap-2">
-                                                        <button class="btn btn-link py-0 small" type="button" data-bs-toggle="collapse" data-bs-target="#editTesti{{ $testi->id }}">Edit</button>
-                                                        <form action="{{ route('modules.testimonials.destroy', $testi) }}" method="POST">@csrf @method('delete')<button class="btn btn-link py-0 text-danger small">Delete</button></form>
-                                                    </div>
-                                                </div>
-                                                <form action="{{ route('modules.testimonials.update', $testi) }}" method="POST" class="collapse mt-2" id="editTesti{{ $testi->id }}">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <input name="client_name" class="form-control form-control-sm mb-2" value="{{ $testi->client_name }}" required>
-                                                    <textarea name="content" class="form-control form-control-sm mb-2 js-summernote" data-height="130" required>{{ $testi->content }}</textarea>
-                                                    <button class="btn btn-sm btn-primary">Update Testimonial</button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 2.8 ACHIEVEMENTS DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-achievements" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Achievements</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addAchCollapse"><i class="bi bi-plus-lg"></i> Add Achievement</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addAchCollapse">
+                                <form action="{{ route('modules.achievements.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                    @csrf
+                                    <input name="title" class="form-control mb-2 form-control-sm" placeholder="Award / Achievement / Skill title" required>
+                                    <button class="btn btn-sm btn-dark w-100">Add Achievement</button>
+                                </form>
+                            </div>
+
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter achievements...">
+                                    </div>
+                                    <div class="ms-auto js-module-pagination"></div>
+                                </div>
+                            </div>
+
+                            <div class="js-module-list">
+                                @foreach($portfolio->achievements as $ach)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div class="fw-bold">{{ $ach->title }}</div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editAch{{ $ach->id }}">Edit</button>
+                                                <form action="{{ route('modules.achievements.destroy', $ach) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
                                                 </form>
                                             </div>
-                                        @endforeach
-                                        @if($portfolio->testimonials->isEmpty())
-                                            <p class="text-muted small text-center py-2">No testimonials added yet.</p>
-                                        @endif
+                                        </div>
+                                        <form action="{{ route('modules.achievements.update', $ach) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editAch{{ $ach->id }}">
+                                            @csrf @method('PATCH')
+                                            <input name="title" class="form-control form-control-sm mb-2" value="{{ $ach->title }}" required>
+                                            <button class="btn btn-sm btn-primary">Update Achievement</button>
+                                        </form>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 2.9 CONTRIBUTIONS DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-contributions" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Contributions</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addContribCollapse"><i class="bi bi-plus-lg"></i> Add Contribution</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addContribCollapse">
+                                <form action="{{ route('modules.contributions.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                    @csrf
+                                    <input name="title" class="form-control mb-2 form-control-sm" placeholder="Contribution Title" required>
+                                    <textarea name="description" class="form-control mb-2 js-summernote" data-height="150" rows="2" placeholder="Describe your contribution..."></textarea>
+                                    <button class="btn btn-sm btn-dark w-100">Add Contribution</button>
+                                </form>
+                            </div>
+
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter contributions...">
+                                    </div>
+                                    <div class="ms-auto js-module-pagination"></div>
+                                </div>
+                            </div>
+
+                            <div class="js-module-list">
+                                @foreach($portfolio->contributions as $contrib)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div>
+                                                <div class="fw-bold">{{ $contrib->title }}</div>
+                                                <small class="text-muted d-block mb-1">{{ Str::limit(strip_tags($contrib->description), 85) }}</small>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editContrib{{ $contrib->id }}">Edit</button>
+                                                <form action="{{ route('modules.contributions.destroy', $contrib) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <form action="{{ route('modules.contributions.update', $contrib) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editContrib{{ $contrib->id }}">
+                                            @csrf @method('PATCH')
+                                            <input name="title" class="form-control form-control-sm mb-2" value="{{ $contrib->title }}" required>
+                                            <textarea name="description" class="form-control form-control-sm mb-2 js-summernote" data-height="130">{{ $contrib->description }}</textarea>
+                                            <button class="btn btn-sm btn-primary">Update Contribution</button>
+                                        </form>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 2.10 TESTIMONIALS DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-testimonials" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Testimonials</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addTestiCollapse"><i class="bi bi-plus-lg"></i> Add Testimonial</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addTestiCollapse">
+                                <form action="{{ route('modules.testimonials.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                    @csrf
+                                    <input name="client_name" class="form-control mb-2 form-control-sm" placeholder="Author's Name" required>
+                                    <textarea name="content" class="form-control mb-2 js-summernote" data-height="170" rows="3" placeholder="What did they say about you?" required></textarea>
+                                    <button class="btn btn-sm btn-dark w-100">Add Testimonial</button>
+                                </form>
+                            </div>
+
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter testimonials...">
+                                    </div>
+                                    <div class="ms-auto js-module-pagination"></div>
+                                </div>
+                            </div>
+
+                            <div class="js-module-list">
+                                @foreach($portfolio->testimonials as $testi)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div>
+                                                <div class="fw-bold">{{ $testi->client_name }}</div>
+                                                <small class="text-muted d-block mb-1">"{{ Str::limit(strip_tags($testi->content), 85) }}"</small>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editTesti{{ $testi->id }}">Edit</button>
+                                                <form action="{{ route('modules.testimonials.destroy', $testi) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <form action="{{ route('modules.testimonials.update', $testi) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editTesti{{ $testi->id }}">
+                                            @csrf @method('PATCH')
+                                            <input name="client_name" class="form-control form-control-sm mb-2" value="{{ $testi->client_name }}" required>
+                                            <textarea name="content" class="form-control form-control-sm mb-2 js-summernote" data-height="130" required>{{ $testi->content }}</textarea>
+                                            <button class="btn btn-sm btn-primary">Update Testimonial</button>
+                                        </form>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 2.11 MEDIA DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-media" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Media Appearances</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addMediaCollapse"><i class="bi bi-plus-lg"></i> Add Appearance</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addMediaCollapse">
+                                <div class="row g-3">
+                                    <!-- Add TV show -->
+                                    <div class="col-md-6 border-end">
+                                        <form action="{{ route('modules.media.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                            @csrf
+                                            <h6 class="fw-bold mb-2">TV & Talk Show Appearance</h6>
+                                            <input type="hidden" name="type" value="tv">
+                                            <input name="title" class="form-control mb-2 form-control-sm" placeholder="Topic Title" required>
+                                            <input name="channel_platform" class="form-control mb-2 form-control-sm" placeholder="CNN, YouTube, etc." required>
+                                            <label class="small fw-bold mb-1">Appearance Date</label>
+                                            <input name="date" type="date" class="form-control mb-2 form-control-sm" required>
+                                            <input name="link" type="url" class="form-control mb-2 form-control-sm" placeholder="Watch Link" required>
+                                            <button class="btn btn-sm btn-dark w-100">Add TV Show</button>
+                                        </form>
+                                    </div>
+                                    <!-- Add Op-ed -->
+                                    <div class="col-md-6">
+                                        <form action="{{ route('modules.media.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                            @csrf
+                                            <h6 class="fw-bold mb-2">Newspaper Op-ed</h6>
+                                            <input type="hidden" name="type" value="oped">
+                                            <input name="title" class="form-control mb-2 form-control-sm" placeholder="Op-ed Title" required>
+                                            <input name="newspaper_name" class="form-control mb-2 form-control-sm" placeholder="Dawn, The News, etc." required>
+                                            <label class="small fw-bold mb-1">Publication Date</label>
+                                            <input name="date" type="date" class="form-control mb-2 form-control-sm" required>
+                                            <input name="link" type="url" class="form-control mb-2 form-control-sm" placeholder="Online Link" required>
+                                            <button class="btn btn-sm btn-dark w-100">Add Op-ed</button>
+                                        </form>
                                     </div>
                                 </div>
-                                <!-- Resume / CV -->
-                                <div class="accordion-item border-0 mb-3 shadow-sm rounded">
-                                    <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold rounded" data-bs-toggle="collapse" data-bs-target="#cvCol">Resume / CV Document</button></h2>
-                                    <div id="cvCol" class="accordion-collapse collapse p-3">
-                                        <form action="{{ route('portfolio.sections.store') }}" method="POST" enctype="multipart/form-data" class="mb-3">
-                                            @csrf
-                                            <input type="hidden" name="type" value="resume">
-                                            <input type="hidden" name="title" value="Professional Resume">
-                                            <label class="form-label small fw-bold">Upload PDF version</label>
-                                            <input type="file" name="file" class="form-control mb-2" required>
-                                            <button class="btn btn-sm btn-dark w-100">Update Resume File</button>
-                                        </form>
-                                        @php $resume = $portfolio->sections->where('type', 'resume')->first(); @endphp
-                                        @if($resume)
-                                            <div class="alert alert-info py-2 small d-flex justify-content-between align-items-center">
-                                                <span>Current: {{ basename($resume->file_path) }}</span>
-                                                <form action="{{ route('portfolio.sections.destroy', $resume) }}" method="POST">@csrf @method('delete')<button class="btn btn-sm text-danger py-0">Remove</button></form>
+                            </div>
+
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter media appearances...">
+                                    </div>
+                                    <div class="ms-auto js-module-pagination"></div>
+                                </div>
+                            </div>
+
+                            <div class="js-module-list">
+                                @foreach($portfolio->media as $tv)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div>
+                                                <span class="badge bg-secondary mb-1">{{ strtoupper($tv->type) }}</span>
+                                                <div class="fw-bold">{{ $tv->title }}</div>
+                                                <small class="text-muted d-block mb-1">{{ $tv->channel_platform ?? $tv->newspaper_name }} | {{ \Carbon\Carbon::parse($tv->date)->format('M d, Y') }}</small>
                                             </div>
-                                        @endif
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editTv{{ $tv->id }}">Edit</button>
+                                                <form action="{{ route('modules.media.destroy', $tv) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <form action="{{ route('modules.media.update', $tv) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editTv{{ $tv->id }}">
+                                            @csrf @method('PATCH')
+                                            <input type="hidden" name="type" value="{{ $tv->type }}">
+                                            <div class="row g-2">
+                                                <div class="col-md-6"><input name="title" class="form-control form-control-sm mb-2" value="{{ $tv->title }}" required></div>
+                                                <div class="col-md-6">
+                                                    @if($tv->type === 'tv')
+                                                        <input name="channel_platform" class="form-control form-control-sm mb-2" value="{{ $tv->channel_platform }}" required>
+                                                    @else
+                                                        <input name="newspaper_name" class="form-control form-control-sm mb-2" value="{{ $tv->newspaper_name }}" required>
+                                                    @endif
+                                                </div>
+                                                <div class="col-md-6"><input name="date" type="date" class="form-control form-control-sm mb-2" value="{{ \Carbon\Carbon::parse($tv->date)->format('Y-m-d') }}" required></div>
+                                                <div class="col-md-6"><input name="link" type="url" class="form-control form-control-sm mb-2" value="{{ $tv->link }}" required></div>
+                                                <button class="btn btn-sm btn-primary">Update Media Entry</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 2.12 PUBLICATIONS DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-publications" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Publications</h4>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addPubsCollapse"><i class="bi bi-plus-lg"></i> Add Publication</button>
+                            </div>
+                            
+                            <div class="collapse mb-4" id="addPubsCollapse">
+                                <form action="{{ route('modules.publications.store') }}" method="POST" enctype="multipart/form-data" class="p-3 bg-white rounded border shadow-sm">
+                                    @csrf
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-md-4"><input name="type" class="form-control form-control-sm" placeholder="Type (Book, Journal, Report)" required></div>
+                                        <div class="col-md-8"><input name="title" class="form-control form-control-sm" placeholder="Publication Title" required></div>
+                                        <div class="col-md-6"><input name="authors" class="form-control form-control-sm" placeholder="Authors" required></div>
+                                        <div class="col-md-3"><input name="year" class="form-control form-control-sm" placeholder="Year" required></div>
+                                        <div class="col-md-3"><input name="publisher" class="form-control form-control-sm" placeholder="Publisher" required></div>
+                                        <div class="col-md-6"><input name="link" type="url" class="form-control form-control-sm" placeholder="Online Link (Optional)"></div>
+                                        <div class="col-md-6"><input name="report" type="file" class="form-control form-control-sm"></div>
+                                    </div>
+                                    <button class="btn btn-sm btn-dark w-100">Add Publication</button>
+                                </form>
+                            </div>
+
+                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="input-group input-group-sm" style="max-width: 250px;">
+                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter publications...">
+                                    </div>
+                                    <div class="ms-auto js-module-pagination"></div>
+                                </div>
+                            </div>
+
+                            <div class="js-module-list">
+                                @foreach($portfolio->publications as $pub)
+                                    <div class="js-module-item bg-white border-bottom p-3">
+                                        <div class="d-flex justify-content-between align-items-start gap-2">
+                                            <div>
+                                                <div class="fw-bold">{{ $pub->title }}</div>
+                                                <small class="text-muted d-block mb-1">{{ $pub->authors }} ({{ $pub->year }}). <em>{{ $pub->publisher }}</em>. ({{ $pub->type }})</small>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editPub{{ $pub->id }}">Edit</button>
+                                                <form action="{{ route('modules.publications.destroy', $pub) }}" method="POST">
+                                                    @csrf @method('delete')
+                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <form action="{{ route('modules.publications.update', $pub) }}" method="POST" enctype="multipart/form-data" class="collapse mt-2 p-3 bg-light rounded border" id="editPub{{ $pub->id }}">
+                                            @csrf @method('PATCH')
+                                            <div class="row g-2">
+                                                <div class="col-md-4"><input name="type" class="form-control form-control-sm mb-2" value="{{ $pub->type }}" required></div>
+                                                <div class="col-md-8"><input name="title" class="form-control form-control-sm mb-2" value="{{ $pub->title }}" required></div>
+                                                <div class="col-md-6"><input name="authors" class="form-control form-control-sm mb-2" value="{{ $pub->authors }}" required></div>
+                                                <div class="col-md-3"><input name="year" class="form-control form-control-sm mb-2" value="{{ $pub->year }}" required></div>
+                                                <div class="col-md-3"><input name="publisher" class="form-control form-control-sm mb-2" value="{{ $pub->publisher }}" required></div>
+                                                <div class="col-md-6"><input name="link" type="url" class="form-control form-control-sm mb-2" value="{{ $pub->link }}" placeholder="Online Link"></div>
+                                                <div class="col-md-6">
+                                                    <label class="small fw-bold">Replace File</label>
+                                                    <input name="report" type="file" class="form-control form-control-sm">
+                                                </div>
+                                                <button class="btn btn-sm btn-primary">Update Publication</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 2.13 RESUME DETAIL VIEW -->
+                        <div class="module-detail-wrapper" id="moduleDetail-resume" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                                <h4 class="fw-bold mb-0">Manage Resume Document</h4>
+                            </div>
+                            <div class="card shadow-sm border-0 bg-white p-4">
+                                <form action="{{ route('portfolio.sections.store') }}" method="POST" enctype="multipart/form-data" class="mb-3">
+                                    @csrf
+                                    <input type="hidden" name="type" value="resume">
+                                    <input type="hidden" name="title" value="Professional Resume">
+                                    <label class="form-label small fw-bold">Upload PDF format of your Resume</label>
+                                    <input type="file" name="file" class="form-control mb-3" required>
+                                    <button class="btn btn-sm btn-dark w-100">Upload PDF Resume File</button>
+                                </form>
+                                @php $resume = $portfolio->sections->where('type', 'resume')->first(); @endphp
+                                @if($resume)
+                                    <div class="alert alert-info py-3 small d-flex justify-content-between align-items-center mb-0 mt-2">
+                                        <span>Current Resume Document: <strong>{{ basename($resume->file_path) }}</strong></span>
+                                        <form action="{{ route('portfolio.sections.destroy', $resume) }}" method="POST">
+                                            @csrf @method('delete')
+                                            <button class="btn btn-sm text-danger py-0 fw-bold border-0 bg-transparent">Remove File</button>
+                                        </form>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. SETTINGS TAB PANE -->
+                <div class="tab-pane fade" id="settingsPane" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold mb-0">Portfolio Settings</h3>
+                    </div>
+
+                    <!-- Single form wrapping all three cards to prevent validation failures -->
+                    <form method="post" action="{{ route('portfolio.update') }}" enctype="multipart/form-data">
+                        @csrf
+                        
+                        <!-- CARD 1: Basic Info & Portfolio Visibility -->
+                        <div class="card shadow-sm border-0 rounded-3 mb-4 bg-white">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-person-circle text-primary me-2"></i>Profile Information & Basic Details</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="mb-4 text-center">
+                                    @if($portfolio->profile_image)
+                                        <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle shadow-sm border border-secondary-subtle mb-3" style="width: 110px; height: 110px; object-fit: cover;">
+                                    @endif
+                                    <div style="max-width: 250px; margin: 0 auto;">
+                                        <input type="file" name="profile_image" class="form-control form-control-sm">
+                                        <small class="text-muted d-block mt-1">Accepts PNG, JPG, JPEG (Max 2MB)</small>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Full Name Display</label>
+                                        <input name="title" type="text" class="form-control" value="{{ $portfolio->title }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Profession Title / Hero Subtitle</label>
+                                        <input name="position" type="text" class="form-control" value="{{ $portfolio->position }}" placeholder="e.g. Senior Software Architect">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Organization</label>
+                                        <input name="organization" type="text" class="form-control" value="{{ $portfolio->organization }}" placeholder="e.g. Google DeepMind">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Contact Number</label>
+                                        <input name="contact_number" type="text" class="form-control" value="{{ $portfolio->contact_number }}" placeholder="e.g. +92 345 1234567">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-bold">City</label>
+                                        <input name="city" type="text" class="form-control" value="{{ $portfolio->city }}" placeholder="e.g. London">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-bold">Country</label>
+                                        <input name="country" type="text" class="form-control" value="{{ $portfolio->country }}" placeholder="e.g. United Kingdom">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-bold">LinkedIn Profile URL</label>
+                                        <input name="linkedin_url" type="url" class="form-control" value="{{ $portfolio->linkedin_url }}" placeholder="https://linkedin.com/in/username">
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <label class="form-label small fw-bold">Brief Tagline / Pitch Hook</label>
+                                    <textarea name="description" class="form-control js-summernote" data-height="140" rows="2" placeholder="Brief tagline shown on hero section...">{{ $portfolio->description }}</textarea>
+                                </div>
+
+                                <div class="mt-4">
+                                    <label class="form-label small fw-bold">Detailed Bio / About Journey</label>
+                                    <textarea name="detailed_bio" class="form-control js-summernote" data-height="220" rows="5" placeholder="Detailed professional history bio...">{{ $portfolio->detailed_bio }}</textarea>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <h6 class="fw-bold mb-3 text-primary"><i class="bi bi-link-45deg me-1"></i>Portfolio Link Status & Visibility</h6>
+                                <div class="row g-3 mb-4">
+                                    <div class="col-12">
+                                        <div class="mb-2 fw-bold small">Public Portfolio Link</div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_active" id="is_active_yes" value="active" {{ $portfolio->is_active ? 'checked' : '' }}>
+                                            <label class="form-check-label fw-bold text-success" for="is_active_yes">Active (Public URL accessible)</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_active" id="is_active_no" value="inactive" {{ $portfolio->is_active ? '' : 'checked' }}>
+                                            <label class="form-check-label fw-bold text-danger" for="is_active_no">Deactivated (Private / hidden)</label>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">If deactivated, visiting your public URL <code>/{{ Auth::user()->username }}</code> will return a 404 Page Not Found error.</small>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <h6 class="fw-bold mb-3">Portfolio Visibility Controls (Contact Details)</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="mb-2 fw-bold small">Show Email Address</div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="show_email" id="show_email_yes" value="show" {{ $portfolio->show_email ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="show_email_yes">Show</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="show_email" id="show_email_no" value="hide" {{ $portfolio->show_email ? '' : 'checked' }}>
+                                            <label class="form-check-label" for="show_email_no">Hide</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-2 fw-bold small">Show Phone Number</div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="show_phone" id="show_phone_yes" value="show" {{ $portfolio->show_phone ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="show_phone_yes">Show</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="show_phone" id="show_phone_no" value="hide" {{ $portfolio->show_phone ? '' : 'checked' }}>
+                                            <label class="form-check-label" for="show_phone_no">Hide</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-2 fw-bold small">Show LinkedIn URL</div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="show_linkedin" id="show_linkedin_yes" value="show" {{ $portfolio->show_linkedin ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="show_linkedin_yes">Show</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="show_linkedin" id="show_linkedin_no" value="hide" {{ $portfolio->show_linkedin ? '' : 'checked' }}>
+                                            <label class="form-check-label" for="show_linkedin_no">Hide</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div> <!-- End Tab Content -->
-                </div> <!-- End Card Body -->
+
+                        <!-- CARD 2: Design Themes -->
+                        <div class="card shadow-sm border-0 rounded-3 mb-4 bg-white">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-palette text-success me-2"></i>Active Design Theme</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <label class="form-label small fw-bold">Active Design Theme Layout</label>
+                                <select name="theme" class="form-select border-primary shadow-sm mb-3">
+                                    @foreach($themes as $t)
+                                        <option value="{{ $t->slug }}" {{ $portfolio->theme == $t->slug ? 'selected' : '' }}>{{ $t->name }}</option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted">Changes the visual style of your public resume. Choose from Classic, Premium, or Elegant.</small>
+                            </div>
+                        </div>
+
+                        <!-- CARD 3: Section Visibility Controls -->
+                        <div class="card shadow-sm border-0 rounded-3 mb-4 bg-white">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-eye text-warning me-2"></i>Section Visibility Controls</h5>
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="row g-3">
+                                    @php
+                                        $sectionsMap = [
+                                            'show_skills' => 'Skills',
+                                            'show_projects' => 'Projects',
+                                            'show_experience' => 'Experience',
+                                            'show_education' => 'Education',
+                                            'show_services' => 'Services',
+                                            'show_certifications' => 'Certifications',
+                                            'show_trainings' => 'Trainings',
+                                            'show_achievements' => 'Achievements',
+                                            'show_contributions' => 'Contributions',
+                                            'show_testimonials' => 'Testimonials',
+                                            'show_media' => 'Media Appearances',
+                                            'show_publications' => 'Publications'
+                                        ];
+                                    @endphp
+                                    @foreach($sectionsMap as $field => $label)
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="mb-2 fw-bold small text-dark">{{ $label }}</div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="{{ $field }}" id="sett_{{ $field }}_yes" value="show" {{ $portfolio->$field ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="sett_{{ $field }}_yes">Show</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="{{ $field }}" id="sett_{{ $field }}_no" value="hide" {{ $portfolio->$field ? '' : 'checked' }}>
+                                                <label class="form-check-label" for="sett_{{ $field }}_no">Hide</label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Central Save Bar -->
+                        <div class="card border-0 shadow-sm mb-4 bg-white">
+                            <div class="card-body d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary px-5 shadow-sm fw-bold">Save All Settings</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 4. INBOX / MESSAGES TAB PANE -->
+                <div class="tab-pane fade" id="inboxPane" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold mb-0">Public Messages & Inquiries</h3>
+                    </div>
+
+                    <div class="js-module-list">
+                        @forelse($portfolio->messages->sortByDesc('created_at') as $msg)
+                            <div class="card mb-3 border-0 shadow-sm js-module-item bg-white">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <h6 class="fw-bold mb-1">{{ $msg->name }}</h6>
+                                            <small class="text-muted d-block">{{ $msg->email }} | {{ $msg->created_at->diffForHumans() }}</small>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            @if(!$msg->is_read)
+                                                <form action="{{ route('messages.read', $msg) }}" method="POST">
+                                                    @csrf
+                                                    <button class="btn btn-sm btn-outline-primary">Mark Read</button>
+                                                </form>
+                                            @endif
+                                            <form action="{{ route('messages.destroy', $msg) }}" method="POST">
+                                                @csrf @method('delete')
+                                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <p class="mb-3 p-3 bg-light rounded text-secondary italic">"{{ $msg->message }}"</p>
+                                    
+                                    @if($msg->reply)
+                                        <div class="alert alert-secondary py-2 px-3 small mb-0">
+                                            <strong>My Response:</strong> {!! $msg->reply !!}
+                                        </div>
+                                    @else
+                                        <button class="btn btn-sm btn-dark" data-bs-toggle="collapse" data-bs-target="#replyBox{{ $msg->id }}"><i class="bi bi-reply-fill me-1"></i>Reply via Email</button>
+                                        <form action="{{ route('messages.reply', $msg) }}" method="POST" class="collapse mt-3" id="replyBox{{ $msg->id }}">
+                                            @csrf
+                                            <div class="mb-3">
+                                                <textarea name="reply" class="form-control js-summernote" data-height="120" placeholder="Type email response..."></textarea>
+                                            </div>
+                                            <button class="btn btn-primary btn-sm fw-bold">Send Reply Email</button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-5 text-muted bg-white rounded shadow-sm">
+                                <i class="bi bi-inbox display-1 mb-3 text-secondary-subtle"></i>
+                                <p class="mb-0">Your Inbox is completely empty.</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</x-app-layout>
 
-@push('styles')
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
-    <style>
-        .note-editor.note-frame {
-            border-color: #dee2e6;
-        }
-    </style>
-@endpush
+    @push('scripts')
+        <script>
+            // Client-side search and pagination engine
+            function initModuleSearchAndPagination(moduleSelector) {
+                const container = document.querySelector(moduleSelector);
+                if (!container) return;
 
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', async function () {
-            const initEditors = (scope = document) => {
-                const $ = window.jQuery;
-                $(scope).find('.js-summernote').each(function () {
-                    const $el = $(this);
-                    if ($el.next('.note-editor').length) {
-                        return;
+                const searchInput = container.querySelector('.js-module-search');
+                const items = Array.from(container.querySelectorAll('.js-module-item'));
+                const paginationContainer = container.querySelector('.js-module-pagination');
+                const itemsPerPage = 5;
+                let currentPage = 1;
+                let filteredItems = [...items];
+
+                function renderPage() {
+                    const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+                    
+                    // Hide all items
+                    items.forEach(item => item.style.display = 'none');
+
+                    // Show items for current page
+                    const start = (currentPage - 1) * itemsPerPage;
+                    const end = start + itemsPerPage;
+                    
+                    filteredItems.slice(start, end).forEach(item => {
+                        item.style.display = '';
+                    });
+
+                    // Render pagination
+                    if (paginationContainer) {
+                        paginationContainer.innerHTML = '';
+                        if (totalPages > 1) {
+                            const nav = document.createElement('nav');
+                            const ul = document.createElement('ul');
+                            ul.className = 'pagination pagination-sm mb-0 justify-content-end';
+
+                            // Previous Page
+                            const prevLi = document.createElement('li');
+                            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+                            prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
+                            prevLi.addEventListener('click', () => {
+                                if (currentPage > 1) {
+                                    currentPage--;
+                                    renderPage();
+                                }
+                            });
+                            ul.appendChild(prevLi);
+
+                            // Page items
+                            for (let i = 1; i <= totalPages; i++) {
+                                const li = document.createElement('li');
+                                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                                li.innerHTML = `<a class="page-link" href="javascript:void(0)">${i}</a>`;
+                                li.addEventListener('click', () => {
+                                    currentPage = i;
+                                    renderPage();
+                                });
+                                ul.appendChild(li);
+                            }
+
+                            // Next Page
+                            const nextLi = document.createElement('li');
+                            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+                            nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
+                            nextLi.addEventListener('click', () => {
+                                if (currentPage < totalPages) {
+                                    currentPage++;
+                                    renderPage();
+                                }
+                            });
+                            ul.appendChild(nextLi);
+
+                            nav.appendChild(ul);
+                            paginationContainer.appendChild(nav);
+                        }
+                    }
+                }
+
+                if (searchInput) {
+                    // Remove existing event listener if any to avoid stacking
+                    const newSearchInput = searchInput.cloneNode(true);
+                    searchInput.parentNode.replaceChild(newSearchInput, searchInput);
+                    
+                    newSearchInput.addEventListener('input', function() {
+                        const query = this.value.toLowerCase().trim();
+                        filteredItems = items.filter(item => {
+                            const searchText = item.innerText.toLowerCase();
+                            return searchText.includes(query);
+                        });
+                        currentPage = 1;
+                        renderPage();
+                    });
+                }
+
+                renderPage();
+            }
+
+            document.addEventListener('DOMContentLoaded', async function () {
+                const initEditors = (scope = document) => {
+                    const $ = window.jQuery;
+                    $(scope).find('.js-summernote').each(function () {
+                        const $el = $(this);
+                        if ($el.next('.note-editor').length) {
+                            return;
+                        }
+
+                        $el.summernote({
+                            height: Number($el.data('height')) || 160,
+                            placeholder: $el.attr('placeholder') || '',
+                            toolbar: [
+                                ['style', ['bold', 'italic', 'underline', 'clear']],
+                                ['font', ['strikethrough', 'superscript', 'subscript']],
+                                ['para', ['ul', 'ol', 'paragraph']],
+                                ['insert', ['link']],
+                                ['view', ['codeview']]
+                            ]
+                        });
+                    });
+                };
+
+                const loadScript = (src) => new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = src;
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.head.appendChild(script);
+                });
+
+                try {
+                    if (!window.jQuery) {
+                        await loadScript('https://code.jquery.com/jquery-3.7.1.min.js');
                     }
 
-                    $el.summernote({
-                        height: Number($el.data('height')) || 160,
-                        placeholder: $el.attr('placeholder') || '',
-                        toolbar: [
-                            ['style', ['bold', 'italic', 'underline', 'clear']],
-                            ['font', ['strikethrough', 'superscript', 'subscript']],
-                            ['para', ['ul', 'ol', 'paragraph']],
-                            ['insert', ['link']],
-                            ['view', ['codeview']]
-                        ]
+                    if (!window.jQuery || !window.jQuery.fn || !window.jQuery.fn.summernote) {
+                        await loadScript('https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js');
+                    }
+
+                    initEditors(document);
+
+                    window.jQuery(document).on('shown.bs.collapse', '.collapse', function () {
+                        initEditors(this);
+                    });
+
+                    window.jQuery(document).on('shown.bs.modal', '.modal', function () {
+                        initEditors(this);
+                    });
+
+                    window.jQuery(document).on('shown.bs.tab', 'button[data-bs-toggle="tab"], a[data-bs-toggle="tab"]', function () {
+                        const target = window.jQuery(this).attr('data-bs-target') || window.jQuery(this).attr('href');
+                        if (target) {
+                            initEditors(window.jQuery(target));
+                        }
+                    });
+                } catch (e) {
+                    console.error('Summernote failed to load:', e);
+                }
+
+                // Sidebar navigation view switcher
+                const modulesGrid = document.getElementById('modulesGrid');
+                const modulesDetailPanel = document.getElementById('modulesDetailPanel');
+                const backToModulesBtn = document.getElementById('backToModulesBtn');
+
+                document.querySelectorAll('.js-manage-section').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetModule = this.getAttribute('data-module');
+                        showModuleDetail(targetModule);
                     });
                 });
-            };
 
-            const loadScript = (src) => new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = src;
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-            });
-
-            try {
-                if (!window.jQuery) {
-                    await loadScript('https://code.jquery.com/jquery-3.7.1.min.js');
-                }
-
-                if (!window.jQuery || !window.jQuery.fn || !window.jQuery.fn.summernote) {
-                    await loadScript('https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js');
-                }
-
-                initEditors(document);
-
-                window.jQuery(document).on('shown.bs.collapse', '.collapse', function () {
-                    initEditors(this);
+                document.querySelectorAll('.js-add-section-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const targetModule = this.getAttribute('data-module');
+                        showModuleDetail(targetModule, true);
+                    });
                 });
-            } catch (e) {
-                console.error('Summernote failed to load:', e);
-            }
-        });
-    </script>
-@endpush
+
+                backToModulesBtn.addEventListener('click', function() {
+                    modulesDetailPanel.style.display = 'none';
+                    modulesGrid.style.display = '';
+                    document.querySelectorAll('.module-detail-wrapper').forEach(wrapper => {
+                        wrapper.style.display = 'none';
+                    });
+                });
+
+                function showModuleDetail(moduleName, openAddForm = false) {
+                    modulesGrid.style.display = 'none';
+                    modulesDetailPanel.style.display = '';
+                    
+                    document.querySelectorAll('.module-detail-wrapper').forEach(wrapper => {
+                        wrapper.style.display = 'none';
+                    });
+
+                    const activeWrapper = document.getElementById('moduleDetail-' + moduleName);
+                    if (activeWrapper) {
+                        activeWrapper.style.display = '';
+                        initModuleSearchAndPagination('#moduleDetail-' + moduleName);
+                        
+                        if (openAddForm) {
+                            const addCollapse = activeWrapper.querySelector('.collapse');
+                            if (addCollapse) {
+                                const bsCollapse = new bootstrap.Collapse(addCollapse, { show: true });
+                                bsCollapse.show();
+                            }
+                        }
+                    }
+                }
+
+                // Auto-close responsive offcanvas sidebar on menu click (mobile view)
+                const sidebarMenuEl = document.getElementById('sidebarMenu');
+                if (sidebarMenuEl) {
+                    sidebarMenuEl.querySelectorAll('.nav-link').forEach(link => {
+                        link.addEventListener('click', () => {
+                            const bsOffcanvas = bootstrap.Offcanvas.getInstance(sidebarMenuEl);
+                            if (bsOffcanvas) {
+                                bsOffcanvas.hide();
+                            }
+                        });
+                    });
+                }
+            });
+        </script>
+    @endpush
+</x-app-layout>

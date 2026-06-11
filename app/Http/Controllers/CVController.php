@@ -76,7 +76,7 @@ class CVController extends Controller
             }
         }
 
-        // 2. Technical Section: 5 categories only
+        // 2. Technical Section: 5 categories max
         $skillsData = [];
         if ($portfolio->skills) {
             foreach ($portfolio->skills->groupBy('category') as $category => $items) {
@@ -91,7 +91,7 @@ class CVController extends Controller
             $skillsData = array_slice($skillsData, 0, 5, true);
         }
 
-        // 3. Flagship Projects: 4 projects, title and description only
+        // 3. Flagship Projects: 4 projects max, title and description
         $projectsData = [];
         if ($portfolio->projects) {
             $projects = $portfolio->projects()
@@ -106,25 +106,39 @@ class CVController extends Controller
             }
         }
 
-        // 4. Certifications: 5 latest, name only
+        // 4. Certifications: 5 latest, name, issuer, year
         $certifications = [];
         if ($portfolio->certifications) {
             $certifications = $portfolio->certifications()
                 ->orderBy('date', 'desc')
                 ->orderBy('id', 'desc')
                 ->limit(5)
-                ->pluck('name')
+                ->get()
+                ->map(function($cert) {
+                    return [
+                        'name' => $cert->name,
+                        'issuer' => $cert->issuer,
+                        'year' => $cert->date ? \Carbon\Carbon::parse($cert->date)->format('Y') : '',
+                    ];
+                })
                 ->toArray();
         }
 
-        // 5. Trainings: 5 latest, title only
+        // 5. Trainings: 5 latest, title, institution, year
         $trainings = [];
         if ($portfolio->trainings) {
             $trainings = $portfolio->trainings()
                 ->orderBy('date', 'desc')
                 ->orderBy('id', 'desc')
                 ->limit(5)
-                ->pluck('title')
+                ->get()
+                ->map(function($t) {
+                    return [
+                        'name' => $t->title,
+                        'issuer' => $t->institution ?? '',
+                        'year' => $t->date ? \Carbon\Carbon::parse($t->date)->format('Y') : '',
+                    ];
+                })
                 ->toArray();
         }
 
@@ -161,21 +175,23 @@ class CVController extends Controller
                     'company' => $exp->company,
                     'start_date' => $exp->start_date ? $exp->start_date->format('M Y') : '',
                     'end_date' => $exp->end_date ? $exp->end_date->format('M Y') : 'Present',
+                    'description' => $exp->description,
+                    'has_details' => ($index < 6)
                 ];
-                
-                if ($index < 6) {
-                    $item['description'] = $exp->description;
-                    $item['has_details'] = true;
-                } else {
-                    $item['description'] = null;
-                    $item['has_details'] = false;
-                }
                 
                 $experienceData[] = $item;
             }
         }
 
-        // 8. Website Address
+        // 8. Soft Skills / Achievements
+        $softSkills = [];
+        if ($portfolio->achievements) {
+            $softSkills = $portfolio->achievements()
+                ->pluck('title')
+                ->toArray();
+        }
+
+        // 9. Website Address
         $website = url('/' . $user->username);
 
         return [
@@ -195,6 +211,7 @@ class CVController extends Controller
             'certifications' => $certifications,
             'trainings' => $trainings,
             'projects' => $projectsData,
+            'soft_skills' => $softSkills,
         ];
     }
 
@@ -208,123 +225,140 @@ class CVController extends Controller
             'marginRight' => 720
         ]);
 
-        // Add 2-column table grid layout
-        $table = $section->addTable([
-            'borderColor' => 'ffffff',
-            'borderSize' => 0,
-            'cellMarginLeft' => 100,
-            'cellMarginRight' => 100,
-            'cellMarginTop' => 100,
-            'cellMarginBottom' => 100,
-        ]);
-
-        $table->addRow();
+        // Add font style rules
+        $nameStyle = ['bold' => true, 'size' => 20, 'color' => '111827'];
+        $titleStyle = ['bold' => true, 'size' => 12.5, 'color' => '1e3a8a'];
+        $contactStyle = ['size' => 8.5, 'color' => '4b5563'];
+        $summaryStyle = ['size' => 9.5, 'color' => '374151'];
+        $sectionTitleStyle = ['bold' => true, 'size' => 11.5, 'color' => '1e3a8a'];
         
-        // Left Column (35% Width = 3660 twips)
-        $leftCell = $table->addCell(3660, [
-            'valign' => 'top',
-            'bgColor' => 'F8FAFC' // Light tint background
-        ]);
+        $regularText = ['size' => 9, 'color' => '374151'];
+
+        // Header Section
+        $section->addText(strtoupper($data['name']), $nameStyle);
+        $section->addText($data['title'], $titleStyle);
         
-        // Right Column (65% Width = 6800 twips)
-        $rightCell = $table->addCell(6800, [
-            'valign' => 'top',
-            'bgColor' => 'FFFFFF'
-        ]);
+        if (!empty($data['summary'])) {
+            $section->addText(strip_tags($data['summary']), $summaryStyle);
+            $section->addTextBreak(1);
+        }
 
-        // --- LEFT COLUMN CONTENT ---
+        // Contact info inline
+        $contactItems = [];
+        if (!empty($data['location'])) $contactItems[] = $data['location'];
+        if (!empty($data['phone'])) $contactItems[] = $data['phone'];
+        if (!empty($data['email'])) $contactItems[] = $data['email'];
+        if (!empty($data['website'])) $contactItems[] = $data['website'];
+        if (!empty($data['linkedin'])) $contactItems[] = $data['linkedin'];
+        $section->addText(implode('  |  ', $contactItems), $contactStyle);
 
-        // Contact Info
-        $leftCell->addText('CONTACT INFO', ['bold' => true, 'size' => 10, 'color' => 'a51c30']);
-        if ($data['phone']) $leftCell->addText('Phone: ' . $data['phone'], ['size' => 8.5]);
-        if ($data['email']) $leftCell->addText('Email: ' . $data['email'], ['size' => 8.5]);
-        if ($data['linkedin']) $leftCell->addText('LinkedIn: ' . $data['linkedin'], ['size' => 8.5]);
-        if ($data['website']) $leftCell->addText('Website: ' . $data['website'], ['size' => 8.5]);
-        if ($data['location']) $leftCell->addText('Location: ' . $data['location'], ['size' => 8.5]);
-        $leftCell->addTextBreak(1);
+        // Header divider line (horizontal rule style)
+        $section->addTextBreak(1);
+        $section->addText('_________________________________________________________________________________', ['color' => 'dddddd']);
+        $section->addTextBreak(1);
 
-        // Technical Skills
+        // Technical Skills Section
         if (!empty($data['skills'])) {
-            $leftCell->addText('TECHNICAL SKILLS', ['bold' => true, 'size' => 10, 'color' => 'a51c30']);
-            foreach ($data['skills'] as $category => $skillList) {
-                $leftCell->addText('• ' . $category . ':', ['bold' => true, 'size' => 8.5]);
-                $leftCell->addText(implode(', ', $skillList), ['size' => 8]);
+            $section->addText('TECHNICAL SKILLS', $sectionTitleStyle);
+            foreach ($data['skills'] as $cat => $list) {
+                $textRun = $section->addTextRun();
+                $textRun->addText($cat . ': ', ['bold' => true, 'size' => 9]);
+                $textRun->addText(implode(', ', $list), $regularText);
             }
-            $leftCell->addTextBreak(1);
+            $section->addTextBreak(1);
+            $section->addText('_________________________________________________________________________________', ['color' => 'dddddd']);
+            $section->addTextBreak(1);
         }
 
-        // Certifications
-        if (!empty($data['certifications'])) {
-            $leftCell->addText('CERTIFICATIONS', ['bold' => true, 'size' => 10, 'color' => 'a51c30']);
-            $idx = 1;
-            foreach ($data['certifications'] as $cert) {
-                $leftCell->addText($idx . '. ' . $cert, ['size' => 8.5]);
-                $idx++;
-            }
-            $leftCell->addTextBreak(1);
-        }
-
-        // Trainings
-        if (!empty($data['trainings'])) {
-            $leftCell->addText('TRAININGS', ['bold' => true, 'size' => 10, 'color' => 'a51c30']);
-            foreach ($data['trainings'] as $training) {
-                $leftCell->addText('• ' . $training, ['size' => 8.5]);
-            }
-            $leftCell->addTextBreak(1);
-        }
-
-        // Education
-        if (!empty($data['education'])) {
-            $leftCell->addText('EDUCATION', ['bold' => true, 'size' => 10, 'color' => 'a51c30']);
-            foreach ($data['education'] as $edu) {
-                $leftCell->addText($edu['degree'], ['bold' => true, 'size' => 8.5]);
-                $leftCell->addText($edu['institution'], ['italic' => true, 'size' => 8]);
-                $leftCell->addText($edu['start_date'] . ' – ' . $edu['end_date'], ['size' => 7.5, 'color' => '4b5563']);
-                $leftCell->addTextBreak(1);
-            }
-        }
-
-
-        // --- RIGHT COLUMN CONTENT ---
-
-        // Name, Title & Tagline
-        $rightCell->addText(strtoupper($data['name']), ['bold' => true, 'size' => 18, 'color' => '000000']);
-        $rightCell->addText($data['title'], ['bold' => true, 'size' => 11, 'color' => 'a51c30']);
-        if ($data['summary']) {
-            $rightCell->addText($data['summary'], ['italic' => true, 'size' => 8.5, 'color' => '374151']);
-        }
-        $rightCell->addTextBreak(1);
-
-        // Professional Experience
+        // Work Experience Section
         if (!empty($data['experience'])) {
-            $rightCell->addText('PROFESSIONAL EXPERIENCE', ['bold' => true, 'size' => 10, 'color' => 'a51c30']);
-            
-            // Detailed
-            foreach (array_filter($data['experience'], function($e) { return $e['has_details']; }) as $exp) {
-                $rightCell->addText($exp['position'] . ' — ' . $exp['company'], ['bold' => true, 'size' => 9]);
-                $rightCell->addText($exp['start_date'] . ' – ' . $exp['end_date'], ['italic' => true, 'size' => 8, 'color' => '4b5563']);
-                $rightCell->addText($exp['description'], ['size' => 8.5]);
-                $rightCell->addTextBreak(1);
-            }
+            $section->addText('WORK EXPERIENCE', $sectionTitleStyle);
+            foreach ($data['experience'] as $job) {
+                // Meta Line: Company - Position (Dates)
+                $textRun = $section->addTextRun();
+                $textRun->addText($job['company'] . ' – ', ['bold' => true, 'size' => 9.5]);
+                $textRun->addText($job['position'], ['italic' => true, 'size' => 9.5]);
+                $textRun->addText(' (' . $job['start_date'] . ' – ' . $job['end_date'] . ')', ['size' => 9.5, 'color' => '4b5563']);
 
-            // Compact
-            $compactExp = array_filter($data['experience'], function($e) { return !$e['has_details']; });
-            if (!empty($compactExp)) {
-                $rightCell->addText('Additional Work History', ['bold' => true, 'size' => 8.5, 'color' => '4b5563']);
-                foreach ($compactExp as $exp) {
-                    $rightCell->addText('• ' . $exp['position'] . ' at ' . $exp['company'] . ' (' . $exp['start_date'] . ' – ' . $exp['end_date'] . ')', ['size' => 8]);
+                if (!empty($job['description'])) {
+                    // Extract bullets
+                    $bullets = [];
+                    $cleanDesc = $job['description'];
+                    if (str_contains($cleanDesc, '<ul>') || str_contains($cleanDesc, '<li>')) {
+                        preg_match_all('/<li>(.*?)<\/li>/is', $cleanDesc, $matches);
+                        if (!empty($matches[1])) {
+                            $bullets = array_map(function($b) { return trim(strip_tags($b)); }, $matches[1]);
+                        }
+                    } else {
+                        $lines = array_filter(array_map('trim', explode("\n", strip_tags($cleanDesc))));
+                        $hasBullets = false;
+                        foreach ($lines as $line) {
+                            if (preg_match('/^[\s•\-\*]/u', $line)) {
+                                $hasBullets = true;
+                                break;
+                            }
+                        }
+                        if ($hasBullets) {
+                            foreach ($lines as $line) {
+                                $cleanedLine = preg_replace('/^[\s•\-\*]+\s*/u', '', $line);
+                                if (!empty($cleanedLine)) {
+                                    $bullets[] = $cleanedLine;
+                                }
+                            }
+                        }
+                    }
+                    $bullets = array_slice($bullets, 0, 5); // Limit to 4-5 bullets
+
+                    if (!empty($bullets)) {
+                        foreach ($bullets as $bullet) {
+                            $section->addListItem($bullet, 0, $regularText);
+                        }
+                    } else {
+                        $section->addText(strip_tags($cleanDesc), $regularText);
+                    }
                 }
-                $rightCell->addTextBreak(1);
+                $section->addTextBreak(1);
             }
         }
 
-        // Flagship Projects
+        // Flagship Projects Section
         if (!empty($data['projects'])) {
-            $rightCell->addText('FLAGSHIP PROJECTS', ['bold' => true, 'size' => 10, 'color' => 'a51c30']);
-            foreach ($data['projects'] as $project) {
-                $rightCell->addText($project['title'], ['bold' => true, 'size' => 9]);
-                $rightCell->addText($project['description'], ['size' => 8.5]);
-                $rightCell->addTextBreak(1);
+            $section->addText('FLAGSHIP PROJECTS', $sectionTitleStyle);
+            foreach (array_slice($data['projects'], 0, 4) as $p) {
+                $section->addText($p['title'], ['bold' => true, 'size' => 9.5]);
+                $section->addText(strip_tags($p['description']), $regularText);
+                $section->addTextBreak(1);
+            }
+        }
+
+        // Training and Certifications Section
+        if (!empty($data['certifications']) || !empty($data['trainings'])) {
+            $section->addText('TRAINING & CERTIFICATIONS', $sectionTitleStyle);
+            foreach ($data['certifications'] as $cert) {
+                $yearPart = !empty($cert['year']) ? ' (' . $cert['year'] . ')' : '';
+                $section->addListItem($cert['name'] . ' – ' . $cert['issuer'] . $yearPart, 0, $regularText);
+            }
+            foreach ($data['trainings'] as $t) {
+                $yearPart = !empty($t['year']) ? ' (' . $t['year'] . ')' : '';
+                $section->addListItem($t['name'] . ' – ' . $t['issuer'] . $yearPart, 0, $regularText);
+            }
+            $section->addTextBreak(1);
+        }
+
+        // Soft Skills and Achievements Section
+        if (!empty($data['soft_skills'])) {
+            $section->addText('SOFT SKILLS & ACHIEVEMENTS', $sectionTitleStyle);
+            foreach ($data['soft_skills'] as $skill) {
+                $section->addListItem($skill, 0, $regularText);
+            }
+            $section->addTextBreak(1);
+        }
+
+        // Education Section
+        if (!empty($data['education'])) {
+            $section->addText('EDUCATION', $sectionTitleStyle);
+            foreach ($data['education'] as $edu) {
+                $section->addText($edu['degree'] . ' – ' . $edu['institution'] . ' (' . $edu['end_date'] . ')', $regularText);
             }
         }
     }

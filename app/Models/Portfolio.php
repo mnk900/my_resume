@@ -9,7 +9,7 @@ class Portfolio extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'description', 'detailed_bio', 'theme', 'is_active', 'show_contact_info', 'show_email', 'show_phone', 'show_linkedin', 'position', 'city', 'organization', 'country', 'contact_number', 'linkedin_url', 'profile_image'];
+    protected $fillable = ['user_id', 'title', 'description', 'detailed_bio', 'theme', 'is_active', 'show_contact_info', 'show_email', 'show_phone', 'show_linkedin', 'position', 'city', 'organization', 'country', 'contact_number', 'linkedin_url', 'profile_image', 'show_skills', 'show_projects', 'show_experience', 'show_education', 'show_services', 'show_certifications', 'show_trainings', 'show_achievements', 'show_contributions', 'show_testimonials', 'show_media', 'show_publications'];
 
     protected $casts = [
         'is_active' => 'boolean',
@@ -17,6 +17,18 @@ class Portfolio extends Model
         'show_email' => 'boolean',
         'show_phone' => 'boolean',
         'show_linkedin' => 'boolean',
+        'show_skills' => 'boolean',
+        'show_projects' => 'boolean',
+        'show_experience' => 'boolean',
+        'show_education' => 'boolean',
+        'show_services' => 'boolean',
+        'show_certifications' => 'boolean',
+        'show_trainings' => 'boolean',
+        'show_achievements' => 'boolean',
+        'show_contributions' => 'boolean',
+        'show_testimonials' => 'boolean',
+        'show_media' => 'boolean',
+        'show_publications' => 'boolean',
     ];
     public function user()
     {
@@ -86,5 +98,15 @@ class Portfolio extends Model
     public function settings()
     {
         return $this->hasMany(PortfolioSetting::class);
+    }
+
+    public function media()
+    {
+        return $this->hasMany(Media::class);
+    }
+
+    public function publications()
+    {
+        return $this->hasMany(Publication::class);
     }
 }

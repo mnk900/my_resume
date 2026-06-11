@@ -7,6 +7,8 @@ use App\Models\Portfolio;
 use App\Models\Theme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AdminUserEmail;
 
 class AdminController extends Controller
 {
@@ -82,5 +84,31 @@ class AdminController extends Controller
         }
 
         return back()->with('status', 'broadcast-sent');
+    }
+
+    public function sendEmail(Request $request)
+    {
+        $request->validate([
+            'recipient' => 'required|string',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        $subject = $request->subject;
+        $messageContent = $request->message;
+
+        if ($request->recipient === 'all') {
+            $users = User::all();
+            foreach ($users as $user) {
+                Mail::to($user->email)->send(new AdminUserEmail($subject, $messageContent));
+                Log::info("Broadcast email sent from admin to {$user->email}: [Subject: {$subject}]");
+            }
+            return back()->with('status', 'broadcast-email-sent');
+        } else {
+            $user = User::findOrFail($request->recipient);
+            Mail::to($user->email)->send(new AdminUserEmail($subject, $messageContent));
+            Log::info("Direct email sent from admin to {$user->email}: [Subject: {$subject}]");
+            return back()->with('status', 'direct-email-sent')->with('notified_user', $user->name);
+        }
     }
 }

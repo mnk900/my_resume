@@ -43,7 +43,7 @@ class PortfolioController extends Controller
     public function edit()
     {
         $user = Auth::user();
-        $portfolio = $user->portfolio()->with(['sections', 'skills', 'projects', 'experiences', 'testimonials', 'services', 'certifications', 'education', 'achievements', 'contributions'])->first();
+        $portfolio = $user->portfolio()->with(['sections', 'skills', 'projects', 'experiences', 'testimonials', 'services', 'certifications', 'education', 'achievements', 'contributions', 'media', 'publications'])->first();
 
         // Already handled by booted() but safety check
         if (!$portfolio) {
@@ -66,9 +66,22 @@ class PortfolioController extends Controller
             'description' => 'nullable|string',
             'detailed_bio' => 'nullable|string',
             'theme' => 'required|string|max:50',
+            'is_active' => 'required|in:active,inactive',
             'show_email' => 'required|in:show,hide',
             'show_phone' => 'required|in:show,hide',
             'show_linkedin' => 'required|in:show,hide',
+            'show_skills' => 'required|in:show,hide',
+            'show_projects' => 'required|in:show,hide',
+            'show_experience' => 'required|in:show,hide',
+            'show_education' => 'required|in:show,hide',
+            'show_services' => 'required|in:show,hide',
+            'show_certifications' => 'required|in:show,hide',
+            'show_trainings' => 'required|in:show,hide',
+            'show_achievements' => 'required|in:show,hide',
+            'show_contributions' => 'required|in:show,hide',
+            'show_testimonials' => 'required|in:show,hide',
+            'show_media' => 'required|in:show,hide',
+            'show_publications' => 'required|in:show,hide',
             'position' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
             'organization' => 'nullable|string|max:255',
@@ -79,9 +92,22 @@ class PortfolioController extends Controller
         ]);
 
         $data = $request->only(['title', 'description', 'detailed_bio', 'theme', 'position', 'city', 'organization', 'country', 'contact_number', 'linkedin_url']);
+        $data['is_active'] = $request->input('is_active') === 'active';
         $data['show_email'] = $request->input('show_email') === 'show';
         $data['show_phone'] = $request->input('show_phone') === 'show';
         $data['show_linkedin'] = $request->input('show_linkedin') === 'show';
+        $data['show_skills'] = $request->input('show_skills') === 'show';
+        $data['show_projects'] = $request->input('show_projects') === 'show';
+        $data['show_experience'] = $request->input('show_experience') === 'show';
+        $data['show_education'] = $request->input('show_education') === 'show';
+        $data['show_services'] = $request->input('show_services') === 'show';
+        $data['show_certifications'] = $request->input('show_certifications') === 'show';
+        $data['show_trainings'] = $request->input('show_trainings') === 'show';
+        $data['show_achievements'] = $request->input('show_achievements') === 'show';
+        $data['show_contributions'] = $request->input('show_contributions') === 'show';
+        $data['show_testimonials'] = $request->input('show_testimonials') === 'show';
+        $data['show_media'] = $request->input('show_media') === 'show';
+        $data['show_publications'] = $request->input('show_publications') === 'show';
 
         if ($request->hasFile('profile_image')) {
             $data['profile_image'] = $request->file('profile_image');
