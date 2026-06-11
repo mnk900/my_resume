@@ -24,6 +24,9 @@ use App\Http\Controllers\ProfileController;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function() {
+        if (Auth::user()->isAdmin()) {
+            return redirect()->route('admin.index');
+        }
         return redirect()->route('portfolio.edit');
     })->name('dashboard');
 
@@ -106,6 +109,11 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\IsAdmin::class])->pr
     Route::post('/themes', [AdminController::class, 'storeTheme'])->name('admin.themes.store');
     Route::post('/themes/{theme}/toggle', [AdminController::class, 'toggleTheme'])->name('admin.themes.toggle');
     Route::post('/send-email', [AdminController::class, 'sendEmail'])->name('admin.send-email');
+    
+    // User Action routes
+    Route::post('/users/{user}/toggle-role', [AdminController::class, 'toggleRole'])->name('admin.users.toggle-role');
+    Route::post('/users/{user}/toggle-verification', [AdminController::class, 'toggleVerification'])->name('admin.users.toggle-verification');
+    Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
 });
 
 Route::get('/{username}', [PortfolioController::class, 'show'])->name('portfolio.show');

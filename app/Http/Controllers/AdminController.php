@@ -111,4 +111,38 @@ class AdminController extends Controller
             return back()->with('status', 'direct-email-sent')->with('notified_user', $user->name);
         }
     }
+
+    public function toggleRole(User $user)
+    {
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'demote-self-blocked');
+        }
+
+        $newRole = $user->role === 'admin' ? 'user' : 'admin';
+        $user->update(['role' => $newRole]);
+
+        return back()->with('status', 'role-updated')->with('notified_user', $user->name);
+    }
+
+    public function toggleVerification(User $user)
+    {
+        $newVerifiedAt = $user->email_verified_at ? null : now();
+        $user->update(['email_verified_at' => $newVerifiedAt]);
+
+        return back()->with('status', 'verification-updated')->with('notified_user', $user->name);
+    }
+
+    public function destroyUser(User $user)
+    {
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'delete-self-blocked');
+        }
+
+        if ($user->portfolio) {
+            $user->portfolio->delete();
+        }
+        $user->delete();
+
+        return back()->with('status', 'user-deleted');
+    }
 }

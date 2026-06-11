@@ -157,6 +157,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible shadow-sm border-0 fade show mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {{ str_replace('-', ' ', ucfirst(session('error'))) }}.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
             <div class="tab-content" id="adminTabsContent">
                 <!-- 1. DASHBOARD TAB PANE -->
@@ -279,16 +286,31 @@
                                         @foreach($users as $u)
                                             <tr class="user-row-item">
                                                 <td>
-                                                    <div class="fw-bold text-dark">{{ $u->name }}</div>
-                                                    <small class="text-muted">{{ $u->email }}</small>
-                                                    @if($u->isAdmin()) <span class="badge bg-dark ms-1 small">Admin</span> @endif
+                                                    <div class="fw-bold text-dark mb-1">{{ $u->name }}</div>
+                                                    <small class="text-muted d-block mb-1">{{ $u->email }}</small>
+                                                    
+                                                    <!-- Toggable Admin Role Switch -->
+                                                    <form action="{{ route('admin.users.toggle-role', $u) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        <div class="form-check form-switch d-inline-block align-middle">
+                                                            <input class="form-check-input" type="checkbox" role="switch" onchange="this.form.submit()" {{ $u->isAdmin() ? 'checked' : '' }} {{ $u->id === auth()->id() ? 'disabled' : '' }}>
+                                                            <span class="badge bg-{{ $u->isAdmin() ? 'dark' : 'secondary' }} small">
+                                                                {{ $u->role }}
+                                                            </span>
+                                                        </div>
+                                                    </form>
                                                 </td>
                                                 <td>
-                                                    @if($u->email_verified_at) 
-                                                        <span class="text-success small"><i class="bi bi-patch-check-fill me-1"></i>Verified</span> 
-                                                    @else 
-                                                        <span class="text-warning small"><i class="bi bi-hourglass-split me-1"></i>Pending</span> 
-                                                    @endif
+                                                    <!-- Toggable Manual Verification Switch -->
+                                                    <form action="{{ route('admin.users.toggle-verification', $u) }}" method="POST">
+                                                        @csrf
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" role="switch" onchange="this.form.submit()" {{ $u->email_verified_at ? 'checked' : '' }}>
+                                                            <span class="text-{{ $u->email_verified_at ? 'success' : 'warning' }} small font-semibold">
+                                                                <i class="bi bi-{{ $u->email_verified_at ? 'patch-check-fill' : 'hourglass-split' }} me-1"></i>{{ $u->email_verified_at ? 'Verified' : 'Pending' }}
+                                                            </span>
+                                                        </div>
+                                                    </form>
                                                 </td>
                                                 <td>
                                                     @if($u->portfolio)
@@ -313,7 +335,15 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#notifyModal-{{ $u->id }}">Notify</button>
+                                                    <div class="d-flex gap-2">
+                                                        <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#notifyModal-{{ $u->id }}">Notify</button>
+                                                        @if($u->id !== auth()->id())
+                                                            <form action="{{ route('admin.users.destroy', $u) }}" method="POST" onsubmit="return confirm('Are you sure you want to permanently delete this user, their portfolio, and all their sections?')">
+                                                                @csrf @method('DELETE')
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete User Account"><i class="bi bi-trash"></i></button>
+                                                            </form>
+                                                        @endif
+                                                    </div>
                                                 </td>
                                             </tr>
 
