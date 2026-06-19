@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('publications', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('portfolio_id')->constrained()->onDelete('cascade');
-            $table->string('type');
-            $table->string('authors');
-            $table->string('year');
-            $table->string('title');
-            $table->string('publisher');
-            $table->string('link')->nullable();
-            $table->string('report_path')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('publications')) {
+            Schema::create('publications', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('portfolio_id')->constrained()->onDelete('cascade');
+                $table->string('type');
+                $table->string('authors');
+                $table->string('year');
+                $table->string('title');
+                $table->string('publisher');
+                $table->string('link')->nullable();
+                $table->string('report_path')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

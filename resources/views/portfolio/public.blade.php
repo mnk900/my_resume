@@ -58,12 +58,13 @@
     <nav>
         <div class="premium-nav-container">
             <div class="logo">
-                @php
-                    $words = explode(' ', trim($user->name));
-                    $initials = '';
-                    foreach ($words as $w) if($w) $initials .= strtoupper($w[0]);
-                @endphp
-                {{ $initials }}.
+                <a href="#hero" style="display: flex; align-items: center; text-decoration: none;">
+                    @if($portfolio->profile_image)
+                        <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $user->name }}" class="logo-avatar">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=100&background=0D8ABC&color=fff" alt="{{ $user->name }}" class="logo-avatar">
+                    @endif
+                </a>
             </div>
             <div class="menu-toggle">
                 <i class="fas fa-bars"></i>
@@ -104,7 +105,7 @@
                 <div class="hero-content">
                     <div class="hero-subtitle">{{ $profile['short_title'] }}</div>
                     <h1>{{ $profile['name'] }}</h1>
-                    <p>{{ $profile['intro'] }}</p>
+                    <div class="hero-intro-text" style="margin-bottom: 1.5rem; color: var(--text-secondary); line-height: 1.8;">{!! $profile['intro'] !!}</div>
                     <div class="hero-btns">
                         <a href="#projects" class="btn-primary">View Projects</a>
                         <a href="#contact" class="btn-primary" style="background: transparent; border: 2px solid var(--accent-color); color: var(--accent-color); margin-left: 1rem;">Contact Me</a>
@@ -220,7 +221,7 @@
                 @forelse($portfolio->services as $service)
                 <div class="skill-card">
                     <h3>{{ $service->title }}</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem;">{{ $service->description }}</p>
+                    <div style="color: var(--text-secondary); font-size: 0.95rem;">{!! $service->description !!}</div>
                 </div>
                 @empty
                     <p class="text-muted col-12">No services listed yet.</p>
@@ -249,7 +250,7 @@
                             <div class="exp-job">{{ $exp['title'] }}</div>
                             <div class="exp-company">{{ $exp['company'] }}</div>
                             <ul class="exp-details">
-                                <li>{{ $exp['highlights'] }}</li>
+                                <li>{!! $exp['highlights'] !!}</li>
                             </ul>
                         </div>
                         @empty
@@ -347,11 +348,12 @@
             <div class="projects-grid" data-limit="9">
                 @forelse($profile['projects'] as $project)
                 @php
-                    $isLongDesc = strlen($project['description']) > 120;
+                    $plainDesc = strip_tags($project['description']);
+                    $isLongDesc = strlen($plainDesc) > 120;
                     $isLongTitle = strlen($project['name']) > 30;
                     
                     $displayTitle = $isLongTitle ? (substr($project['name'], 0, 30) . '...') : $project['name'];
-                    $displayDesc = $isLongDesc ? (substr($project['description'], 0, 120) . '...') : $project['description'];
+                    $displayDesc = $isLongDesc ? (substr($plainDesc, 0, 120) . '...') : $plainDesc;
                 @endphp
                 <div class="project-card">
                     <div class="project-img">
@@ -400,7 +402,7 @@
                 @forelse($portfolio->contributions as $contrib)
                 <div class="skill-card">
                     <h3>{{ $contrib->title }}</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem;">{{ $contrib->description }}</p>
+                    <div style="color: var(--text-secondary); font-size: 0.95rem;">{!! $contrib->description !!}</div>
                 </div>
                 @empty
                     <p class="text-muted col-12">No contributions listed.</p>
@@ -420,7 +422,7 @@
             <div class="@if($testiCount == 1) premium-testimonials-1 @elseif($testiCount == 2) premium-grid-2col @else projects-grid @endif" data-limit="9">
                 @forelse($portfolio->testimonials as $testi)
                 <div class="skill-card">
-                    <p style="font-style: italic; color: var(--text-secondary); margin-bottom: 1.5rem;">"{{ $testi->content }}"</p>
+                    <div style="font-style: italic; color: var(--text-secondary); margin-bottom: 1.5rem;">{!! $testi->content !!}</div>
                     <div style="font-weight: 700; color: var(--accent-color);">— {{ $testi->client_name }}</div>
                 </div>
                 @empty
@@ -618,13 +620,12 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-white border-bottom py-3 custom-classic-nav">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-4 text-dark" href="#hero">
-                @php
-                    $words = explode(' ', trim($user->name));
-                    $initials = '';
-                    foreach ($words as $w) if($w) $initials .= strtoupper($w[0]);
-                @endphp
-                {{ $initials }}.
+            <a class="navbar-brand d-flex align-items-center" href="#hero">
+                @if($portfolio->profile_image)
+                    <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $user->name }}" class="logo-avatar-classic">
+                @else
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=100&background=1e293b&color=fff" alt="{{ $user->name }}" class="logo-avatar-classic">
+                @endif
             </a>
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#classicNavbar" aria-controls="classicNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -654,7 +655,7 @@
                 <div class="col-lg-7 text-center text-lg-start">
                     <span class="badge text-uppercase tracking-wider px-3 py-2 mb-3 bg-secondary-subtle text-secondary fw-bold fs-7">{{ $profile['short_title'] }}</span>
                     <h1 class="display-3 fw-bold mb-4 serif-heading text-dark">{{ $profile['name'] }}</h1>
-                    <p class="lead text-secondary mb-5 fs-5 lh-base">{{ $profile['intro'] }}</p>
+                    <div class="lead text-secondary mb-5 fs-5 lh-base">{!! $profile['intro'] !!}</div>
                     <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3">
                         <a href="#projects" class="btn btn-dark btn-lg px-4 py-3 rounded-pill shadow-sm">View Work</a>
                         <a href="#contact" class="btn btn-outline-dark btn-lg px-4 py-3 rounded-pill">Contact Me</a>
@@ -735,7 +736,7 @@
                     <div class="card h-100 p-4 border-0 rounded-3 bg-white shadow-sm hover-shadow-classic transition">
                         <div class="mb-3 text-secondary"><i class="fas fa-cubes fs-3 text-dark"></i></div>
                         <h4 class="fw-bold text-dark fs-5 mb-3">{{ $service->title }}</h4>
-                        <p class="text-secondary small mb-0 lh-base">{{ $service->description }}</p>
+                        <div class="text-secondary small mb-0 lh-base">{!! $service->description !!}</div>
                     </div>
                 </div>
                 @empty
@@ -770,7 +771,7 @@
                                 <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-1 font-monospace small mt-2 mt-sm-0">{{ $exp['date'] }}</span>
                             </div>
                             <h5 class="text-primary-accent fw-semibold mb-3 fs-6">{{ $exp['company'] }}</h5>
-                            <p class="text-secondary mb-0 lh-base">{!! nl2br(e($exp['highlights'])) !!}</p>
+                            <div class="text-secondary mb-0 lh-base">{!! $exp['highlights'] !!}</div>
                         </div>
                         @empty
                             <p class="text-muted text-center py-4">No work experience loaded.</p>
@@ -884,11 +885,12 @@
             <div class="row g-4" data-limit="9">
                 @forelse($profile['projects'] as $project)
                 @php
-                    $isLongDesc = strlen($project['description']) > 120;
+                    $plainDesc = strip_tags($project['description']);
+                    $isLongDesc = strlen($plainDesc) > 120;
                     $isLongTitle = strlen($project['name']) > 30;
                     
                     $displayTitle = $isLongTitle ? (substr($project['name'], 0, 30) . '...') : $project['name'];
-                    $displayDesc = $isLongDesc ? (substr($project['description'], 0, 120) . '...') : $project['description'];
+                    $displayDesc = $isLongDesc ? (substr($plainDesc, 0, 120) . '...') : $plainDesc;
                 @endphp
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100 border rounded-3 bg-white shadow-sm overflow-hidden hover-shadow-classic transition">
@@ -938,7 +940,7 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100 p-4 border rounded-3 bg-light shadow-none hover-shadow-classic transition">
                         <h4 class="fw-bold text-dark fs-6 mb-3"><i class="fas fa-hands-helping text-dark me-2"></i>{{ $contrib->title }}</h4>
-                        <p class="text-secondary small mb-0 lh-base">{{ $contrib->description }}</p>
+                        <div class="text-secondary small mb-0 lh-base">{!! $contrib->description !!}</div>
                     </div>
                 </div>
                 @empty
@@ -959,7 +961,7 @@
                 <div class="col-md-6">
                     <div class="card h-100 p-4 border-0 rounded-3 bg-white shadow-sm hover-shadow-classic transition">
                         <span class="serif-quote text-secondary-subtle display-4 lh-1 mb-2 d-block">“</span>
-                        <p class="text-secondary small italic mb-3 lh-lg">"{{ $testi->content }}"</p>
+                        <div class="text-secondary small italic mb-3 lh-lg">{!! $testi->content !!}</div>
                         <h5 class="fw-bold text-dark fs-6 mb-0">— {{ $testi->client_name }}</h5>
                     </div>
                 </div>
@@ -1188,14 +1190,13 @@
     <!-- Navbar -->
     <nav class="elegant-nav">
         <div class="elegant-nav-container">
-            <div class="elegant-logo">
-                @php
-                    $words = explode(' ', trim($user->name));
-                    $initials = '';
-                    foreach ($words as $w) if($w) $initials .= strtoupper($w[0]);
-                @endphp
-                <span>{{ $initials }}</span>.
-            </div>
+            <a class="elegant-logo" href="#hero">
+                @if($portfolio->profile_image)
+                    <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $user->name }}" class="logo-avatar-elegant">
+                @else
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=100&background=4f46e5&color=fff" alt="{{ $user->name }}" class="logo-avatar-elegant">
+                @endif
+            </a>
             <div class="elegant-menu-toggle">
                 <i class="fas fa-bars"></i>
             </div>
@@ -1237,7 +1238,7 @@
                     <div class="elegant-hero-subtitle">Executive Portfolio</div>
                     <h1 class="elegant-hero-title">{{ $user->name }}</h1>
                     <p class="elegant-hero-position">{{ $profile['short_title'] }}</p>
-                    <p class="elegant-hero-desc">{{ $profile['intro'] }}</p>
+                    <div class="elegant-hero-desc">{!! $profile['intro'] !!}</div>
                     <div class="d-flex flex-wrap gap-3 mt-4">
                         <a href="#projects" class="elegant-btn-solid">Explore Portfolio</a>
                         <a href="#contact" class="elegant-btn-outline">Get In Touch</a>
@@ -1273,7 +1274,7 @@
             </div>
             
             <div class="elegant-profile-highlight text-center mb-5">
-                <p>"{!! nl2br(e($portfolio->description)) !!}"</p>
+                {!! $portfolio->description !!}
             </div>
             
             <div class="row g-5 mt-2">
@@ -1362,7 +1363,7 @@
                         <div class="elegant-service-icon"><i class="fas fa-gem"></i></div>
                         <h4 class="elegant-service-title">{{ $service->title }}</h4>
                         <div class="elegant-card-divider"></div>
-                        <p class="elegant-service-desc">{{ $service->description }}</p>
+                        <div class="elegant-service-desc">{!! $service->description !!}</div>
                     </div>
                 </div>
                 @empty
@@ -1393,7 +1394,7 @@
                             <span class="elegant-timeline-date">{{ $exp['date'] }}</span>
                         </div>
                         <div class="elegant-timeline-company"><i class="fas fa-building me-1"></i> {{ $exp['company'] }}</div>
-                        <p class="elegant-timeline-highlights">{{ $exp['highlights'] }}</p>
+                        <div class="elegant-timeline-highlights">{!! $exp['highlights'] !!}</div>
                     </div>
                 </div>
                 @empty
@@ -1519,11 +1520,12 @@
             <div class="row g-4" data-limit="9">
                 @forelse($profile['projects'] as $project)
                 @php
-                    $isLongDesc = strlen($project['description']) > 120;
+                    $plainDesc = strip_tags($project['description']);
+                    $isLongDesc = strlen($plainDesc) > 120;
                     $isLongTitle = strlen($project['name']) > 30;
                     
                     $displayTitle = $isLongTitle ? (substr($project['name'], 0, 30) . '...') : $project['name'];
-                    $displayDesc = $isLongDesc ? (substr($project['description'], 0, 120) . '...') : $project['description'];
+                    $displayDesc = $isLongDesc ? (substr($plainDesc, 0, 120) . '...') : $plainDesc;
                 @endphp
                 <div class="col-md-6 col-lg-4">
                     <div class="elegant-project-card">
@@ -1581,7 +1583,7 @@
                     <div class="elegant-contrib-card">
                         <h4 class="elegant-contrib-title"><i class="fas fa-code-fork me-2 text-indigo"></i> {{ $contrib->title }}</h4>
                         <div class="elegant-card-divider"></div>
-                        <p class="elegant-contrib-desc">{{ $contrib->description }}</p>
+                        <div class="elegant-contrib-desc">{!! $contrib->description !!}</div>
                     </div>
                 </div>
                 @empty
@@ -1607,7 +1609,7 @@
                 <div class="col-md-6">
                     <div class="elegant-testimonial-card">
                         <span class="elegant-quote-mark">“</span>
-                        <p class="elegant-testimonial-text">"{{ $testi->content }}"</p>
+                        <div class="elegant-testimonial-text">{!! $testi->content !!}</div>
                         <div class="elegant-testimonial-client">— {{ $testi->client_name }}</div>
                     </div>
                 </div>
@@ -2163,7 +2165,9 @@
         nav ul { display: flex; list-style: none; gap: 1.5rem; margin: 0; padding: 0; align-items: center; }
         nav ul li a { text-decoration: none; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; transition: var(--transition); }
         nav ul li a:hover { color: var(--accent-color); }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--accent-color); font-family: 'Outfit', sans-serif; }
+        .logo { display: flex; align-items: center; font-family: 'Outfit', sans-serif; }
+        .logo-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-color); transition: var(--transition); }
+        .logo-avatar:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
         
         /* Dropdown Styles */
         nav ul li { list-style: none; position: relative; }
@@ -2402,6 +2406,10 @@
 /* Mobile */
 @media (max-width: 768px) {
     /* NAVBAR */
+    .logo-avatar {
+        width: 40px;
+        height: 40px;
+    }
     nav {
         padding: 1rem 0;
     }
@@ -2641,6 +2649,23 @@
         .lead-text-classic p {
             margin-bottom: 1.5rem;
         }
+        .logo-avatar-classic {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0f766e;
+            transition: all 0.3s ease;
+        }
+        .logo-avatar-classic:hover {
+            transform: scale(1.05);
+        }
+        @media (max-width: 768px) {
+            .logo-avatar-classic {
+                width: 40px;
+                height: 40px;
+            }
+        }
     </style>
     @endif
     @if($theme == 'elegant')
@@ -2672,8 +2697,25 @@
         /* Navigation */
         .elegant-nav { position: fixed; top: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-bottom: 1px solid rgba(79, 70, 229, 0.08); z-index: 1000; transition: var(--elegant-transition); }
         .elegant-nav-container { display: flex; justify-content: space-between; align-items: center; height: 80px; max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-        .elegant-logo { font-family: var(--elegant-font-serif); font-size: 2rem; font-weight: 700; color: var(--elegant-navy); cursor: pointer; text-decoration: none; }
-        .elegant-logo span { color: var(--elegant-indigo); }
+        .elegant-logo { display: flex; align-items: center; cursor: pointer; text-decoration: none; }
+        .logo-avatar-elegant {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--elegant-indigo);
+            transition: var(--elegant-transition);
+        }
+        .logo-avatar-elegant:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(79, 70, 229, 0.2);
+        }
+        @media (max-width: 768px) {
+            .logo-avatar-elegant {
+                width: 40px;
+                height: 40px;
+            }
+        }
         .elegant-nav ul { display: flex; list-style: none; margin: 0; padding: 0; align-items: center; gap: 2rem; }
         .elegant-nav ul li { margin: 0; }
         .elegant-nav ul li a { font-family: var(--elegant-font-sans); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--elegant-navy); text-decoration: none; position: relative; padding: 5px 0; transition: var(--elegant-transition); }
@@ -3134,7 +3176,7 @@
             const tags = btn.getAttribute('data-tags').split(',').filter(t => t);
 
             document.getElementById('premiumModalTitle').textContent = title;
-            document.getElementById('premiumModalDesc').textContent = desc;
+            document.getElementById('premiumModalDesc').innerHTML = desc;
 
             const tagsContainer = document.getElementById('premiumModalTags');
             tagsContainer.innerHTML = '';
@@ -3340,7 +3382,7 @@
 
             // Populate Modal fields
             document.getElementById('projectModalTitle').textContent = title;
-            document.getElementById('projectModalDesc').textContent = desc;
+            document.getElementById('projectModalDesc').innerHTML = desc;
 
             // Handle image display dynamically
             const imgCol = document.getElementById('projectModalImgCol');
@@ -3440,7 +3482,7 @@
             const tags = btn.getAttribute('data-tags').split(',').filter(t => t);
 
             document.getElementById('elegantModalTitle').textContent = title;
-            document.getElementById('elegantModalDesc').textContent = desc;
+            document.getElementById('elegantModalDesc').innerHTML = desc;
 
             const tagsContainer = document.getElementById('elegantModalTags');
             tagsContainer.innerHTML = '';

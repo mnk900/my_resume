@@ -12,9 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('portfolios', function (Blueprint $table) {
-            $table->boolean('show_email')->default(true)->after('show_contact_info');
-            $table->boolean('show_phone')->default(true)->after('show_email');
-            $table->boolean('show_linkedin')->default(true)->after('show_phone');
+            if (!Schema::hasColumn('portfolios', 'show_email')) {
+                $table->boolean('show_email')->default(true)->after('show_contact_info');
+            }
+            if (!Schema::hasColumn('portfolios', 'show_phone')) {
+                $table->boolean('show_phone')->default(true)->after('show_email');
+            }
+            if (!Schema::hasColumn('portfolios', 'show_linkedin')) {
+                $table->boolean('show_linkedin')->default(true)->after('show_phone');
+            }
         });
     }
 
@@ -24,7 +30,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('portfolios', function (Blueprint $table) {
-            $table->dropColumn(['show_email', 'show_phone', 'show_linkedin']);
+            $cols = [];
+            if (Schema::hasColumn('portfolios', 'show_email')) $cols[] = 'show_email';
+            if (Schema::hasColumn('portfolios', 'show_phone')) $cols[] = 'show_phone';
+            if (Schema::hasColumn('portfolios', 'show_linkedin')) $cols[] = 'show_linkedin';
+            if (!empty($cols)) {
+                $table->dropColumn($cols);
+            }
         });
     }
 };

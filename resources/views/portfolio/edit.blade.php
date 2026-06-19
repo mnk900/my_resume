@@ -192,6 +192,19 @@
                 </div>
             @endif
 
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible shadow-sm border-0 fade show mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong class="d-block mb-1">Please fix the following errors:</strong>
+                    <ul class="mb-0 ps-3">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <div class="tab-content" id="dashboardTabsContent">
                 <!-- 1. DASHBOARD TAB PANE -->
                 <div class="tab-pane fade show active" id="dashboardPane" role="tabpanel">
@@ -442,10 +455,26 @@
                             </div>
                             
                             <div class="collapse mb-4" id="addProjectsCollapse">
-                                <form action="{{ route('modules.projects.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
+                                <form action="{{ route('modules.projects.store') }}" method="POST" enctype="multipart/form-data" class="p-3 bg-white rounded border shadow-sm">
                                     @csrf
-                                    <input name="title" class="form-control mb-2 form-control-sm" placeholder="Project Name" required>
-                                    <div class="mb-3"><textarea name="description" class="form-control js-summernote" data-height="160" placeholder="Short Project Description"></textarea></div>
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-md-6">
+                                            <label class="small fw-bold">Project Title</label>
+                                            <input name="title" class="form-control form-control-sm" placeholder="Project Title" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="small fw-bold">Project Link</label>
+                                            <input name="link" class="form-control form-control-sm" placeholder="Project Link">
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="small fw-bold">Showcase Image</label>
+                                        <input type="file" name="image" class="form-control form-control-sm" accept="image/*">
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label class="small fw-bold">Project Description</label>
+                                        <textarea name="description" class="form-control js-summernote" data-height="150" placeholder="Project details..."></textarea>
+                                    </div>
                                     <button class="btn btn-sm btn-dark w-100">Add Project</button>
                                 </form>
                             </div>
@@ -464,9 +493,19 @@
                                 @foreach($portfolio->projects as $project)
                                     <div class="js-module-item bg-white border-bottom p-3">
                                         <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <div class="fw-bold">{{ $project->title }}</div>
-                                                <small class="text-muted d-block mb-2">{{ Str::limit(strip_tags($project->description), 80) }}</small>
+                                            <div class="d-flex gap-3 align-items-start">
+                                                @if($project->image_path)
+                                                    <img src="{{ Storage::url($project->image_path) }}" class="rounded shadow-sm border" style="width: 60px; height: 60px; object-fit: cover;">
+                                                @else
+                                                    <div class="rounded border bg-light d-flex align-items-center justify-content-center text-muted" style="width: 60px; height: 60px; font-size: 0.75rem;">No Image</div>
+                                                @endif
+                                                <div>
+                                                    <div class="fw-bold">{{ $project->title }}</div>
+                                                    @if($project->link)
+                                                        <small class="text-primary d-block mb-1"><a href="{{ $project->link }}" target="_blank" class="text-decoration-none"><i class="bi bi-link-45deg"></i> {{ $project->link }}</a></small>
+                                                    @endif
+                                                    <small class="text-muted d-block">{{ Str::limit(strip_tags($project->description), 80) }}</small>
+                                                </div>
                                             </div>
                                             <div class="d-flex gap-2">
                                                 <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editProject{{ $project->id }}">Edit</button>
@@ -476,10 +515,31 @@
                                                 </form>
                                             </div>
                                         </div>
-                                        <form action="{{ route('modules.projects.update', $project) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editProject{{ $project->id }}">
+                                        <form action="{{ route('modules.projects.update', $project) }}" method="POST" enctype="multipart/form-data" class="collapse mt-2 p-3 bg-light rounded border" id="editProject{{ $project->id }}">
                                             @csrf @method('PATCH')
-                                            <input name="title" class="form-control mb-2 form-control-sm" value="{{ $project->title }}" required>
-                                            <textarea name="description" class="form-control form-control-sm mb-2 js-summernote" data-height="140">{{ $project->description }}</textarea>
+                                            <div class="row g-2 mb-2">
+                                                <div class="col-md-6">
+                                                    <label class="small fw-bold">Project Title</label>
+                                                    <input name="title" class="form-control form-control-sm" value="{{ $project->title }}" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="small fw-bold">Project Link</label>
+                                                    <input name="link" class="form-control form-control-sm" value="{{ $project->link }}">
+                                                </div>
+                                            </div>
+                                            <div class="mb-2">
+                                                @if($project->image_path)
+                                                    <div class="mb-2">
+                                                        <img src="{{ Storage::url($project->image_path) }}" class="rounded shadow-sm border" style="max-height: 80px; width: auto; object-fit: cover;">
+                                                    </div>
+                                                @endif
+                                                <label class="small fw-bold">Update Showcase Image</label>
+                                                <input type="file" name="image" class="form-control form-control-sm" accept="image/*">
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <label class="small fw-bold">Project Description</label>
+                                                <textarea name="description" class="form-control form-control-sm js-summernote" data-height="140">{{ $project->description }}</textarea>
+                                            </div>
                                             <button class="btn btn-sm btn-primary">Update Project</button>
                                         </form>
                                     </div>

@@ -12,28 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('portfolios', function (Blueprint $table) {
-            $table->boolean('show_skills')->default(true);
-            $table->boolean('show_projects')->default(true);
-            $table->boolean('show_experience')->default(true);
-            $table->boolean('show_education')->default(true);
-            $table->boolean('show_services')->default(true);
-            $table->boolean('show_certifications')->default(true);
-            $table->boolean('show_trainings')->default(true);
-            $table->boolean('show_achievements')->default(true);
-            $table->boolean('show_contributions')->default(true);
-            $table->boolean('show_testimonials')->default(true);
-            $table->boolean('show_media')->default(true);
-            $table->boolean('show_publications')->default(true);
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('portfolios', function (Blueprint $table) {
-            $table->dropColumn([
+            $cols = [
                 'show_skills',
                 'show_projects',
                 'show_experience',
@@ -46,7 +25,44 @@ return new class extends Migration
                 'show_testimonials',
                 'show_media',
                 'show_publications'
-            ]);
+            ];
+            foreach ($cols as $col) {
+                if (!Schema::hasColumn('portfolios', $col)) {
+                    $table->boolean($col)->default(true);
+                }
+            }
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('portfolios', function (Blueprint $table) {
+            $cols = [
+                'show_skills',
+                'show_projects',
+                'show_experience',
+                'show_education',
+                'show_services',
+                'show_certifications',
+                'show_trainings',
+                'show_achievements',
+                'show_contributions',
+                'show_testimonials',
+                'show_media',
+                'show_publications'
+            ];
+            $colsToDrop = [];
+            foreach ($cols as $col) {
+                if (Schema::hasColumn('portfolios', $col)) {
+                    $colsToDrop[] = $col;
+                }
+            }
+            if (!empty($colsToDrop)) {
+                $table->dropColumn($colsToDrop);
+            }
         });
     }
 };

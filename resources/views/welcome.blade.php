@@ -176,7 +176,7 @@
                             @endif
                             
                             <p class="card-text small text-secondary">
-                                {{ Str::limit($portfolio->description, 100) }}
+                                {{ Str::limit(strip_tags($portfolio->description), 100) }}
                             </p>
                             
                             <div class="mt-3 small text-muted d-flex gap-3">

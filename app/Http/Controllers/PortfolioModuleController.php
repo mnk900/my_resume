@@ -406,7 +406,7 @@ class PortfolioModuleController extends Controller
             'year' => 'required|string|max:100',
             'title' => 'required|string|max:255',
             'publisher' => 'required|string|max:255',
-            'link' => 'nullable|url|max:500',
+            'link' => 'nullable|string|max:500',
             'report' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,zip|max:10240'
         ]);
 
@@ -431,7 +431,7 @@ class PortfolioModuleController extends Controller
             'year' => 'required|string|max:100',
             'title' => 'required|string|max:255',
             'publisher' => 'required|string|max:255',
-            'link' => 'nullable|url|max:500',
+            'link' => 'nullable|string|max:500',
             'report' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,zip|max:10240'
         ]);
 
