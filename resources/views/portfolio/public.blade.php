@@ -571,7 +571,16 @@
                             Message sent successfully! I'll get back to you soon.
                         </div>
                     @endif
-                    <form action="{{ url('/contact/submit/' . $portfolio->id . '/') }}" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
+                    @if ($errors->any())
+                        <div style="background: rgba(255, 0, 0, 0.1); color: #ff6b6b; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid rgba(255, 0, 0, 0.2); font-size: 0.9rem;">
+                            <ul style="margin: 0; padding-left: 1.25rem;">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    <form action="{{ route('portfolio.contact.store', $portfolio->id) }}" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
                         @csrf
                         <input type="text" name="name" placeholder="Your Name" required style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 1rem; color: #fff; border-radius: 10px;">
                         <input type="email" name="email" placeholder="Your Email" required style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); padding: 1rem; color: #fff; border-radius: 10px;">
@@ -1111,7 +1120,16 @@
                                 Message sent successfully! I will respond shortly.
                             </div>
                         @endif
-                        <form action="{{ url('/contact/submit/' . $portfolio->id . '/') }}" method="POST" class="d-flex flex-column gap-3">
+                        @if ($errors->any())
+                            <div class="alert alert-danger border-0 shadow-sm mb-4">
+                                <ul class="mb-0 small" style="list-style: none; padding-left: 0;">
+                                    @foreach ($errors->all() as $error)
+                                        <li><i class="fas fa-exclamation-circle me-2"></i> {{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <form action="{{ route('portfolio.contact.store', $portfolio->id) }}" method="POST" class="d-flex flex-column gap-3">
                             @csrf
                             <div>
                                 <input type="text" name="name" placeholder="Name" required class="form-control form-control-lg border-2 bg-white small">
@@ -1774,30 +1792,40 @@
                             </div>
                         @endif
                         
+                        @if ($errors->any())
+                            <div class="alert alert-danger border-0 rounded-0 shadow-sm p-4 mb-4">
+                                <ul class="mb-0 small" style="list-style: none; padding-left: 0;">
+                                    @foreach ($errors->all() as $error)
+                                        <li><i class="fas fa-exclamation-circle me-2"></i> {{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        
                         <form action="{{ url('/contact/submit/' . $portfolio->id . '/') }}" method="POST">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-4">
                                     <div class="elegant-form-group">
-                                        <input type="text" name="sender_name" required placeholder=" ">
+                                        <input type="text" name="name" required placeholder=" ">
                                         <label>Your Name</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-4">
                                     <div class="elegant-form-group">
-                                        <input type="email" name="sender_email" required placeholder=" ">
+                                        <input type="email" name="email" required placeholder=" ">
                                         <label>Your Email</label>
                                     </div>
                                 </div>
                                 <div class="col-12 mb-4">
                                     <div class="elegant-form-group">
-                                        <input type="text" name="subject" required placeholder=" ">
-                                        <label>Subject</label>
+                                        <input type="text" name="subject" placeholder=" ">
+                                        <label>Subject (Optional)</label>
                                     </div>
                                 </div>
                                 <div class="col-12 mb-4">
                                     <div class="elegant-form-group">
-                                        <textarea name="message_content" rows="5" required placeholder=" "></textarea>
+                                        <textarea name="message" rows="5" required placeholder=" "></textarea>
                                         <label>Your Message</label>
                                     </div>
                                 </div>

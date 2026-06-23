@@ -14,8 +14,8 @@ Route::get('/', [HomeController::class, 'index'])->name('welcome');
 
 
 // Public Messaging - Absolute simplest path
-Route::get('/contact/submit/{portfolio}/', function() { return 'Contact endpoint is reachable'; });
-Route::post('/contact/submit/{portfolio}/', [\App\Http\Controllers\MessageController::class, 'store'])->name('portfolio.contact.store');
+Route::get('/contact/submit/{portfolio}', function() { return 'Contact endpoint is reachable'; });
+Route::post('/contact/submit/{portfolio}', [\App\Http\Controllers\MessageController::class, 'store'])->name('portfolio.contact.store');
 
 // Laravel UI Routes
 Auth::routes(['verify' => true]);
@@ -97,6 +97,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/messages/{message}/reply', [MessageController::class, 'reply'])->name('messages.reply');
     Route::post('/messages/{message}/read', [MessageController::class, 'markAsRead'])->name('messages.read');
     Route::delete('/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
+    // Connections Management
+    Route::post('/connections/request/{user}', [\App\Http\Controllers\ConnectionController::class, 'sendRequest'])->name('connections.request');
+    Route::post('/connections/accept/{connection}', [\App\Http\Controllers\ConnectionController::class, 'acceptRequest'])->name('connections.accept');
+    Route::post('/connections/reject/{connection}', [\App\Http\Controllers\ConnectionController::class, 'rejectRequest'])->name('connections.reject');
+    Route::post('/connections/cancel/{connection}', [\App\Http\Controllers\ConnectionController::class, 'cancelRequest'])->name('connections.cancel');
+    Route::post('/connections/remove/{user}', [\App\Http\Controllers\ConnectionController::class, 'removeConnection'])->name('connections.remove');
 });
 
 // Public Messaging (Moved to top)

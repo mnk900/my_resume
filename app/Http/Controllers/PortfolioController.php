@@ -37,6 +37,28 @@ class PortfolioController extends Controller
             abort(404);
         }
 
+        // Privacy check
+        if (!$portfolio->is_public) {
+            $isAuthorized = false;
+            $connection = null;
+
+            if (Auth::check()) {
+                $currentUser = Auth::user();
+                if ($currentUser->id === $user->id || $currentUser->isAdmin()) {
+                    $isAuthorized = true;
+                } else {
+                    $connection = $currentUser->connectionWith($user);
+                    if ($connection && $connection->status === 'accepted') {
+                        $isAuthorized = true;
+                    }
+                }
+            }
+
+            if (!$isAuthorized) {
+                return view('portfolio.private', compact('user', 'portfolio', 'connection'));
+            }
+        }
+
         return view('portfolio.public', compact('user', 'portfolio'));
     }
 
@@ -56,7 +78,29 @@ class PortfolioController extends Controller
 
         $themes = \App\Models\Theme::where('is_active', true)->get();
 
-        return view('portfolio.edit', compact('portfolio', 'themes'));
+        $pendingReceived = $user->connectionsReceived()->where('status', 'pending')->with('sender.portfolio')->get();
+        $pendingSent = $user->connectionsSent()->where('status', 'pending')->with('receiver.portfolio')->get();
+        $acceptedConnections = $user->acceptedConnections();
+        $connectionsCount = $acceptedConnections->count();
+
+        $search = request('search');
+        $searchResults = collect();
+        if ($search) {
+            $searchResults = User::where('id', '!=', $user->id)
+                ->where('role', '!=', 'admin')
+                ->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('username', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+                })
+                ->with('portfolio')
+                ->get();
+        }
+
+        return view('portfolio.edit', compact(
+            'portfolio', 'themes', 'pendingReceived', 'pendingSent',
+            'acceptedConnections', 'connectionsCount', 'searchResults'
+        ));
     }
 
     public function update(Request $request)
@@ -67,6 +111,7 @@ class PortfolioController extends Controller
             'detailed_bio' => 'nullable|string',
             'theme' => 'required|string|max:50',
             'is_active' => 'required|in:active,inactive',
+            'is_public' => 'required|in:public,private',
             'show_email' => 'required|in:show,hide',
             'show_phone' => 'required|in:show,hide',
             'show_linkedin' => 'required|in:show,hide',
@@ -93,6 +138,7 @@ class PortfolioController extends Controller
 
         $data = $request->only(['title', 'description', 'detailed_bio', 'theme', 'position', 'city', 'organization', 'country', 'contact_number', 'linkedin_url']);
         $data['is_active'] = $request->input('is_active') === 'active';
+        $data['is_public'] = $request->input('is_public') === 'public';
         $data['show_email'] = $request->input('show_email') === 'show';
         $data['show_phone'] = $request->input('show_phone') === 'show';
         $data['show_linkedin'] = $request->input('show_linkedin') === 'show';

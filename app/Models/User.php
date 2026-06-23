@@ -54,6 +54,68 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role === 'admin';
     }
 
+    public function connectionsSent()
+    {
+        return $this->hasMany(Connection::class, 'sender_id');
+    }
+
+    public function connectionsReceived()
+    {
+        return $this->hasMany(Connection::class, 'receiver_id');
+    }
+
+    public function connectionWith(User $other)
+    {
+        return Connection::where(function($query) use ($other) {
+            $query->where('sender_id', $this->id)
+                  ->where('receiver_id', $other->id);
+        })->orWhere(function($query) use ($other) {
+            $query->where('sender_id', $other->id)
+                  ->where('receiver_id', $this->id);
+        })->first();
+    }
+
+    public function isConnectionWith(User $other)
+    {
+        $conn = $this->connectionWith($other);
+        return $conn && $conn->status === 'accepted';
+    }
+
+    public function hasPendingRequestFrom(User $other)
+    {
+        $conn = Connection::where('sender_id', $other->id)
+            ->where('receiver_id', $this->id)
+            ->where('status', 'pending')
+            ->first();
+        return (bool)$conn;
+    }
+
+    public function hasPendingRequestTo(User $other)
+    {
+        $conn = Connection::where('sender_id', $this->id)
+            ->where('receiver_id', $other->id)
+            ->where('status', 'pending')
+            ->first();
+        return (bool)$conn;
+    }
+
+    public function acceptedConnections()
+    {
+        $sent = Connection::where('sender_id', $this->id)
+            ->where('status', 'accepted')
+            ->pluck('receiver_id')
+            ->toArray();
+
+        $received = Connection::where('receiver_id', $this->id)
+            ->where('status', 'accepted')
+            ->pluck('sender_id')
+            ->toArray();
+
+        $userIds = array_merge($sent, $received);
+
+        return User::whereIn('id', $userIds)->get();
+    }
+
     protected static function booted()
     {
         static::created(function ($user) {

@@ -179,6 +179,14 @@
                         @endif
                     </button>
                 </li>
+                <li class="nav-item mb-2">
+                    <button class="nav-link text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="connections-tab" data-bs-toggle="tab" data-bs-target="#connectionsPane" type="button" role="tab">
+                        <i class="bi bi-people"></i> <span>Connections</span>
+                        @if($pendingReceived->count() > 0)
+                            <span class="badge bg-warning text-dark rounded-pill ms-auto">{{ $pendingReceived->count() }}</span>
+                        @endif
+                    </button>
+                </li>
             </ul>
         </div>
 
@@ -1253,7 +1261,18 @@
                                             <input class="form-check-input" type="radio" name="is_active" id="is_active_no" value="inactive" {{ $portfolio->is_active ? '' : 'checked' }}>
                                             <label class="form-check-label fw-bold text-danger" for="is_active_no">Deactivated (Private / hidden)</label>
                                         </div>
-                                        <small class="text-muted d-block mt-1">If deactivated, visiting your public URL <code>/{{ Auth::user()->username }}</code> will return a 404 Page Not Found error.</small>
+                                        <small class="text-muted d-block mt-1 mb-3">If deactivated, visiting your public URL <code>/{{ Auth::user()->username }}</code> will return a 404 Page Not Found error.</small>
+                                        
+                                        <div class="mb-2 fw-bold small">Profile Privacy Setting</div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_public" id="is_public_no" value="private" {{ !$portfolio->is_public ? 'checked' : '' }}>
+                                            <label class="form-check-label fw-bold text-warning" for="is_public_no"><i class="bi bi-lock-fill"></i> Private (Only added connections can view)</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="is_public" id="is_public_yes" value="public" {{ $portfolio->is_public ? 'checked' : '' }}>
+                                            <label class="form-check-label fw-bold text-success" for="is_public_yes"><i class="bi bi-globe"></i> Public (Everyone can view)</label>
+                                        </div>
+                                        <small class="text-muted d-block mt-1">By default, your profile is private and can only be seen by users who you accept as connections.</small>
                                     </div>
                                 </div>
 
@@ -1415,6 +1434,173 @@
                                 <p class="mb-0">Your Inbox is completely empty.</p>
                             </div>
                         @endforelse
+                    </div>
+                </div>
+
+                <!-- Connections Tab Pane -->
+                <div class="tab-pane fade" id="connectionsPane" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold mb-0">Manage Connections</h3>
+                    </div>
+
+                    <div class="row">
+                        <!-- Left Column: Search & Add Connections -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="card border-0 shadow-sm rounded-3 h-100">
+                                <div class="card-header bg-white py-3">
+                                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-person-plus-fill me-2"></i>Find Professionals</h5>
+                                </div>
+                                <div class="card-body bg-white">
+                                    <form action="{{ route('portfolio.edit') }}" method="GET" class="mb-4">
+                                        <div class="input-group">
+                                            <input type="text" name="search" class="form-control" placeholder="Search by name, username or email..." value="{{ request('search') }}">
+                                            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+                                        </div>
+                                    </form>
+
+                                    @if(request('search'))
+                                        <h6 class="fw-bold mb-3">Search Results</h6>
+                                        <ul class="list-group list-group-flush">
+                                            @forelse($searchResults as $u)
+                                                <li class="list-group-item d-flex align-items-center justify-content-between px-0">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-3">
+                                                            @if($u->portfolio && $u->portfolio->profile_image)
+                                                                <img src="{{ Storage::url($u->portfolio->profile_image) }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                                            @else
+                                                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px;">
+                                                                    {{ strtoupper(substr($u->name, 0, 2)) }}
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div>
+                                                            <div class="fw-bold">{{ $u->name }}</div>
+                                                            <small class="text-muted">{{ '@' . $u->username }}</small>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        @php
+                                                            $conn = Auth::user()->connectionWith($u);
+                                                        @endphp
+                                                        @if($conn)
+                                                            @if($conn->status === 'accepted')
+                                                                <span class="badge bg-success"><i class="bi bi-check-lg"></i> Connected</span>
+                                                            @elseif($conn->sender_id === Auth::id())
+                                                                <form action="{{ route('connections.cancel', $conn->id) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    <button type="submit" class="btn btn-outline-danger btn-sm">Cancel Request</button>
+                                                                </form>
+                                                            @else
+                                                                <form action="{{ route('connections.accept', $conn->id) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    <button type="submit" class="btn btn-success btn-sm me-1">Accept</button>
+                                                                </form>
+                                                                <form action="{{ route('connections.reject', $conn->id) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    <button type="submit" class="btn btn-outline-secondary btn-sm">Ignore</button>
+                                                                </form>
+                                                            @endif
+                                                        @else
+                                                            <form action="{{ route('connections.request', $u->id) }}" method="POST" class="d-inline">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-person-plus-fill"></i> Connect</button>
+                                                            </form>
+                                                        @endif
+                                                    </div>
+                                                </li>
+                                            @empty
+                                                <li class="list-group-item text-center py-3 text-muted">No professionals found.</li>
+                                            @endforelse
+                                        </ul>
+                                    @else
+                                        <p class="text-muted small">Type a name, username, or email to find and connect with other users.</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Requests & Active Connections -->
+                        <div class="col-lg-6 mb-4">
+                            <!-- Pending Received Requests -->
+                            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                                <div class="card-header bg-white py-3">
+                                    <h5 class="mb-0 fw-bold text-warning"><i class="bi bi-bell-fill me-2"></i>Connection Requests</h5>
+                                </div>
+                                <div class="card-body p-0 bg-white">
+                                    <ul class="list-group list-group-flush mb-0">
+                                        @forelse($pendingReceived as $conn)
+                                            <li class="list-group-item d-flex align-items-center justify-content-between p-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-3">
+                                                        @if($conn->sender->portfolio && $conn->sender->portfolio->profile_image)
+                                                            <img src="{{ Storage::url($conn->sender->portfolio->profile_image) }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                                        @else
+                                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px;">
+                                                                {{ strtoupper(substr($conn->sender->name, 0, 2)) }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold">{{ $conn->sender->name }}</div>
+                                                        <small class="text-muted">{{ '@' . $conn->sender->username }}</small>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <form action="{{ route('connections.accept', $conn->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success btn-sm me-1">Accept</button>
+                                                    </form>
+                                                    <form action="{{ route('connections.reject', $conn->id) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-outline-secondary btn-sm">Ignore</button>
+                                                    </form>
+                                                </div>
+                                            </li>
+                                        @empty
+                                            <li class="list-group-item text-center py-4 text-muted">No pending connection requests.</li>
+                                        @endforelse
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Active Connections -->
+                            <div class="card border-0 shadow-sm rounded-3">
+                                <div class="card-header bg-white py-3">
+                                    <h5 class="mb-0 fw-bold text-success"><i class="bi bi-people-fill me-2"></i>My Connections ({{ $connectionsCount }})</h5>
+                                </div>
+                                <div class="card-body p-0 bg-white">
+                                    <ul class="list-group list-group-flush mb-0">
+                                        @forelse($acceptedConnections as $otherUser)
+                                            <li class="list-group-item d-flex align-items-center justify-content-between p-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="me-3">
+                                                        @if($otherUser->portfolio && $otherUser->portfolio->profile_image)
+                                                            <img src="{{ Storage::url($otherUser->portfolio->profile_image) }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                                        @else
+                                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px;">
+                                                                {{ strtoupper(substr($otherUser->name, 0, 2)) }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold">{{ $otherUser->name }}</div>
+                                                        <small class="text-muted"><a href="{{ route('portfolio.show', $otherUser->username) }}" target="_blank" class="text-decoration-none">{{ '@' . $otherUser->username }}</a></small>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <form action="{{ route('connections.remove', $otherUser->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to remove this connection?');">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Remove</button>
+                                                    </form>
+                                                </div>
+                                            </li>
+                                        @empty
+                                            <li class="list-group-item text-center py-4 text-muted">You haven't added any connections yet.</li>
+                                        @endforelse
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1642,6 +1828,14 @@
                             }
                         });
                     });
+                }
+                // Auto-switch to connections tab if we are searching
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('search')) {
+                    const connTab = document.getElementById('connections-tab');
+                    if (connTab) {
+                        connTab.click();
+                    }
                 }
             });
         </script>

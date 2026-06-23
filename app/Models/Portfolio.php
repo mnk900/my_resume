@@ -9,10 +9,11 @@ class Portfolio extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'description', 'detailed_bio', 'theme', 'is_active', 'show_contact_info', 'show_email', 'show_phone', 'show_linkedin', 'position', 'city', 'organization', 'country', 'contact_number', 'linkedin_url', 'profile_image', 'show_skills', 'show_projects', 'show_experience', 'show_education', 'show_services', 'show_certifications', 'show_trainings', 'show_achievements', 'show_contributions', 'show_testimonials', 'show_media', 'show_publications'];
+    protected $fillable = ['user_id', 'title', 'description', 'detailed_bio', 'theme', 'is_active', 'is_public', 'show_contact_info', 'show_email', 'show_phone', 'show_linkedin', 'position', 'city', 'organization', 'country', 'contact_number', 'linkedin_url', 'profile_image', 'show_skills', 'show_projects', 'show_experience', 'show_education', 'show_services', 'show_certifications', 'show_trainings', 'show_achievements', 'show_contributions', 'show_testimonials', 'show_media', 'show_publications'];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_public' => 'boolean',
         'show_contact_info' => 'boolean',
         'show_email' => 'boolean',
         'show_phone' => 'boolean',
