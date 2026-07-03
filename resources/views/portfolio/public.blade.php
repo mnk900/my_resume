@@ -674,9 +674,9 @@
                     <div class="position-relative d-inline-block">
                         <div class="absolute-border-decor"></div>
                         @if($portfolio->profile_image)
-                            <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $profile['name'] }}" class="img-fluid rounded-4 shadow-lg border object-fit-cover" style="width: 380px; height: 420px;">
+                            <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $profile['name'] }}" class="img-fluid rounded-4 shadow-lg border object-fit-cover" style="max-width: 100%; width: 380px; height: auto; aspect-ratio: 380/420; object-fit: cover;">
                         @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=400&background=1e293b&color=fff" alt="{{ $profile['name'] }}" class="img-fluid rounded-4 shadow-lg border" style="width: 380px; height: 420px;">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=400&background=1e293b&color=fff" alt="{{ $profile['name'] }}" class="img-fluid rounded-4 shadow-lg border" style="max-width: 100%; width: 380px; height: auto; aspect-ratio: 380/420; object-fit: cover;">
                         @endif
                     </div>
                 </div>
@@ -1926,13 +1926,18 @@
             gap: 4rem;
             width: 100%;
         }
-        .hero-content { flex: 1.2; }
-        .hero-image { flex: 0 0 380px; height: 380px; border-radius: 30px; overflow: hidden; border: 4px solid var(--glass-border); box-shadow: var(--card-shadow); }
+        h1, h2, h3, h4, h5, h6 {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        .hero-content { flex: 1.2; width: 100%; }
+        .hero-image { flex: 0 0 380px; max-width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 30px; overflow: hidden; border: 4px solid var(--glass-border); box-shadow: var(--card-shadow); }
         .hero-image img { width: 100%; height: 100%; object-fit: cover; }
         .hero-subtitle { color: var(--accent-color); font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 2px; }
-        .hero h1 { font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1; margin-bottom: 1.5rem; font-weight: 700; }
+        .hero h1 { font-family: 'Outfit', sans-serif; font-size: clamp(2rem, 5vw, 4.5rem); line-height: 1.1; margin-bottom: 1.5rem; font-weight: 700; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
         .btn-primary { background: var(--accent-color); color: #000; padding: 1rem 2rem; border-radius: 5px; text-decoration: none; font-weight: 700; display: inline-block; transition: var(--transition); }
-        .section-title { font-family: 'Outfit', sans-serif; font-size: 2.5rem; margin-top: 0; margin-bottom: 2rem; position: relative; display: inline-block; }
+        .section-title { font-family: 'Outfit', sans-serif; font-size: clamp(1.8rem, 4vw, 2.5rem); margin-top: 0; margin-bottom: 2rem; position: relative; display: inline-block; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
         .section-title::after { content: ''; position: absolute; bottom: -10px; left: 0; width: 60%; height: 4px; background: var(--accent-color); }
         
         /* Premium Row/Column Split layouts */
@@ -2421,8 +2426,10 @@
     }
     .hero-image {
         width: 300px;
-        height: 300px;
-        flex: 0 0 300px;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 1/1;
+        flex: 0 0 auto;
         margin: 0 auto;
     }
     .contact-container {
@@ -2475,7 +2482,7 @@
  
     /* HERO */
     .hero h1 {
-        font-size: 2rem;
+        font-size: clamp(1.8rem, 6vw, 2.5rem);
         margin-top: 3rem;
     }
     .hero-subtitle {
@@ -2526,11 +2533,13 @@
 @media (max-width: 480px) {
     .hero-image {
         width: 240px;
-        height: 240px;
-        flex: 0 0 240px;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 1/1;
+        flex: 0 0 auto;
     }
     .hero h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
         margin-top: 3rem;
     }
     .btn-primary {
@@ -2577,6 +2586,11 @@
     @if($theme == 'classic')
     <style>
         /* Classic Clean Custom Style overrides */
+        h1, h2, h3, h4, h5, h6, .serif-heading {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
         .serif-heading {
             font-family: 'Playfair Display', Georgia, serif;
             font-weight: 700;
@@ -2694,6 +2708,15 @@
                 height: 40px;
             }
         }
+        @media (max-width: 576px) {
+            .display-3 {
+                font-size: 2.2rem !important;
+            }
+            .absolute-border-decor {
+                left: -10px;
+                top: 10px;
+            }
+        }
     </style>
     @endif
     @if($theme == 'elegant')
@@ -2712,6 +2735,11 @@
             --elegant-shadow: 0 10px 30px -15px rgba(79, 70, 229, 0.08);
             --elegant-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        h1, h2, h3, h4, h5, h6, .elegant-hero-title, .elegant-section-title {
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
         .text-indigo { color: var(--elegant-indigo) !important; }
         .text-gold { color: var(--elegant-gold) !important; }
         .elegant-bg-alt { background-color: var(--elegant-bg-alt) !important; }
@@ -2719,7 +2747,7 @@
         
         .elegant-section { padding: 100px 0; position: relative; box-sizing: border-box; }
         .elegant-section-tag { font-family: var(--elegant-font-sans); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 3px; font-weight: 700; color: var(--elegant-indigo); margin-bottom: 0.5rem; }
-        .elegant-section-title { font-family: var(--elegant-font-serif); font-size: 3rem; font-weight: 600; color: var(--elegant-navy); margin-top: 0; margin-bottom: 3rem; }
+        .elegant-section-title { font-family: var(--elegant-font-serif); font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 600; color: var(--elegant-navy); margin-top: 0; margin-bottom: 3rem; }
         .elegant-section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--elegant-border), transparent); margin-bottom: 4rem; }
 
         /* Navigation */
@@ -2781,13 +2809,13 @@
         /* Hero */
         .elegant-hero { min-height: 100vh; display: flex; align-items: center; padding-top: 120px; padding-bottom: 80px; background: radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.04), transparent 50%); position: relative; box-sizing: border-box; }
         .elegant-hero-subtitle { font-family: var(--elegant-font-sans); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 4px; font-weight: 700; color: var(--elegant-indigo); margin-bottom: 1rem; }
-        .elegant-hero-title { font-family: var(--elegant-font-serif); font-size: clamp(3rem, 7vw, 5.5rem); font-weight: 700; line-height: 1.1; color: var(--elegant-navy); margin-bottom: 1.5rem; }
+        .elegant-hero-title { font-family: var(--elegant-font-serif); font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 700; line-height: 1.1; color: var(--elegant-navy); margin-bottom: 1.5rem; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
         .elegant-hero-position { font-family: var(--elegant-font-serif); font-size: 2rem; font-style: italic; color: var(--elegant-gold); margin-bottom: 1.5rem; font-weight: 400; }
         .elegant-hero-desc { font-size: 1.1rem; line-height: 1.8; color: var(--elegant-navy); opacity: 0.85; max-width: 600px; margin-bottom: 2rem; }
 
-        .elegant-hero-image-wrapper { position: relative; display: inline-block; margin-top: 2rem; }
-        .elegant-hero-image-offset { position: absolute; top: 20px; left: 20px; width: 100%; height: 100%; border: 1.5px solid var(--elegant-indigo); z-index: 1; transition: var(--elegant-transition); }
-        .elegant-hero-image { position: relative; z-index: 2; width: 340px; height: 420px; overflow: hidden; border: 8px solid #ffffff; box-shadow: var(--elegant-shadow); background: #ffffff; }
+        .elegant-hero-image-wrapper { position: relative; display: inline-block; margin-top: 2rem; max-width: 100%; }
+        .elegant-hero-image-offset { position: absolute; top: 15px; left: 15px; width: 100%; height: 100%; border: 1.5px solid var(--elegant-indigo); z-index: 1; transition: var(--elegant-transition); box-sizing: border-box; }
+        .elegant-hero-image { position: relative; z-index: 2; width: 300px; max-width: 100%; height: auto; aspect-ratio: 300 / 370; overflow: hidden; border: 8px solid #ffffff; box-shadow: var(--elegant-shadow); background: #ffffff; box-sizing: border-box; }
         .elegant-hero-image img { width: 100%; height: 100%; object-fit: cover; transition: var(--elegant-transition); }
         .elegant-hero-image-wrapper:hover .elegant-hero-image-offset { transform: translate(-10px, -10px); }
         .elegant-hero-image-wrapper:hover .elegant-hero-image img { transform: scale(1.05); }
@@ -3114,6 +3142,18 @@
             }
             #elegantModalTitle {
                 font-size: 1.8rem;
+            }
+            .elegant-skills-grid {
+                grid-template-columns: 1fr;
+            }
+            .elegant-hero-image-offset {
+                top: 10px;
+                left: 10px;
+            }
+        }
+        @media (max-width: 576px) {
+            .elegant-contact-sidebar, .elegant-contact-form-col {
+                padding: 2.5rem 1.5rem !important;
             }
         }
     </style>

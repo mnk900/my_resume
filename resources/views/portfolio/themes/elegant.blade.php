@@ -11,13 +11,16 @@
     <!-- Elegant Google Fonts: Cormorant Garamond & DM Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
     <style>
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
         body { 
             background-color: #f8f9fc; 
             color: #1e1b4b; 
             font-family: 'DM Sans', sans-serif; 
-            margin: 0; 
-            padding: 0;
-            overflow-x: hidden;
         }
     </style>
     @stack('styles')
