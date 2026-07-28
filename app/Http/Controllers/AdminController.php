@@ -17,6 +17,7 @@ class AdminController extends Controller
         $users = User::with('portfolio')->latest()->get();
         $themes = Theme::all();
         $messages = \App\Models\Message::with('portfolio.user')->latest()->take(5)->get();
+        $invoices = \App\Models\Invoice::with('user')->latest()->paginate(10);
         
         $stats = [
             'total_users' => User::count(),
@@ -25,7 +26,7 @@ class AdminController extends Controller
             'total_themes' => Theme::count(),
         ];
 
-        return view('admin.index', compact('users', 'themes', 'stats', 'messages'));
+        return view('admin.index', compact('users', 'themes', 'stats', 'messages', 'invoices'));
     }
 
     public function togglePortfolioStatus(Portfolio $portfolio)

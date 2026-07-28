@@ -120,10 +120,19 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\IsAdmin::class])->pr
     Route::post('/users/{user}/toggle-role', [AdminController::class, 'toggleRole'])->name('admin.users.toggle-role');
     Route::post('/users/{user}/toggle-verification', [AdminController::class, 'toggleVerification'])->name('admin.users.toggle-verification');
     Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
+
+    // Invoices routes
+    Route::resource('invoices', \App\Http\Controllers\AdminInvoiceController::class);
+    Route::get('/invoices/{invoice}/download/pdf', [\App\Http\Controllers\AdminInvoiceController::class, 'downloadPDF'])->name('invoices.pdf');
+    Route::post('/invoices/{invoice}/email', [\App\Http\Controllers\AdminInvoiceController::class, 'emailInvoice'])->name('invoices.email');
 });
+
+require __DIR__.'/auth.php';
 
 Route::get('/{username}', [PortfolioController::class, 'show'])->name('portfolio.show');
 
 // CV Download Routes
 Route::get('/{username}/cv/pdf', [App\Http\Controllers\CVController::class, 'downloadPDF'])->name('cv.download.pdf');
 Route::get('/{username}/cv/word', [App\Http\Controllers\CVController::class, 'downloadWord'])->name('cv.download.word');
+
+

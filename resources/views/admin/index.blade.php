@@ -130,18 +130,23 @@
             <!-- Admin Sidebar Menu -->
             <ul class="nav nav-pills flex-column mb-auto sidebar-menu" id="adminTabs" role="tablist">
                 <li class="nav-item mb-2">
-                    <button class="nav-link active text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="admin-dashboard-tab" data-bs-toggle="tab" data-bs-target="#adminDashboardPane" type="button" role="tab">
+                    <button class="nav-link @if(($active_tab ?? 'dashboard') === 'dashboard') active @endif text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="admin-dashboard-tab" data-bs-toggle="tab" data-bs-target="#adminDashboardPane" type="button" role="tab">
                         <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
                     </button>
                 </li>
                 <li class="nav-item mb-2">
-                    <button class="nav-link text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="admin-users-tab" data-bs-toggle="tab" data-bs-target="#adminUsersPane" type="button" role="tab">
+                    <button class="nav-link @if(($active_tab ?? 'dashboard') === 'users') active @endif text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="admin-users-tab" data-bs-toggle="tab" data-bs-target="#adminUsersPane" type="button" role="tab">
                         <i class="bi bi-people-fill"></i> <span>User Management</span>
                     </button>
                 </li>
                 <li class="nav-item mb-2">
-                    <button class="nav-link text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="admin-themes-tab" data-bs-toggle="tab" data-bs-target="#adminThemesPane" type="button" role="tab">
+                    <button class="nav-link @if(($active_tab ?? 'dashboard') === 'themes') active @endif text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="admin-themes-tab" data-bs-toggle="tab" data-bs-target="#adminThemesPane" type="button" role="tab">
                         <i class="bi bi-palette-fill"></i> <span>Theme Management</span>
+                    </button>
+                </li>
+                <li class="nav-item mb-2">
+                    <button class="nav-link @if(($active_tab ?? 'dashboard') === 'invoices') active @endif text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="admin-invoices-tab" data-bs-toggle="tab" data-bs-target="#adminInvoicesPane" type="button" role="tab">
+                        <i class="bi bi-file-earmark-text-fill"></i> <span>Invoice & Billing</span>
                     </button>
                 </li>
             </ul>
@@ -167,7 +172,7 @@
 
             <div class="tab-content" id="adminTabsContent">
                 <!-- 1. DASHBOARD TAB PANE -->
-                <div class="tab-pane fade show active" id="adminDashboardPane" role="tabpanel">
+                <div class="tab-pane fade @if(($active_tab ?? 'dashboard') === 'dashboard') show active @endif" id="adminDashboardPane" role="tabpanel">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 class="fw-bold mb-0">System Analytics</h3>
                         <button class="btn btn-primary btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#broadcastModal">
@@ -290,7 +295,7 @@
                 </div>
 
                 <!-- 2. USER MANAGEMENT TAB PANE -->
-                <div class="tab-pane fade" id="adminUsersPane" role="tabpanel">
+                <div class="tab-pane fade @if(($active_tab ?? 'dashboard') === 'users') show active @endif" id="adminUsersPane" role="tabpanel">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 class="fw-bold mb-0">User Management</h3>
                     </div>
@@ -456,7 +461,7 @@
                 </div>
 
                 <!-- 3. THEME MANAGEMENT TAB PANE -->
-                <div class="tab-pane fade" id="adminThemesPane" role="tabpanel">
+                <div class="tab-pane fade @if(($active_tab ?? 'dashboard') === 'themes') show active @endif" id="adminThemesPane" role="tabpanel">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 class="fw-bold mb-0">Theme Configuration</h3>
                         <button class="btn btn-primary btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#addThemeModal">+ Add Layout Theme</button>
@@ -496,6 +501,79 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                    </div>
+                </div>
+            </div>
+
+                <!-- 4. INVOICES TAB PANE -->
+                <div class="tab-pane fade @if(($active_tab ?? 'dashboard') === 'invoices') show active @endif" id="adminInvoicesPane" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-bold mb-0">Invoices & Billing</h3>
+                        <a href="{{ route('invoices.create') }}" class="btn btn-primary btn-sm shadow-sm"><i class="bi py-1 bi-plus-lg me-1"></i> Create Invoice</a>
+                    </div>
+
+                    <div class="card shadow-sm border-0 rounded-3 mb-4 bg-white">
+                        <div class="card-body p-0">
+                            @if($invoices->isEmpty())
+                                <div class="p-5 text-center text-muted">
+                                    <i class="bi bi-file-earmark-text text-secondary" style="font-size: 3rem;"></i>
+                                    <p class="mt-3 mb-0 fs-5">No invoices generated yet.</p>
+                                    <a href="{{ route('invoices.create') }}" class="btn btn-primary btn-sm mt-3"><i class="bi bi-plus-lg me-1"></i> Create Your First Invoice</a>
+                                </div>
+                            @else
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="ps-4">Invoice No</th>
+                                                <th>Client</th>
+                                                <th>Invoice Date</th>
+                                                <th>Due Date</th>
+                                                <th class="text-end">Total Amount</th>
+                                                <th class="text-center">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($invoices as $invoice)
+                                                <tr>
+                                                    <td class="fw-bold ps-4">
+                                                        <a href="{{ route('invoices.show', $invoice) }}" class="text-decoration-none">{{ $invoice->invoice_no }}</a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="fw-bold">{{ $invoice->client_name }}</div>
+                                                        <small class="text-muted">{{ $invoice->email }}</small>
+                                                    </td>
+                                                    <td>{{ $invoice->invoice_date->format('M d, Y') }}</td>
+                                                    <td>
+                                                        <span class="text-{{ $invoice->due_date->isPast() ? 'danger' : 'dark' }}">
+                                                            {{ $invoice->due_date->format('M d, Y') }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-end fw-bold">Rs. {{ number_format($invoice->total, 2) }}</td>
+                                                    <td class="text-center">
+                                                        <div class="d-inline-flex gap-2">
+                                                            <a href="{{ route('invoices.show', $invoice) }}" class="btn btn-sm btn-outline-secondary" title="View"><i class="bi bi-eye"></i></a>
+                                                            <a href="{{ route('invoices.pdf', $invoice) }}" class="btn btn-sm btn-outline-primary" title="Download PDF"><i class="bi bi-file-earmark-pdf"></i></a>
+                                                            <form action="{{ route('invoices.email', $invoice) }}" method="POST" onsubmit="return confirm('Are you sure you want to email this invoice to the client?');">
+                                                                @csrf
+                                                                <button class="btn btn-sm btn-outline-info" title="Email Invoice"><i class="bi bi-send"></i></button>
+                                                            </form>
+                                                            <form action="{{ route('invoices.destroy', $invoice) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this invoice?');">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="card-footer bg-white py-3">
+                                    {{ $invoices->links() }}
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
