@@ -661,7 +661,7 @@
     <header id="hero" class="py-5 bg-white border-bottom">
         <div class="container py-5">
             <div class="row align-items-center g-5">
-                <div class="col-lg-7 text-center text-lg-start">
+                <div class="col-lg-7 text-center text-lg-start order-2 order-lg-1">
                     <span class="badge text-uppercase tracking-wider px-3 py-2 mb-3 bg-secondary-subtle text-secondary fw-bold fs-7">{{ $profile['short_title'] }}</span>
                     <h1 class="display-3 fw-bold mb-4 serif-heading text-dark">{{ $profile['name'] }}</h1>
                     <div class="lead text-secondary mb-5 fs-5 lh-base">{!! $profile['intro'] !!}</div>
@@ -670,7 +670,7 @@
                         <a href="#contact" class="btn btn-outline-dark btn-lg px-4 py-3 rounded-pill">Contact Me</a>
                     </div>
                 </div>
-                <div class="col-lg-5 text-center">
+                <div class="col-lg-5 text-center order-1 order-lg-2">
                     <div class="position-relative d-inline-block">
                         <div class="absolute-border-decor"></div>
                         @if($portfolio->profile_image)
@@ -1253,7 +1253,7 @@
     <section id="hero" class="elegant-hero">
         <div class="elegant-container">
             <div class="row align-items-center g-5">
-                <div class="col-lg-7 text-start">
+                <div class="col-lg-7 text-start order-2 order-lg-1">
                     <div class="elegant-hero-subtitle">Executive Portfolio</div>
                     <h1 class="elegant-hero-title">{{ $user->name }}</h1>
                     <p class="elegant-hero-position">{{ $profile['short_title'] }}</p>
@@ -1263,7 +1263,7 @@
                         <a href="#contact" class="elegant-btn-outline">Get In Touch</a>
                     </div>
                 </div>
-                <div class="col-lg-5 text-center">
+                <div class="col-lg-5 text-center order-1 order-lg-2">
                     <div class="elegant-hero-image-wrapper">
                         <div class="elegant-hero-image-offset"></div>
                         <div class="elegant-hero-image">
