@@ -2728,11 +2728,27 @@
         }
         @media (max-width: 576px) {
             .display-3 {
-                font-size: 2.2rem !important;
+                font-size: 2.0rem !important;
             }
             .absolute-border-decor {
                 left: -10px;
                 top: 10px;
+            }
+            #hero {
+                padding: 1.5rem 0 !important;
+            }
+            #hero img {
+                max-width: 180px !important;
+                aspect-ratio: 1 / 1 !important;
+                border-radius: 50% !important;
+            }
+            #hero .container {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+            #hero .lead {
+                margin-bottom: 1.5rem !important;
+                font-size: 0.95rem !important;
             }
         }
         /* Mobile: allow badge text to wrap (Bootstrap sets white-space: nowrap by default) */
@@ -3192,6 +3208,32 @@
         @media (max-width: 576px) {
             .elegant-contact-sidebar, .elegant-contact-form-col {
                 padding: 2.5rem 1.5rem !important;
+            }
+            .elegant-hero {
+                padding-top: 80px !important;
+                padding-bottom: 2rem !important;
+                min-height: auto !important;
+            }
+            .elegant-hero-image {
+                width: 180px !important;
+                height: 180px !important;
+                border-radius: 50% !important;
+                border: 4px solid #ffffff !important;
+            }
+            .elegant-hero-image-offset {
+                display: none !important;
+            }
+            .elegant-hero-title {
+                font-size: 2.0rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+            .elegant-hero-position {
+                font-size: 1.25rem !important;
+                margin-bottom: 0.75rem !important;
+            }
+            .elegant-hero-desc {
+                font-size: 0.95rem !important;
+                margin-bottom: 1.25rem !important;
             }
         }
     </style>
