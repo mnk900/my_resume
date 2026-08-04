@@ -662,8 +662,10 @@
         <div class="container py-5">
             <div class="row align-items-center g-5">
                 <div class="col-lg-7 text-center text-lg-start order-2 order-lg-1">
-                    <span class="badge text-uppercase tracking-wider px-3 py-2 mb-3 bg-secondary-subtle text-secondary fw-bold fs-7">{{ $profile['short_title'] }}</span>
-                    <h1 class="display-3 fw-bold mb-4 serif-heading text-dark">{{ $profile['name'] }}</h1>
+                    <h1 class="display-3 fw-bold mb-3 serif-heading text-dark">{{ $profile['name'] }}</h1>
+                    <div class="mb-4">
+                        <span class="badge text-uppercase tracking-wider px-3 py-2 bg-secondary-subtle text-secondary fw-bold fs-7">{{ $profile['short_title'] }}</span>
+                    </div>
                     <div class="lead text-secondary mb-5 fs-5 lh-base">{!! $profile['intro'] !!}</div>
                     <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3">
                         <a href="#projects" class="btn btn-dark btn-lg px-4 py-3 rounded-pill shadow-sm">View Work</a>
