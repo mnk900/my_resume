@@ -2517,6 +2517,19 @@
         width: 40px;
         height: 40px;
     }
+    /* Prevent form from overflowing viewport on mobile */
+    .contact-form {
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    .contact-form input,
+    .contact-form textarea,
+    .contact-form button {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        max-width: 100% !important;
+    }
 
     /* Modal Mobile */
     .premium-modal-body {
