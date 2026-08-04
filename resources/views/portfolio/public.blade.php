@@ -1934,7 +1934,7 @@
         .hero-content { flex: 1.2; width: 100%; }
         .hero-image { flex: 0 0 380px; max-width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 30px; overflow: hidden; border: 4px solid var(--glass-border); box-shadow: var(--card-shadow); }
         .hero-image img { width: 100%; height: 100%; object-fit: cover; }
-        .hero-subtitle { color: var(--accent-color); font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 2px; }
+        .hero-subtitle { color: var(--accent-color); font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 2px; word-break: break-word; overflow-wrap: anywhere; white-space: normal; }
         .hero h1 { font-family: 'Outfit', sans-serif; font-size: clamp(2rem, 5vw, 4.5rem); line-height: 1.1; margin-bottom: 1.5rem; font-weight: 700; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
         .btn-primary { background: var(--accent-color); color: #000; padding: 1rem 2rem; border-radius: 5px; text-decoration: none; font-weight: 700; display: inline-block; transition: var(--transition); }
         .section-title { font-family: 'Outfit', sans-serif; font-size: clamp(1.8rem, 4vw, 2.5rem); margin-top: 0; margin-bottom: 2rem; position: relative; display: inline-block; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
@@ -2164,7 +2164,7 @@
         }
         .project-img { width: 100%; height: 250px; background: #1a1a1a; overflow: hidden; }
         .project-img img { width: 100%; height: 100%; object-fit: cover; }
-        .tag { background: rgba(0, 242, 255, 0.1); color: var(--accent-color); padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; margin-right: 5px; }
+        .tag { background: rgba(0, 242, 255, 0.1); color: var(--accent-color); padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; margin-right: 5px; word-break: break-word; overflow-wrap: anywhere; white-space: normal; max-width: 100%; }
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
         .bg-blob { position: fixed; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0, 242, 255, 0.1) 0%, transparent 70%); filter: blur(80px); z-index: -1; border-radius: 50%; }
@@ -2487,6 +2487,10 @@
     }
     .hero-subtitle {
         font-size: 0.9rem;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        white-space: normal;
+        max-width: 100%;
     }
  
     /* GRIDS */
@@ -2717,6 +2721,21 @@
                 top: 10px;
             }
         }
+        /* Mobile: allow badge text to wrap (Bootstrap sets white-space: nowrap by default) */
+        @media (max-width: 768px) {
+            .badge {
+                white-space: normal;
+                word-break: break-word;
+                overflow-wrap: anywhere;
+                max-width: 100%;
+                display: inline-block;
+                text-align: left;
+            }
+            /* Achievement pills - ensure they don't overflow flex container */
+            .d-flex.flex-wrap.gap-2 .badge {
+                max-width: calc(100vw - 3rem);
+            }
+        }
     </style>
     @endif
     @if($theme == 'elegant')
@@ -2810,7 +2829,7 @@
         .elegant-hero { min-height: 100vh; display: flex; align-items: center; padding-top: 120px; padding-bottom: 80px; background: radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.04), transparent 50%); position: relative; box-sizing: border-box; }
         .elegant-hero-subtitle { font-family: var(--elegant-font-sans); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 4px; font-weight: 700; color: var(--elegant-indigo); margin-bottom: 1rem; }
         .elegant-hero-title { font-family: var(--elegant-font-serif); font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 700; line-height: 1.1; color: var(--elegant-navy); margin-bottom: 1.5rem; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
-        .elegant-hero-position { font-family: var(--elegant-font-serif); font-size: 2rem; font-style: italic; color: var(--elegant-gold); margin-bottom: 1.5rem; font-weight: 400; }
+        .elegant-hero-position { font-family: var(--elegant-font-serif); font-size: 2rem; font-style: italic; color: var(--elegant-gold); margin-bottom: 1.5rem; font-weight: 400; word-break: break-word; overflow-wrap: anywhere; white-space: normal; }
         .elegant-hero-desc { font-size: 1.1rem; line-height: 1.8; color: var(--elegant-navy); opacity: 0.85; max-width: 600px; margin-bottom: 2rem; }
 
         .elegant-hero-image-wrapper { position: relative; display: inline-block; margin-top: 2rem; max-width: 100%; }
@@ -2879,7 +2898,7 @@
 
         /* Achievements */
         .elegant-tags-container { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; max-width: 900px; margin: 0 auto; }
-        .elegant-tag-badge { background: #ffffff; border: 1.5px solid var(--elegant-indigo); color: var(--elegant-navy); font-weight: 600; font-size: 0.95rem; padding: 12px 24px; border-radius: 4px; transition: var(--elegant-transition); display: flex; align-items: center; box-shadow: var(--elegant-shadow); }
+        .elegant-tag-badge { background: #ffffff; border: 1.5px solid var(--elegant-indigo); color: var(--elegant-navy); font-weight: 600; font-size: 0.95rem; padding: 12px 24px; border-radius: 4px; transition: var(--elegant-transition); display: flex; align-items: center; box-shadow: var(--elegant-shadow); word-break: break-word; overflow-wrap: anywhere; white-space: normal; min-width: 0; }
         .elegant-tag-badge:hover { transform: translateY(-2px); background: var(--elegant-indigo-light); border-color: var(--elegant-indigo); }
 
         /* Certifications & Trainings */
