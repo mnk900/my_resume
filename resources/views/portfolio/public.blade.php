@@ -2729,11 +2729,16 @@
                 overflow-wrap: anywhere;
                 max-width: 100%;
                 display: inline-block;
-                text-align: left;
             }
-            /* Achievement pills - ensure they don't overflow flex container */
+            /* Achievement pills: flex so icon stays top-left and text wraps below itself */
             .d-flex.flex-wrap.gap-2 .badge {
+                display: inline-flex;
+                align-items: flex-start;
                 max-width: calc(100vw - 3rem);
+            }
+            .d-flex.flex-wrap.gap-2 .badge i {
+                flex-shrink: 0;
+                margin-top: 2px; /* align icon with first line of text */
             }
         }
     </style>
