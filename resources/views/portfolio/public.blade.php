@@ -2740,9 +2740,12 @@
                 padding: 1.5rem 0 !important;
             }
             #hero img {
-                max-width: 180px !important;
-                aspect-ratio: 1 / 1 !important;
-                border-radius: 50% !important;
+                max-width: 260px !important;
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 380 / 420 !important;
+                border-radius: 1rem !important; /* rounded-4 equivalent */
+                object-fit: cover !important;
             }
             #hero .container {
                 padding-top: 1rem !important;
