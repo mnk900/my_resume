@@ -10,8 +10,7 @@ Kindly review the attached invoice and let us know if you have any questions or 
 Thank you for choosing our services.
 
 Best regards,<br>
-**ITechGB – Innovative Technologies Gilgit-Baltistan**<br>
-My Resume Cloud<br>
-info@itechgb.com<br>
-+92 346 9236762
+**My Resume Cloud**<br>
+info@myresume.cloud
+
 </x-mail::message>

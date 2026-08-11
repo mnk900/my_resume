@@ -129,7 +129,12 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\IsAdmin::class])->pr
 
 require __DIR__.'/auth.php';
 
+Route::get('/restricted', function () {
+    return view('errors.restricted');
+})->name('restricted');
+
 Route::get('/{username}', [PortfolioController::class, 'show'])->name('portfolio.show');
+
 
 // CV Download Routes
 Route::get('/{username}/cv/pdf', [App\Http\Controllers\CVController::class, 'downloadPDF'])->name('cv.download.pdf');

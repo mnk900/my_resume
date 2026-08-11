@@ -70,6 +70,7 @@
                 <i class="fas fa-bars"></i>
             </div>
             <ul>
+                <li><a href="/"><i class="fas fa-arrow-left me-1"></i> Main Site</a></li>
                 <li><a href="#hero">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#skills">Skills</a></li>
@@ -641,6 +642,7 @@
             </button>
             <div class="collapse navbar-collapse" id="classicNavbar">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
+                    <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="/"><i class="fas fa-arrow-left me-1"></i> Main Site</a></li>
                     <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#hero">Home</a></li>
                     <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#about">About</a></li>
                     <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#skills">Skills</a></li>
@@ -1222,6 +1224,7 @@
                 <i class="fas fa-bars"></i>
             </div>
             <ul>
+                <li><a href="/"><i class="fas fa-arrow-left me-1"></i> Main Site</a></li>
                 <li><a href="#hero">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#skills">Skills</a></li>
