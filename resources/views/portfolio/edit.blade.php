@@ -246,17 +246,17 @@
     <div class="career-workspace d-flex flex-column flex-lg-row">
         <!-- Sidebar Navigation -->
         <div class="workspace-sidebar p-3 d-none d-lg-block">
-            <div class="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom">
+            <div class="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom overflow-hidden">
                 @if($portfolio->profile_image)
-                    <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle border" style="width: 42px; height: 42px; object-fit: cover;">
+                    <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle border flex-shrink-0" style="width: 42px; height: 42px; object-fit: cover;">
                 @else
-                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold" style="width: 42px; height: 42px; background-color: var(--brand-primary); font-size: 1rem;">
+                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 42px; height: 42px; background-color: var(--brand-primary); font-size: 1rem;">
                         {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                     </div>
                 @endif
-                <div class="min-w-0">
-                    <h6 class="fw-bold text-dark mb-0 text-truncate" style="font-size: 0.9rem;">{{ Auth::user()->name }}</h6>
-                    <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">{{ $portfolio->position ?? 'Professional User' }}</small>
+                <div class="flex-grow-1 overflow-hidden" style="min-width: 0;">
+                    <h6 class="fw-bold text-dark mb-0 text-truncate" style="font-size: 0.9rem;" title="{{ Auth::user()->name }}">{{ Auth::user()->name }}</h6>
+                    <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;" title="{{ $portfolio->position ?? 'Professional User' }}">{{ $portfolio->position ?? 'Professional User' }}</small>
                 </div>
             </div>
 
@@ -638,17 +638,17 @@
                         <div class="col-lg-4">
                             <!-- Professional Profile Card -->
                             <div class="profile-identity-card p-4 mb-4">
-                                <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="d-flex align-items-center gap-3 mb-3 overflow-hidden">
                                     @if($portfolio->profile_image)
-                                        <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle border shadow-sm" style="width: 56px; height: 56px; object-fit: cover;">
+                                        <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle border shadow-sm flex-shrink-0" style="width: 56px; height: 56px; object-fit: cover;">
                                     @else
-                                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold fs-4" style="width: 56px; height: 56px; background-color: var(--brand-primary);">
+                                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold fs-4 flex-shrink-0" style="width: 56px; height: 56px; background-color: var(--brand-primary);">
                                             {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                                         </div>
                                     @endif
-                                    <div class="min-w-0 flex-grow-1">
-                                        <h6 class="fw-bold text-dark mb-0 text-truncate">{{ Auth::user()->name }}</h6>
-                                        <small class="text-primary fw-semibold d-block text-truncate" style="font-size: 0.78rem;">{{ $portfolio->position ?? 'Professional Candidate' }}</small>
+                                    <div class="flex-grow-1 overflow-hidden" style="min-width: 0;">
+                                        <h6 class="fw-bold text-dark mb-0 text-truncate" title="{{ Auth::user()->name }}">{{ Auth::user()->name }}</h6>
+                                        <small class="text-primary fw-semibold d-block text-truncate" style="font-size: 0.78rem;" title="{{ $portfolio->position ?? 'Professional Candidate' }}">{{ $portfolio->position ?? 'Professional Candidate' }}</small>
                                         <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;"><i class="fa-solid fa-location-dot me-1"></i>{{ $portfolio->city ?? 'Location' }}, {{ $portfolio->country ?? 'Pakistan' }}</small>
                                     </div>
                                 </div>
@@ -1311,7 +1311,7 @@
                                                         </h6>
                                                         <small class="text-muted d-block" style="font-size: 0.75rem;">
                                                             @if(isset($item->category)) Category: {{ $item->category }} ({{ $item->percentage }}%) @endif
-                                                            @if(isset($item->company)) {{ $item->company }} (@if($item->start_date){{ $item->start_date->format('M Y') }} – {{ $item->end_date ? $item->end_date->format('M Y') : 'Present' }}@endif) @endif
+                                                            @if(isset($item->company)) {{ $item->company }} (@if($item->start_date){{ \Carbon\Carbon::parse($item->start_date)->format('M Y') }} – {{ $item->end_date ? \Carbon\Carbon::parse($item->end_date)->format('M Y') : 'Present' }}@endif) @endif
                                                             @if(isset($item->institution)) {{ $item->institution }} @endif
                                                             @if(isset($item->issuer)) {{ $item->issuer }} @endif
                                                             @if(isset($item->client_name)) {{ $item->client_name }} @endif
@@ -1398,11 +1398,11 @@
                                                                 <div class="row g-2 mb-3">
                                                                     <div class="col-6">
                                                                         <label class="form-label fw-bold small text-dark">Start Date <span class="text-danger">*</span></label>
-                                                                        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $item->start_date ? $item->start_date->format('Y-m-d') : '' }}" required>
+                                                                        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $item->start_date ? \Carbon\Carbon::parse($item->start_date)->format('Y-m-d') : '' }}" required>
                                                                     </div>
                                                                     <div class="col-6">
                                                                         <label class="form-label fw-bold small text-dark">End Date (Leave blank if present)</label>
-                                                                        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $item->end_date ? $item->end_date->format('Y-m-d') : '' }}">
+                                                                        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $item->end_date ? \Carbon\Carbon::parse($item->end_date)->format('Y-m-d') : '' }}">
                                                                     </div>
                                                                 </div>
                                                                 <div class="mb-3">
@@ -1423,11 +1423,11 @@
                                                                 <div class="row g-2 mb-3">
                                                                     <div class="col-6">
                                                                         <label class="form-label fw-bold small text-dark">Start Date <span class="text-danger">*</span></label>
-                                                                        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $item->start_date ? $item->start_date->format('Y-m-d') : '' }}" required>
+                                                                        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $item->start_date ? \Carbon\Carbon::parse($item->start_date)->format('Y-m-d') : '' }}" required>
                                                                     </div>
                                                                     <div class="col-6">
                                                                         <label class="form-label fw-bold small text-dark">End Date <span class="text-danger">*</span></label>
-                                                                        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $item->end_date ? $item->end_date->format('Y-m-d') : '' }}" required>
+                                                                        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $item->end_date ? \Carbon\Carbon::parse($item->end_date)->format('Y-m-d') : '' }}" required>
                                                                     </div>
                                                                 </div>
                                                             @elseif($key === 'services')
@@ -1491,7 +1491,7 @@
                                                                     </div>
                                                                     <div class="col-6">
                                                                         <label class="form-label fw-bold small text-dark">Date <span class="text-danger">*</span></label>
-                                                                        <input type="date" name="date" class="form-control form-control-sm" value="{{ $item->date ? $item->date->format('Y-m-d') : '' }}" required>
+                                                                        <input type="date" name="date" class="form-control form-control-sm" value="{{ $item->date ? \Carbon\Carbon::parse($item->date)->format('Y-m-d') : '' }}" required>
                                                                     </div>
                                                                 </div>
                                                                 <div class="mb-3">
@@ -1635,7 +1635,7 @@
                                             <tr>
                                                 <td class="fw-bold text-dark">{{ $app->opportunity->title ?? 'Position' }}</td>
                                                 <td>{{ $app->opportunity->company->name ?? 'Company' }}</td>
-                                                <td>{{ $app->created_at->format('M d, Y') }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($app->created_at)->format('M d, Y') }}</td>
                                                 <td><span class="badge bg-primary">{{ ucfirst($app->status) }}</span></td>
                                                 <td class="text-end"><a href="{{ route('applications.show', $app->id) }}" class="btn btn-sm btn-outline-primary">View</a></td>
                                             </tr>
