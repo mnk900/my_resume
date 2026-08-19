@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Portfolio;
+use App\Models\Company;
+use App\Models\Opportunity;
+use App\Models\Connection;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -19,18 +22,15 @@ class HomeController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                // Search in Portfolio attributes
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%")
                   ->orWhere('position', 'like', "%{$search}%")
                   ->orWhere('organization', 'like', "%{$search}%")
                   ->orWhere('city', 'like', "%{$search}%")
                   ->orWhere('country', 'like', "%{$search}%")
-                  // Search in User name
                   ->orWhereHas('user', function($qu) use ($search) {
                       $qu->where('name', 'like', "%{$search}%");
                   })
-                  // Search in Sections (Skills, etc)
                   ->orWhereHas('sections', function($qs) use ($search) {
                       $qs->where('content', 'like', "%{$search}%")
                          ->orWhere('title', 'like', "%{$search}%");
@@ -38,7 +38,6 @@ class HomeController extends Controller
             });
         }
 
-        // Specific filters
         if ($request->filled('skills')) {
             $skills = $request->skills;
             $query->whereHas('sections', function($q) use ($skills) {
@@ -64,6 +63,45 @@ class HomeController extends Controller
 
         $portfolios = $query->latest()->paginate(12);
 
-        return view('welcome', compact('portfolios'));
+        // Real platform statistics from database
+        $stats = [
+            'total_portfolios' => Portfolio::where('is_active', true)->count(),
+            'total_companies' => Company::count(),
+            'total_opportunities' => Opportunity::where('status', 'published')->count(),
+            'total_connections' => Connection::where('status', 'accepted')->count(),
+        ];
+
+        // Recent live jobs for homepage showcase
+        $recentJobs = Opportunity::with('company')
+            ->where('status', 'published')
+            ->latest()
+            ->take(6)
+            ->get();
+
+        // Featured verified companies
+        $featuredCompanies = Company::withCount(['opportunities' => function($q) {
+                $q->where('status', 'published');
+            }])
+            ->latest()
+            ->take(4)
+            ->get();
+
+        // Featured candidate profiles
+        $featuredCandidates = User::whereHas('portfolio', function($q) {
+                $q->where('is_active', true);
+            })
+            ->where('role', '!=', 'admin')
+            ->with('portfolio', 'professionalPreference')
+            ->latest()
+            ->take(6)
+            ->get();
+
+        return view('welcome', compact(
+            'portfolios',
+            'stats',
+            'recentJobs',
+            'featuredCompanies',
+            'featuredCandidates'
+        ));
     }
 }

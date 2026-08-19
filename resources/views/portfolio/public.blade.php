@@ -1,5 +1,12 @@
 @php
-    $theme = $portfolio->theme ?? 'classic';
+    $rawTheme = strtolower(trim($portfolio->theme ?? 'classic'));
+    if (str_contains($rawTheme, 'premium')) {
+        $theme = 'premium';
+    } elseif (str_contains($rawTheme, 'elegant')) {
+        $theme = 'elegant';
+    } else {
+        $theme = 'classic';
+    }
     
     // Prepare $profile array to match the requested code structure
     $profile = [
@@ -73,28 +80,34 @@
                 <li><a href="/"><i class="fas fa-arrow-left me-1"></i> Main Site</a></li>
                 <li><a href="#hero">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#projects">Projects</a></li>
+                @if($portfolio->show_skills)<li><a href="#skills">Skills</a></li>@endif
+                @if($portfolio->show_experience)<li><a href="#experience">Experience</a></li>@endif
+                @if($portfolio->show_projects)<li><a href="#projects">Projects</a></li>@endif
+                
+                @if($portfolio->show_education || $portfolio->show_achievements || $portfolio->show_contributions || ($portfolio->show_publications && $portfolio->publications->isNotEmpty()))
                 <li class="dropdown">
                     <a href="javascript:void(0)" class="dropbtn">Academic <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
                     <div class="dropdown-content">
-                        <a href="#skills-extra">Education</a>
-                        <a href="#skills-extra">Achievements</a>
-                        <a href="#contributions">Contributions</a>
-                        <a href="#publications">Publications</a>
+                        @if($portfolio->show_education)<a href="#skills-extra">Education</a>@endif
+                        @if($portfolio->show_achievements)<a href="#skills-extra">Achievements</a>@endif
+                        @if($portfolio->show_contributions)<a href="#contributions">Contributions</a>@endif
+                        @if($portfolio->show_publications && $portfolio->publications->isNotEmpty())<a href="#publications">Publications</a>@endif
                     </div>
                 </li>
+                @endif
+                
+                @if($portfolio->show_services || $portfolio->show_certifications || $portfolio->show_trainings || $portfolio->show_testimonials || ($portfolio->show_media && $portfolio->media->isNotEmpty()))
                 <li class="dropdown">
                     <a href="javascript:void(0)" class="dropbtn">Professional <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
                     <div class="dropdown-content">
-                        <a href="#services">Services</a>
-                        <a href="#trainings">Certifications</a>
-                        <a href="#trainings">Trainings</a>
-                        <a href="#testimonials">Testimonials</a>
-                        <a href="#media">Media</a>
+                        @if($portfolio->show_services)<a href="#services">Services</a>@endif
+                        @if($portfolio->show_certifications)<a href="#trainings">Certifications</a>@endif
+                        @if($portfolio->show_trainings)<a href="#trainings">Trainings</a>@endif
+                        @if($portfolio->show_testimonials)<a href="#testimonials">Testimonials</a>@endif
+                        @if($portfolio->show_media && $portfolio->media->isNotEmpty())<a href="#media">Media</a>@endif
                     </div>
                 </li>
+                @endif
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
@@ -645,14 +658,14 @@
                     <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="/"><i class="fas fa-arrow-left me-1"></i> Main Site</a></li>
                     <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#hero">Home</a></li>
                     <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#about">About</a></li>
-                    <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#skills">Skills</a></li>
-                    <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#services">Services</a></li>
-                    <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#experience">Experience</a></li>
-                    <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#education">Education</a></li>
-                    <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#projects">Projects</a></li>
-                    <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#testimonials">Testimonials</a></li>
-                    <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#media">Media</a></li>
-                    <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#publications">Publications</a></li>
+                    @if($portfolio->show_skills)<li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#skills">Skills</a></li>@endif
+                    @if($portfolio->show_services)<li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#services">Services</a></li>@endif
+                    @if($portfolio->show_experience)<li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#experience">Experience</a></li>@endif
+                    @if($portfolio->show_education)<li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#education">Education</a></li>@endif
+                    @if($portfolio->show_projects)<li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#projects">Projects</a></li>@endif
+                    @if($portfolio->show_testimonials)<li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#testimonials">Testimonials</a></li>@endif
+                    @if($portfolio->show_media && $portfolio->media->isNotEmpty())<li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#media">Media</a></li>@endif
+                    @if($portfolio->show_publications && $portfolio->publications->isNotEmpty())<li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#publications">Publications</a></li>@endif
                     <li class="nav-item"><a class="nav-link text-secondary fw-semibold" href="#contact">Contact</a></li>
                 </ul>
             </div>
@@ -1227,28 +1240,34 @@
                 <li><a href="/"><i class="fas fa-arrow-left me-1"></i> Main Site</a></li>
                 <li><a href="#hero">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#experience">Experience</a></li>
-                <li><a href="#projects">Projects</a></li>
+                @if($portfolio->show_skills)<li><a href="#skills">Skills</a></li>@endif
+                @if($portfolio->show_experience)<li><a href="#experience">Experience</a></li>@endif
+                @if($portfolio->show_projects)<li><a href="#projects">Projects</a></li>@endif
+                
+                @if($portfolio->show_education || $portfolio->show_achievements || $portfolio->show_contributions || ($portfolio->show_publications && $portfolio->publications->isNotEmpty()))
                 <li class="elegant-dropdown">
                     <a href="javascript:void(0)" class="elegant-dropbtn">Academic <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
                     <div class="elegant-dropdown-content">
-                        <a href="#education">Education</a>
-                        <a href="#skills-extra">Achievements</a>
-                        <a href="#contributions">Contributions</a>
-                        <a href="#publications">Publications</a>
+                        @if($portfolio->show_education)<a href="#education">Education</a>@endif
+                        @if($portfolio->show_achievements)<a href="#skills-extra">Achievements</a>@endif
+                        @if($portfolio->show_contributions)<a href="#contributions">Contributions</a>@endif
+                        @if($portfolio->show_publications && $portfolio->publications->isNotEmpty())<a href="#publications">Publications</a>@endif
                     </div>
                 </li>
+                @endif
+                
+                @if($portfolio->show_services || $portfolio->show_certifications || $portfolio->show_trainings || $portfolio->show_testimonials || ($portfolio->show_media && $portfolio->media->isNotEmpty()))
                 <li class="elegant-dropdown">
                     <a href="javascript:void(0)" class="elegant-dropbtn">Professional <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
                     <div class="elegant-dropdown-content">
-                        <a href="#services">Services</a>
-                        <a href="#trainings">Certifications</a>
-                        <a href="#trainings">Trainings</a>
-                        <a href="#testimonials">Testimonials</a>
-                        <a href="#media">Media</a>
+                        @if($portfolio->show_services)<a href="#services">Services</a>@endif
+                        @if($portfolio->show_certifications)<a href="#trainings">Certifications</a>@endif
+                        @if($portfolio->show_trainings)<a href="#trainings">Trainings</a>@endif
+                        @if($portfolio->show_testimonials)<a href="#testimonials">Testimonials</a>@endif
+                        @if($portfolio->show_media && $portfolio->media->isNotEmpty())<a href="#media">Media</a>@endif
                     </div>
                 </li>
+                @endif
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>

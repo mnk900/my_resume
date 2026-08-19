@@ -26,21 +26,7 @@ class AdminInvoiceController extends Controller
         $invoices = Invoice::with('user')->latest()->paginate(10);
         $users = User::where('role', '!=', 'admin')->with('portfolio')->get();
         
-        return view('admin.index', [
-            'invoices' => $invoices,
-            'users' => $users,
-            // Pass standard variables expected by admin.index
-            'users_list' => User::with('portfolio')->latest()->get(),
-            'themes' => \App\Models\Theme::all(),
-            'messages' => \App\Models\Message::with('portfolio.user')->latest()->take(5)->get(),
-            'stats' => [
-                'total_users' => User::count(),
-                'active_portfolios' => \App\Models\Portfolio::where('is_active', true)->count(),
-                'verified_users' => User::whereNotNull('email_verified_at')->count(),
-                'total_themes' => \App\Models\Theme::count(),
-            ],
-            'active_tab' => 'invoices'
-        ]);
+        return view('admin.invoices.index', compact('invoices', 'users'));
     }
 
     /**

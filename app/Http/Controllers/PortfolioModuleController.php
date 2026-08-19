@@ -47,7 +47,7 @@ class PortfolioModuleController extends Controller
         ]);
         Auth::user()->portfolio->skills()->create($request->only(['name', 'percentage', 'category', 'icon']));
         $this->bustCache();
-        return back()->with('status', 'skill-added');
+        return back()->with('status', 'skill-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeProject(Request $request)
@@ -71,7 +71,7 @@ class PortfolioModuleController extends Controller
 
         Auth::user()->portfolio->projects()->create($data);
         $this->bustCache();
-        return back()->with('status', 'project-added');
+        return back()->with('status', 'project-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeExperience(Request $request)
@@ -85,7 +85,7 @@ class PortfolioModuleController extends Controller
         ]);
         Auth::user()->portfolio->experiences()->create($request->only(['company', 'position', 'start_date', 'end_date', 'description']));
         $this->bustCache();
-        return back()->with('status', 'experience-added');
+        return back()->with('status', 'experience-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeService(Request $request)
@@ -93,7 +93,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['title' => 'required|string', 'description' => 'required|string']);
         Auth::user()->portfolio->services()->create($request->all());
         $this->bustCache();
-        return back()->with('status', 'service-added');
+        return back()->with('status', 'service-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeCertification(Request $request)
@@ -101,7 +101,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['name' => 'required|string', 'issuer' => 'required|string']);
         Auth::user()->portfolio->certifications()->create($request->all());
         $this->bustCache();
-        return back()->with('status', 'certification-added');
+        return back()->with('status', 'certification-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeEducation(Request $request)
@@ -114,7 +114,7 @@ class PortfolioModuleController extends Controller
         ]);
         Auth::user()->portfolio->education()->create($request->only(['institution', 'degree', 'start_date', 'end_date']));
         $this->bustCache();
-        return back()->with('status', 'education-added');
+        return back()->with('status', 'education-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeAchievement(Request $request)
@@ -122,7 +122,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['title' => 'required|string']);
         Auth::user()->portfolio->achievements()->create($request->all());
         $this->bustCache();
-        return back()->with('status', 'achievement-added');
+        return back()->with('status', 'achievement-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeContribution(Request $request)
@@ -130,7 +130,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['title' => 'required|string', 'description' => 'required|string']);
         Auth::user()->portfolio->contributions()->create($request->all());
         $this->bustCache();
-        return back()->with('status', 'contribution-added');
+        return back()->with('status', 'contribution-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeTraining(Request $request)
@@ -138,7 +138,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['title' => 'required|string', 'institution' => 'required|string']);
         Auth::user()->portfolio->trainings()->create($request->all());
         $this->bustCache();
-        return back()->with('status', 'training-added');
+        return back()->with('status', 'training-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeTestimonial(Request $request)
@@ -146,7 +146,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['client_name' => 'required|string', 'content' => 'required|string']);
         Auth::user()->portfolio->testimonials()->create($request->all());
         $this->bustCache();
-        return back()->with('status', 'testimonial-added');
+        return back()->with('status', 'testimonial-added')->with('active_tab', 'cmsPane');
     }
 
     // Update methods
@@ -161,7 +161,7 @@ class PortfolioModuleController extends Controller
         ]);
         $skill->update($request->only(['name', 'percentage', 'category', 'icon']));
         $this->bustCache();
-        return back()->with('status', 'skill-updated');
+        return back()->with('status', 'skill-updated')->with('active_tab', 'cmsPane');
     }
 
     public function updateProject(Request $request, Project $project)
@@ -176,12 +176,15 @@ class PortfolioModuleController extends Controller
 
         $data = $request->only(['title', 'description', 'link']);
         if ($request->hasFile('image')) {
+            if ($project->image_path) {
+                Storage::disk('public')->delete($project->image_path);
+            }
             $data['image_path'] = $request->file('image')->store('projects', 'public');
         }
 
         $project->update($data);
         $this->bustCache();
-        return back()->with('status', 'project-updated');
+        return back()->with('status', 'project-updated')->with('active_tab', 'cmsPane');
     }
 
     public function updateExperience(Request $request, Experience $experience)
@@ -196,7 +199,7 @@ class PortfolioModuleController extends Controller
         ]);
         $experience->update($request->only(['company', 'position', 'start_date', 'end_date', 'description']));
         $this->bustCache();
-        return back()->with('status', 'experience-updated');
+        return back()->with('status', 'experience-updated')->with('active_tab', 'cmsPane');
     }
 
     public function updateService(Request $request, Service $service)
@@ -205,7 +208,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['title' => 'required|string|max:255', 'description' => 'required|string']);
         $service->update($request->only(['title', 'description']));
         $this->bustCache();
-        return back()->with('status', 'service-updated');
+        return back()->with('status', 'service-updated')->with('active_tab', 'cmsPane');
     }
 
     public function updateCertification(Request $request, Certification $certification)
@@ -214,7 +217,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['name' => 'required|string|max:255', 'issuer' => 'required|string|max:255']);
         $certification->update($request->only(['name', 'issuer']));
         $this->bustCache();
-        return back()->with('status', 'certification-updated');
+        return back()->with('status', 'certification-updated')->with('active_tab', 'cmsPane');
     }
 
     public function updateEducation(Request $request, Education $education)
@@ -228,7 +231,7 @@ class PortfolioModuleController extends Controller
         ]);
         $education->update($request->only(['institution', 'degree', 'start_date', 'end_date']));
         $this->bustCache();
-        return back()->with('status', 'education-updated');
+        return back()->with('status', 'education-updated')->with('active_tab', 'cmsPane');
     }
 
     public function updateAchievement(Request $request, Achievement $achievement)
@@ -237,7 +240,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['title' => 'required|string|max:255']);
         $achievement->update($request->only(['title']));
         $this->bustCache();
-        return back()->with('status', 'achievement-updated');
+        return back()->with('status', 'achievement-updated')->with('active_tab', 'cmsPane');
     }
 
     public function updateContribution(Request $request, Contribution $contribution)
@@ -246,7 +249,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['title' => 'required|string|max:255', 'description' => 'required|string']);
         $contribution->update($request->only(['title', 'description']));
         $this->bustCache();
-        return back()->with('status', 'contribution-updated');
+        return back()->with('status', 'contribution-updated')->with('active_tab', 'cmsPane');
     }
 
     public function updateTestimonial(Request $request, Testimonial $testimonial)
@@ -255,7 +258,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['client_name' => 'required|string|max:255', 'content' => 'required|string']);
         $testimonial->update($request->only(['client_name', 'content']));
         $this->bustCache();
-        return back()->with('status', 'testimonial-updated');
+        return back()->with('status', 'testimonial-updated')->with('active_tab', 'cmsPane');
     }
 
     public function updateTraining(Request $request, Training $training)
@@ -264,7 +267,7 @@ class PortfolioModuleController extends Controller
         $request->validate(['title' => 'required|string|max:255', 'institution' => 'required|string|max:255']);
         $training->update($request->only(['title', 'institution']));
         $this->bustCache();
-        return back()->with('status', 'training-updated');
+        return back()->with('status', 'training-updated')->with('active_tab', 'cmsPane');
     }
 
     // Destroy methods
@@ -273,7 +276,7 @@ class PortfolioModuleController extends Controller
         $this->authorizePortfolioOwner($skill);
         $skill->delete();
         $this->bustCache();
-        return back()->with('status', 'skill-deleted');
+        return back()->with('status', 'skill-deleted')->with('active_tab', 'cmsPane');
     }
 
     public function destroyProject(Project $project)
@@ -281,7 +284,7 @@ class PortfolioModuleController extends Controller
         $this->authorizePortfolioOwner($project);
         $project->delete();
         $this->bustCache();
-        return back()->with('status', 'project-deleted');
+        return back()->with('status', 'project-deleted')->with('active_tab', 'cmsPane');
     }
 
     public function destroyExperience(Experience $experience)
@@ -289,7 +292,7 @@ class PortfolioModuleController extends Controller
         $this->authorizePortfolioOwner($experience);
         $experience->delete();
         $this->bustCache();
-        return back()->with('status', 'experience-deleted');
+        return back()->with('status', 'experience-deleted')->with('active_tab', 'cmsPane');
     }
 
     public function destroyService(Service $service)
@@ -297,7 +300,7 @@ class PortfolioModuleController extends Controller
         $this->authorizePortfolioOwner($service);
         $service->delete();
         $this->bustCache();
-        return back()->with('status', 'service-deleted');
+        return back()->with('status', 'service-deleted')->with('active_tab', 'cmsPane');
     }
 
     public function destroyCertification(Certification $certification)
@@ -305,7 +308,7 @@ class PortfolioModuleController extends Controller
         $this->authorizePortfolioOwner($certification);
         $certification->delete();
         $this->bustCache();
-        return back()->with('status', 'certification-deleted');
+        return back()->with('status', 'certification-deleted')->with('active_tab', 'cmsPane');
     }
 
     public function destroyEducation(Education $education)
@@ -313,7 +316,7 @@ class PortfolioModuleController extends Controller
         $this->authorizePortfolioOwner($education);
         $education->delete();
         $this->bustCache();
-        return back()->with('status', 'education-deleted');
+        return back()->with('status', 'education-deleted')->with('active_tab', 'cmsPane');
     }
 
     public function destroyAchievement(Achievement $achievement)
@@ -321,7 +324,7 @@ class PortfolioModuleController extends Controller
         $this->authorizePortfolioOwner($achievement);
         $achievement->delete();
         $this->bustCache();
-        return back()->with('status', 'achievement-deleted');
+        return back()->with('status', 'achievement-deleted')->with('active_tab', 'cmsPane');
     }
 
     public function destroyContribution(Contribution $contribution)
@@ -329,7 +332,7 @@ class PortfolioModuleController extends Controller
         $this->authorizePortfolioOwner($contribution);
         $contribution->delete();
         $this->bustCache();
-        return back()->with('status', 'contribution-deleted');
+        return back()->with('status', 'contribution-deleted')->with('active_tab', 'cmsPane');
     }
 
     public function destroyTestimonial(Testimonial $testimonial)
@@ -337,7 +340,7 @@ class PortfolioModuleController extends Controller
         $this->authorizePortfolioOwner($testimonial);
         $testimonial->delete();
         $this->bustCache();
-        return back()->with('status', 'testimonial-deleted');
+        return back()->with('status', 'testimonial-deleted')->with('active_tab', 'cmsPane');
     }
 
     public function destroyTraining(Training $training)
@@ -345,7 +348,7 @@ class PortfolioModuleController extends Controller
         $this->authorizePortfolioOwner($training);
         $training->delete();
         $this->bustCache();
-        return back()->with('status', 'training-deleted');
+        return back()->with('status', 'training-deleted')->with('active_tab', 'cmsPane');
     }
 
     // Media CRUD
@@ -365,7 +368,7 @@ class PortfolioModuleController extends Controller
         ]));
 
         $this->bustCache();
-        return back()->with('status', 'media-added');
+        return back()->with('status', 'media-added')->with('active_tab', 'cmsPane');
     }
 
     public function updateMedia(Request $request, Media $media)
@@ -386,7 +389,7 @@ class PortfolioModuleController extends Controller
         ]));
 
         $this->bustCache();
-        return back()->with('status', 'media-updated');
+        return back()->with('status', 'media-updated')->with('active_tab', 'cmsPane');
     }
 
     public function destroyMedia(Media $media)
@@ -394,7 +397,7 @@ class PortfolioModuleController extends Controller
         $this->authorizePortfolioOwner($media);
         $media->delete();
         $this->bustCache();
-        return back()->with('status', 'media-deleted');
+        return back()->with('status', 'media-deleted')->with('active_tab', 'cmsPane');
     }
 
     // Publication CRUD
@@ -418,7 +421,7 @@ class PortfolioModuleController extends Controller
         Auth::user()->portfolio->publications()->create($data);
 
         $this->bustCache();
-        return back()->with('status', 'publication-added');
+        return back()->with('status', 'publication-added')->with('active_tab', 'cmsPane');
     }
 
     public function updatePublication(Request $request, Publication $publication)
@@ -446,7 +449,7 @@ class PortfolioModuleController extends Controller
         $publication->update($data);
 
         $this->bustCache();
-        return back()->with('status', 'publication-updated');
+        return back()->with('status', 'publication-updated')->with('active_tab', 'cmsPane');
     }
 
     public function destroyPublication(Publication $publication)
@@ -459,6 +462,6 @@ class PortfolioModuleController extends Controller
 
         $publication->delete();
         $this->bustCache();
-        return back()->with('status', 'publication-deleted');
+        return back()->with('status', 'publication-deleted')->with('active_tab', 'cmsPane');
     }
 }

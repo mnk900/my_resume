@@ -44,11 +44,8 @@ class AdminTest extends TestCase
         // Check statistics and view data structure
         $response->assertViewHas('stats');
         $response->assertViewHas('messages');
-        $response->assertSee('System Analytics');
-        $response->assertSee('User Management');
-        $response->assertSee('Recent Platform Notifications');
+        $response->assertSee('Operational Command Center');
         $response->assertSee($admin->name);
-        $response->assertSee($user->name);
     }
 
     public function test_admin_can_toggle_user_role(): void

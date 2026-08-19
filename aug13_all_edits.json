@@ -1,0 +1,174 @@
+{
+    "2311": [
+        {
+            "name": "multi_replace_file_content",
+            "args": {
+                "Description": "Connections section is now hidden by default (d-none). The sidebar 'Connections' link reveals it via JS and smooth-scrolls to it. No separate tab \u2014 the section lives at the bottom of the Dashboard content and is toggled on demand.",
+                "Instruction": "1) Add back the sidebar Connections link. 2) Add id and d-none to the connections section wrapper. 3) Add JS to handle reveal and scroll on link click.",
+                "ReplacementChunks": [
+                    {
+                        "AllowMultiple": false,
+                        "EndLine": 160,
+                        "ReplacementContent": "                            <li class=\"nav-item\">\n                                <a class=\"nav-link\" href=\"#connectionsSection\" id=\"sidebarConnectionsLink\" onclick=\"showConnectionsSection(event)\">\n                                    <i class=\"fa-solid fa-users me-2 text-primary\"><\/i> Connections ({{ $connectionsCount }})\n                                <\/a>\n                            <\/li>",
+                        "StartLine": 157,
+                        "TargetContent": "\n                         <\/ul>"
+                    },
+                    {
+                        "AllowMultiple": false,
+                        "EndLine": 441,
+                        "ReplacementContent": "                        <!-- PROFESSIONAL CONNECTIONS SECTION (hidden until sidebar link clicked) -->\n                        <div id=\"connectionsSection\" class=\"mt-4 pt-2 border-top d-none\">",
+                        "StartLine": 439,
+                        "TargetContent": "                        <!-- PROFESSIONAL CONNECTIONS SECTION (inline in dashboard) -->\n                        <div class=\"mt-4 pt-2 border-top\">"
+                    },
+                    {
+                        "AllowMultiple": false,
+                        "EndLine": 2380,
+                        "ReplacementContent": "        document.addEventListener('DOMContentLoaded', function () {\n            function activateCmsTab() {",
+                        "StartLine": 2380,
+                        "TargetContent": "        document.addEventListener('DOMContentLoaded', function () {\n            function activateCmsTab() {"
+                    }
+                ],
+                "TargetFile": "c:\\xampp\\htdocs\\my_resume\\resources\\views\\portfolio\\edit.blade.php",
+                "toolAction": "Updating connections section to be hidden by default",
+                "toolSummary": "Hiding connections section and adding sidebar trigger"
+            }
+        }
+    ],
+    "2315": [
+        {
+            "name": "replace_file_content",
+            "args": {
+                "AllowMultiple": false,
+                "Description": "Added back the Connections sidebar link that reveals and scrolls to the hidden connections section in the dashboard tab.",
+                "EndLine": 158,
+                "Instruction": "Add the Connections nav link back before the closing ul tag.",
+                "ReplacementContent": "                            <li class=\"nav-item\">\n                                <a class=\"nav-link\" href=\"#connectionsSection\" id=\"sidebarConnectionsLink\" onclick=\"showConnectionsSection(event)\">\n                                    <i class=\"fa-solid fa-users me-2 text-primary\"><\/i> Connections ({{ $connectionsCount }})\n                                <\/a>\n                            <\/li>\n\n                        <\/ul>",
+                "StartLine": 157,
+                "TargetContent": "\n                        <\/ul>",
+                "TargetFile": "c:\\xampp\\htdocs\\my_resume\\resources\\views\\portfolio\\edit.blade.php",
+                "toolAction": "Adding Connections sidebar link",
+                "toolSummary": "Inserting Connections nav link in sidebar"
+            }
+        }
+    ],
+    "2321": [
+        {
+            "name": "replace_file_content",
+            "args": {
+                "AllowMultiple": false,
+                "Description": "Added showConnectionsSection() JS function: switches to the dashboard tab first, then reveals the hidden connections section and smooth-scrolls to it. Also marks the sidebar link as active.",
+                "EndLine": 2412,
+                "Instruction": "Append the showConnectionsSection JS function after the existing script block.",
+                "ReplacementContent": "             @endif\n        });\n    <\/script>\n\n    <script>\n        function showConnectionsSection(e) {\n            e.preventDefault();\n\n            \/\/ 1. Make sure the dashboard tab is active\n            var dashboardLink = document.querySelector('.sidebar-menu a[href=\"#dashboardTab\"], .sidebar-menu a[data-bs-target=\"#dashboardTab\"]');\n            if (!dashboardLink) {\n                \/\/ Fallback: find the tab pane directly and activate it\n                var dashboardPane = document.getElementById('dashboardTab');\n                if (dashboardPane && typeof bootstrap !== 'undefined') {\n                    var bsTab = bootstrap.Tab.getOrCreateInstance(\n                        document.querySelector('[data-bs-target=\"#dashboardTab\"]') ||\n                        document.querySelector('[href=\"#dashboardTab\"]')\n                    );\n                    if (bsTab) bsTab.show();\n                }\n                if (dashboardPane) {\n                    dashboardPane.classList.add('show', 'active');\n                    \/\/ Hide other panes\n                    document.querySelectorAll('.tab-content > .tab-pane').forEach(function(p) {\n                        if (p !== dashboardPane) { p.classList.remove('show', 'active'); }\n                    });\n                }\n            } else {\n                dashboardLink.click();\n            }\n\n            \/\/ 2. Reveal the connections section\n            var section = document.getElementById('connectionsSection');\n            if (section) {\n                section.classList.remove('d-none');\n            }\n\n            \/\/ 3. Mark sidebar link active\n            document.querySelectorAll('.sidebar-menu .nav-link').forEach(function(l) { l.classList.remove('active'); });\n            document.getElementById('sidebarConnectionsLink').classList.add('active');\n\n            \/\/ 4. Smooth scroll to it (slight delay so the DOM paints first)\n            setTimeout(function() {\n                if (section) {\n                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });\n                }\n            }, 100);\n        }\n    <\/script>\n<\/x-app-layout>",
+                "StartLine": 2408,
+                "TargetContent": "             @endif\n        });\n    <\/script>\n<\/x-app-layout>",
+                "TargetFile": "c:\\xampp\\htdocs\\my_resume\\resources\\views\\portfolio\\edit.blade.php",
+                "toolAction": "Adding showConnectionsSection JS function",
+                "toolSummary": "Inserting JS reveal and scroll logic for connections section"
+            }
+        }
+    ],
+    "2336": [
+        {
+            "name": "multi_replace_file_content",
+            "args": {
+                "Description": "Completely removed the Professional Connections section \u2014 the sidebar link, the entire hidden #connectionsSection div, and the showConnectionsSection JS function.",
+                "Instruction": "1. Remove sidebar Connections link. 2. Remove #connectionsSection div and its comment. 3. Remove showConnectionsSection script block.",
+                "ReplacementChunks": [
+                    {
+                        "AllowMultiple": false,
+                        "EndLine": 162,
+                        "ReplacementContent": "",
+                        "StartLine": 157,
+                        "TargetContent": "                            <li class=\"nav-item\">\n                                <a class=\"nav-link\" href=\"#connectionsSection\" id=\"sidebarConnectionsLink\" onclick=\"showConnectionsSection(event)\">\n                                    <i class=\"fa-solid fa-users me-2 text-primary\"><\/i> Connections ({{ $connectionsCount }})\n                                <\/a>\n                            <\/li>\n"
+                    },
+                    {
+                        "AllowMultiple": false,
+                        "EndLine": 625,
+                        "ReplacementContent": "",
+                        "StartLine": 443,
+                        "TargetContent": "\n                        <!-- PROFESSIONAL CONNECTIONS SECTION (hidden until sidebar link clicked) -->\n                        <div id=\"connectionsSection\" class=\"mt-4 pt-2 border-top d-none\">"
+                    },
+                    {
+                        "AllowMultiple": false,
+                        "EndLine": 2456,
+                        "ReplacementContent": "",
+                        "StartLine": 2411,
+                        "TargetContent": "\n    <script>\n        function showConnectionsSection(e) {\n            e.preventDefault();\n\n            \/\/ 1. Make sure the dashboard tab is active\n            var dashboardLink = document.querySelector('.sidebar-menu a[href=\"#dashboardTab\"], .sidebar-menu a[data-bs-target=\"#dashboardTab\"]');\n            if (!dashboardLink) {\n                \/\/ Fallback: find the tab pane directly and activate it\n                var dashboardPane = document.getElementById('dashboardTab');\n                if (dashboardPane && typeof bootstrap !== 'undefined') {\n                    var bsTab = bootstrap.Tab.getOrCreateInstance(\n                        document.querySelector('[data-bs-target=\"#dashboardTab\"]') ||\n                        document.querySelector('[href=\"#dashboardTab\"]')\n                    );\n                    if (bsTab) bsTab.show();\n                }\n                if (dashboardPane) {\n                    dashboardPane.classList.add('show', 'active');\n                    \/\/ Hide other panes\n                    document.querySelectorAll('.tab-content > .tab-pane').forEach(function(p) {\n                        if (p !== dashboardPane) { p.classList.remove('show', 'active'); }\n                    });\n                }\n            } else {\n                dashboardLink.click();\n            }\n\n            \/\/ 2. Reveal the connections section\n            var section = document.getElementById('connectionsSection');\n            if (section) {\n                section.classList.remove('d-none');\n            }\n\n            \/\/ 3. Mark sidebar link active\n            document.querySelectorAll('.sidebar-menu .nav-link').forEach(function(l) { l.classList.remove('active'); });\n            document.getElementById('sidebarConnectionsLink').classList.add('active');\n\n            \/\/ 4. Smooth scroll to it (slight delay so the DOM paints first)\n            setTimeout(function() {\n                if (section) {\n                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });\n                }\n            }, 100);\n        }\n    <\/script>"
+                    }
+                ],
+                "TargetFile": "c:\\xampp\\htdocs\\my_resume\\resources\\views\\portfolio\\edit.blade.php",
+                "toolAction": "Removing connections section, sidebar link, and JS function",
+                "toolSummary": "Deleting all Professional Connections elements from edit.blade.php"
+            }
+        }
+    ],
+    "2342": [
+        {
+            "name": "replace_file_content",
+            "args": {
+                "AllowMultiple": false,
+                "Description": "Removed all orphaned Professional Connections HTML content from the dashboard tab.",
+                "EndLine": 618,
+                "Instruction": "Remove the entire orphaned connections section content from line 438 to 618.",
+                "ReplacementContent": "\n                    <\/div>{{-- end dashboardTab --}}",
+                "StartLine": 438,
+                "TargetContent": "\n                            <div class=\"d-flex align-items-center justify-content-between mb-3\">\n                                <h2 class=\"h5 fw-bold text-dark mb-0\"><i class=\"fa-solid fa-users me-2 text-primary\"><\/i> Professional Connections<\/h2>\n                                <a href=\"{{ route('talent.index') }}\" class=\"btn btn-primary btn-sm rounded-pill px-3\">\n                                    <i class=\"fa-solid fa-user-plus me-1\"><\/i> Find People\n                                <\/a>\n                            <\/div>\n\n                            <!-- Stats Row -->\n                            <div class=\"row g-3 mb-4\">\n                                <div class=\"col-4\">\n                                    <div class=\"metric-card text-center\">\n                                        <div class=\"fw-bold text-primary\" style=\"font-size: 1.5rem; font-family: var(--font-headings);\">{{ $connectionsCount }}<\/div>\n                                        <div class=\"text-muted small fw-semibold\">Connections<\/div>\n                                    <\/div>\n                                <\/div>\n                                <div class=\"col-4\">\n                                    <div class=\"metric-card text-center\">\n                                        <div class=\"fw-bold text-warning\" style=\"font-size: 1.5rem; font-family: var(--font-headings);\">{{ $pendingReceived->count() }}<\/div>\n                                        <div class=\"text-muted small fw-semibold\">Pending Received<\/div>\n                                    <\/div>\n                                <\/div>\n                                <div class=\"col-4\">\n                                    <div class=\"metric-card text-center\">\n                                        <div class=\"fw-bold text-info\" style=\"font-size: 1.5rem; font-family: var(--font-headings);\">{{ $pendingSent->count() }}<\/div>\n                                        <div class=\"text-muted small fw-semibold\">Sent Awaiting<\/div>\n                                    <\/div>\n                                <\/div>\n                            <\/div>\n\n                            <!-- Pending Received Invitations -->\n                            @if($pendingReceived->isNotEmpty())\n                            <div class=\"card border-0 shadow-sm rounded-3 mb-3\">\n                                <div class=\"card-header bg-warning bg-opacity-10 border-0 rounded-top-3 py-2 px-4 d-flex align-items-center gap-2\">\n                                    <i class=\"fa-solid fa-bell text-warning\"><\/i>\n                                    <span class=\"fw-bold text-dark small\">Pending Invitations \u2014 {{ $pendingReceived->count() }} new<\/span>\n                                <\/div>\n                                <div class=\"card-body p-3 d-flex flex-column gap-2\">\n                                    @foreach($pendingReceived as $conn)\n                                    <div class=\"d-flex align-items-center gap-3 p-3 rounded-3 border bg-light-subtle\">\n                                        <div class=\"rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0\"\n                                             style=\"width: 44px; height: 44px;\">\n                                            {{ strtoupper(substr($conn->sender->name, 0, 1)) }}\n                                        <\/div>\n                                        <div class=\"flex-grow-1 min-w-0\">\n                                            <a href=\"{{ route('portfolio.show', $conn->sender->username) }}\" target=\"_blank\" class=\"fw-bold text-dark text-decoration-none d-block small\">{{ $conn->sender->name }}<\/a>\n                                            <span class=\"text-muted\" style=\"font-size: 0.75rem;\">{{ $conn->sender->portfolio->position ?? 'Professional' }}<\/span>\n                                        <\/div>\n                                        <div class=\"d-flex gap-2 flex-shrink-0\">\n                                            <form action=\"{{ route('connections.accept', $conn->id) }}\" method=\"POST\">\n                                                @csrf @method('PATCH')\n                                                <button type=\"submit\" class=\"btn btn-sm btn-primary rounded-pill px-3\">\n                                                    <i class=\"fa-solid fa-check me-1\"><\/i> Accept\n                                                <\/button>\n                                            <\/form>\n                                            <form action=\"{{ route('connections.reject', $conn->id) }}\" method=\"POST\">\n                                                @csrf @method('DELETE')\n                                                <button type=\"submit\" class=\"btn btn-sm btn-outline-secondary rounded-pill px-3\">Decline<\/button>\n                                            <\/form>\n                                        <\/div>\n                                    <\/div>\n                                    @endforeach\n                                <\/div>\n                            <\/div>\n                            @endif\n\n                            <!-- Sent Pending -->\n                            @if($pendingSent->isNotEmpty())\n                            <div class=\"card border-0 shadow-sm rounded-3 mb-3\">\n                                <div class=\"card-header bg-info bg-opacity-10 border-0 rounded-top-3 py-2 px-4 d-flex align-items-center gap-2\">\n                                    <i class=\"fa-solid fa-paper-plane text-info\"><\/i>\n                                    <span class=\"fw-bold text-dark small\">Sent Invitations \u2014 Awaiting Response<\/span>\n                                <\/div>\n                                <div class=\"card-body p-3 d-flex flex-column gap-2\">\n                                    @foreach($pendingSent as $conn)\n                                    <div class=\"d-flex align-items-center gap-3 p-3 rounded-3 border bg-light-subtle\">\n                                        <div class=\"rounded-circle bg-info text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0\"\n                                             style=\"width: 44px; height: 44px;\">\n                                            {{ strtoupper(substr($conn->receiver->name, 0, 1)) }}\n                                        <\/div>\n                                        <div class=\"flex-grow-1 min-w-0\">\n                                            <a href=\"{{ route('portfolio.show', $conn->receiver->username) }}\" target=\"_blank\" class=\"fw-bold text-dark text-decoration-none d-block small\">{{ $conn->receiver->name }}<\/a>\n                                            <span class=\"text-muted\" style=\"font-size: 0.75rem;\">{{ $conn->receiver->portfolio->position ?? 'Professional' }}<\/span>\n                                        <\/div>\n                                        <div class=\"flex-shrink-0\">\n                                            <form action=\"{{ route('connections.cancel', $conn->id) }}\" method=\"POST\">\n                                                @csrf @method('DELETE')\n                                                <button type=\"submit\" class=\"btn btn-sm btn-outline-danger rounded-pill px-3\">\n                                                    <i class=\"fa-solid fa-xmark me-1\"><\/i> Cancel\n                                                <\/button>\n                                            <\/form>\n                                        <\/div>\n                                    <\/div>\n                                    @endforeach\n                                <\/div>\n                            <\/div>\n                            @endif\n\n                            <!-- Accepted Network Grid -->\n                            <div class=\"card border-0 shadow-sm rounded-3 mb-3\">\n                                <div class=\"card-header bg-white border-bottom py-3 px-4 d-flex align-items-center justify-content-between rounded-top-3\">\n                                    <span class=\"fw-bold text-dark small\"><i class=\"fa-solid fa-network-wired me-2 text-primary\"><\/i> My Network ({{ $connectionsCount }})<\/span>\n                                <\/div>\n                                <div class=\"card-body p-3\">\n                                    @if($connectionsCount > 0)\n                                        <div class=\"row g-3\">\n                                            @foreach($acceptedConnections as $otherUser)\n                                            <div class=\"col-sm-6 col-md-4 col-lg-3\">\n                                                <div class=\"p-3 border rounded-3 d-flex align-items-center gap-3 h-100\">\n                                                    <div class=\"rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0\"\n                                                         style=\"width: 40px; height: 40px;\">\n                                                        {{ strtoupper(substr($otherUser->name, 0, 1)) }}\n                                                    <\/div>\n                                                    <div class=\"flex-grow-1 min-w-0\">\n                                                        <strong class=\"d-block text-dark small text-truncate\">{{ $otherUser->name }}<\/strong>\n                                                        <span class=\"text-muted text-truncate d-block\" style=\"font-size: 0.72rem;\">{{ $otherUser->portfolio->position ?? 'Professional' }}<\/span>\n                                                        <a href=\"{{ route('portfolio.show', $otherUser->username) }}\" target=\"_blank\" class=\"text-primary text-decoration-none fw-semibold\" style=\"font-size: 0.72rem;\">\n                                                            <i class=\"fa-solid fa-arrow-up-right-from-square me-1\"><\/i>View Profile\n                                                        <\/a>\n                                                    <\/div>\n                                                <\/div>\n                                            <\/div>\n                                            @endforeach\n                                        <\/div>\n                                    @else\n                                        <div class=\"text-center py-4\">\n                                            <i class=\"fa-solid fa-user-group fa-2x text-muted mb-2\"><\/i>\n                                            <p class=\"text-muted small mb-2\">No connections yet. Start building your professional network.<\/p>\n                                            <a href=\"{{ route('talent.index') }}\" class=\"btn btn-sm btn-primary rounded-pill px-4\">\n                                                <i class=\"fa-solid fa-magnifying-glass me-1\"><\/i> Discover Professionals\n                                            <\/a>\n                                        <\/div>\n                                    @endif\n                                <\/div>\n                            <\/div>\n\n                            <!-- Find & Connect Search -->\n                            <div class=\"card border-0 shadow-sm rounded-3\">\n                                <div class=\"card-header bg-white border-bottom py-3 px-4 rounded-top-3\">\n                                    <span class=\"fw-bold text-dark small\"><i class=\"fa-solid fa-magnifying-glass me-2 text-primary\"><\/i> Find & Connect with Professionals<\/span>\n                                <\/div>\n                                <div class=\"card-body p-4\">\n                                    <form action=\"\" method=\"GET\" class=\"d-flex gap-2 mb-3\">\n                                        <input type=\"text\" name=\"search\" class=\"form-control\" placeholder=\"Search by name, username, or email\u2026\" value=\"{{ request('search') }}\">\n                                        <button type=\"submit\" class=\"btn btn-primary rounded-pill px-4 flex-shrink-0\">\n                                            <i class=\"fa-solid fa-search me-1\"><\/i> Search\n                                        <\/button>\n                                    <\/form>\n                                    @if($searchResults->isNotEmpty())\n                                        <div class=\"d-flex flex-column gap-2\">\n                                            @foreach($searchResults as $result)\n                                            <div class=\"d-flex align-items-center gap-3 p-3 border rounded-3 bg-light-subtle\">\n                                                <div class=\"rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0\"\n                                                     style=\"width: 40px; height: 40px;\">\n                                                    {{ strtoupper(substr($result->name, 0, 1)) }}\n                                                <\/div>\n                                                <div class=\"flex-grow-1 min-w-0\">\n                                                    <strong class=\"d-block text-dark small\">{{ $result->name }}<\/strong>\n                                                    <span class=\"text-muted\" style=\"font-size: 0.73rem;\">{{ $result->portfolio->position ?? 'Professional' }} \u00b7 {{ '@'.$result->username }}<\/span>\n                                                <\/div>\n                                                <div class=\"flex-shrink-0\">\n                                                    <form action=\"{{ route('connections.request', $result->id) }}\" method=\"POST\">\n                                                        @csrf\n                                                        <button type=\"submit\" class=\"btn btn-sm btn-outline-primary rounded-pill px-3\">\n                                                            <i class=\"fa-solid fa-user-plus me-1\"><\/i> Connect\n                                                        <\/button>\n                                                    <\/form>\n                                                <\/div>\n                                            <\/div>\n                                            @endforeach\n                                        <\/div>\n                                    @elseif(request('search'))\n                                        <p class=\"text-muted small mb-0\"><i class=\"fa-solid fa-circle-info me-1\"><\/i> No professionals found matching \"{{ request('search') }}\".<\/p>\n                                    @else\n                                        <p class=\"text-muted small mb-0\">Search above to discover and connect with talented professionals on the platform.<\/p>\n                                    @endif\n                                <\/div>\n                            <\/div>\n\n                        <\/div>{{-- end connections section --}}\n                    <\/div>{{-- end dashboardTab --}}",
+                "TargetFile": "c:\\xampp\\htdocs\\my_resume\\resources\\views\\portfolio\\edit.blade.php",
+                "toolAction": "Removing orphaned connections content",
+                "toolSummary": "Deleting orphaned connections HTML from dashboard tab"
+            }
+        }
+    ],
+    "2379": [
+        {
+            "name": "replace_file_content",
+            "args": {
+                "AllowMultiple": false,
+                "Description": "Deleted the entire orphaned old connectionsTab block (the one with max-width: 900px wrapper) that was still rendering on the right side of the page.",
+                "EndLine": 2348,
+                "Instruction": "Remove the entire orphaned old connections tab block from line 2156 to 2348.",
+                "ReplacementContent": "\n",
+                "StartLine": 2155,
+                "TargetContent": "\n                    {{-- Connections section moved into dashboard tab --}}\n                        <div style=\"max-width: 900px;\">",
+                "TargetFile": "c:\\xampp\\htdocs\\my_resume\\resources\\views\\portfolio\\edit.blade.php",
+                "toolAction": "Deleting orphaned old connections tab block",
+                "toolSummary": "Removing old connections tab content from edit.blade.php"
+            }
+        }
+    ],
+    "2389": [
+        {
+            "name": "replace_file_content",
+            "args": {
+                "AllowMultiple": false,
+                "Description": "Deleted all 190 lines of the orphaned old Professional Connections block (the one with max-width: 900px) that was still rendering on the page.",
+                "EndLine": 2347,
+                "Instruction": "Delete lines 2158 to 2347 \u2014 the entire orphaned old connections tab content.",
+                "ReplacementContent": "",
+                "StartLine": 2158,
+                "TargetContent": "                            <!-- Page Header -->\n                            <div class=\"d-flex align-items-center justify-content-between mb-4\">\n                                <div>\n                                    <h1 class=\"h3 fw-bold text-dark mb-1\"><i class=\"fa-solid fa-users me-2 text-primary\"><\/i> Professional Connections<\/h1>\n                                    <p class=\"text-secondary small mb-0\">Manage your network, respond to invitations, and discover new professionals.<\/p>\n                                <\/div>\n                                <a href=\"{{ route('talent.index') }}\" class=\"btn btn-primary btn-sm rounded-pill px-3 flex-shrink-0\">\n                                    <i class=\"fa-solid fa-user-plus me-1\"><\/i> Find People\n                                <\/a>\n                            <\/div>",
+                "TargetFile": "c:\\xampp\\htdocs\\my_resume\\resources\\views\\portfolio\\edit.blade.php",
+                "toolAction": "Deleting entire orphaned connections block",
+                "toolSummary": "Removing old connections tab block lines 2158-2347"
+            }
+        }
+    ],
+    "2399": [
+        {
+            "name": "replace_file_content",
+            "args": {
+                "AllowMultiple": false,
+                "Description": "Completely deleted the orphaned old connections tab HTML block (lines 2160-2338) \u2014 the one with the Stats Bar, Pending Invitations, My Network, and Find & Connect cards that was still rendering on the main page right side.",
+                "EndLine": 2338,
+                "Instruction": "Delete lines 2160 through 2338 \u2014 the entire remaining orphaned old connections block.",
+                "ReplacementContent": "",
+                "StartLine": 2160,
+                "TargetContent": "                            <!-- Stats Bar -->\n                            <div class=\"row g-3 mb-4\">\n                                <div class=\"col-4\">\n                                    <div class=\"card border-0 shadow-sm rounded-3 text-center p-3\">\n                                        <div class=\"fw-bold text-primary\" style=\"font-size: 1.75rem; font-family: var(--font-headings);\">{{ $connectionsCount }}<\/div>\n                                        <div class=\"text-muted small fw-semibold\">Connections<\/div>\n                                    <\/div>\n                                <\/div>",
+                "TargetFile": "c:\\xampp\\htdocs\\my_resume\\resources\\views\\portfolio\\edit.blade.php",
+                "toolAction": "Deleting remaining orphaned connections block",
+                "toolSummary": "Removing orphaned connections content lines 2160-2338"
+            }
+        }
+    ]
+}

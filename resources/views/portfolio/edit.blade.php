@@ -1,210 +1,441 @@
 <x-app-layout>
     @push('styles')
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <style>
-            /* Fluid main container */
-            @media (min-width: 1200px) {
-                main.container {
-                    max-width: 100% !important;
-                    width: 100% !important;
-                    padding-left: 0 !important;
-                    padding-right: 0 !important;
-                }
+            :root {
+                --workspace-sidebar-width: 270px;
+                --brand-primary-light: rgba(76, 117, 161, 0.08);
+                --brand-primary-border: rgba(76, 117, 161, 0.25);
             }
 
-            #sidebarMenu {
-                background-color: #222d32 !important;
-                width: 260px;
-                min-width: 260px;
+            .career-workspace {
+                min-height: calc(100vh - 65px);
+                background-color: var(--brand-light);
             }
 
-            @media (min-width: 768px) {
-                #sidebarMenu {
-                    min-height: calc(100vh - 56px);
-                }
+            .workspace-sidebar {
+                width: var(--workspace-sidebar-width);
+                min-width: var(--workspace-sidebar-width);
+                background: #ffffff;
+                border-right: 1px solid var(--border-color);
+            }
+
+            .sidebar-group-title {
+                font-size: 0.6875rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: #94a3b8;
+                padding: 0.75rem 1rem 0.35rem 1rem;
             }
 
             .sidebar-menu .nav-link {
-                color: #b8c7ce !important;
-                border-radius: 4px;
-                transition: all 0.2s;
+                color: #475569;
+                font-size: 0.84rem;
                 font-weight: 500;
+                padding: 0.55rem 0.9rem;
+                border-radius: 8px;
+                margin-bottom: 2px;
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.65rem;
+                min-width: 0;
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .sidebar-menu .nav-link span {
+                min-width: 0;
+                max-width: 100%;
+                word-break: break-word;
+                overflow-wrap: anywhere;
             }
 
             .sidebar-menu .nav-link:hover {
-                color: #fff !important;
-                background-color: rgba(255, 255, 255, 0.1) !important;
+                color: var(--brand-primary);
+                background-color: var(--brand-tint);
             }
 
             .sidebar-menu .nav-link.active {
-                color: #fff !important;
-                background-color: #3c8dbc !important;
-                border-left: 3px solid #00c0ef;
+                color: var(--brand-primary);
+                background-color: var(--brand-primary-light);
+                font-weight: 600;
+                border-left: 3px solid var(--brand-primary);
             }
 
-            /* Stat boxes inspired by AdminLTE */
-            .small-box {
-                position: relative;
-                display: block;
-                margin-bottom: 20px;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                border-radius: 8px;
-                color: #fff;
-                padding: 20px;
-                overflow: hidden;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
-
-            .small-box:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-            }
-
-            .small-box .inner h3 {
-                font-size: 2.5rem;
-                font-weight: bold;
-                margin: 0 0 5px 0;
-            }
-
-            .small-box .inner p {
+            .sidebar-menu .nav-link i {
                 font-size: 0.95rem;
-                margin: 0;
-                opacity: 0.9;
+                width: 20px;
+                text-align: center;
             }
 
-            .small-box .icon {
-                position: absolute;
-                top: 10px;
-                right: 15px;
-                z-index: 0;
-                font-size: 4rem;
-                color: rgba(0, 0, 0, 0.15);
-                transition: all 0.3s linear;
+            .workspace-header-card {
+                background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+                color: #ffffff;
+                border-radius: 12px;
+                position: relative;
+                overflow: hidden;
             }
 
-            .small-box:hover .icon {
-                font-size: 4.5rem;
-                transform: scale(1.1);
+            .profile-identity-card {
+                background: #ffffff;
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
             }
 
-            /* Module Grid Cards */
-            .module-card {
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            .completion-bar-outer {
+                height: 8px;
+                background-color: #e2e8f0;
+                border-radius: 999px;
+                overflow: hidden;
             }
 
-            .module-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+            .completion-bar-inner {
+                height: 100%;
+                background: linear-gradient(90deg, #4c75a1 0%, #10b981 100%);
+                border-radius: 999px;
+                transition: width 0.5s ease;
             }
 
-            .hover-lift {
-                transition: transform 0.2s, box-shadow 0.2s;
+            .metric-stat-card {
+                background: #ffffff;
+                border: 1px solid var(--border-color);
+                border-radius: 10px;
+                padding: 1rem;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
             }
 
-            .hover-lift:hover {
+            .metric-stat-card:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+                box-shadow: var(--shadow-md);
             }
 
-            .note-editor.note-frame {
-                border-color: #dee2e6;
+            .metric-number {
+                font-family: var(--font-headings);
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: var(--brand-secondary);
+                line-height: 1.1;
+            }
+
+            .job-match-card {
+                background: #ffffff;
+                border: 1px solid var(--border-color);
+                border-radius: 10px;
+                transition: all 0.2s ease;
+                overflow: hidden;
+                position: relative;
+                min-width: 0;
+            }
+
+            .job-match-card:hover {
+                border-color: var(--brand-primary);
+                box-shadow: 0 4px 14px rgba(76, 117, 161, 0.12);
+                transform: translateY(-2px);
+            }
+
+            .match-badge {
+                background-color: rgba(16, 185, 129, 0.12);
+                color: #047857;
+                font-weight: 700;
+                font-size: 0.68rem;
+                padding: 0.2rem 0.45rem;
+                border-radius: 999px;
+                border: 1px solid rgba(16, 185, 129, 0.25);
+                white-space: nowrap;
+                display: inline-flex;
+                align-items: center;
+                line-height: 1;
+                flex-shrink: 0;
+                max-width: 100%;
+            }
+
+            .theme-card {
+                background: #ffffff;
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                transition: all 0.2s ease;
+            }
+
+            .theme-card.active-theme {
+                border-color: var(--brand-primary);
+                box-shadow: 0 0 0 2px var(--brand-primary);
+            }
+
+            .dropdown-menu.show {
+                display: block !important;
+                z-index: 1060 !important;
+            }
+
+            /* Comprehensive Mobile & Responsive Media Queries */
+            .pipeline-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .pipeline-container {
+                min-width: 520px;
+            }
+
+            @media (max-width: 1199.98px) {
+                .workspace-header-card {
+                    padding: 1.5rem !important;
+                }
+                .metric-number {
+                    font-size: 1.35rem;
+                }
+            }
+
+            @media (max-width: 991.98px) {
+                .workspace-sidebar {
+                    width: 100%;
+                    min-width: 100%;
+                    border-right: none;
+                }
+                .career-workspace {
+                    flex-direction: column !important;
+                }
+                .job-match-card {
+                    margin-bottom: 0.5rem;
+                }
+            }
+
+            @media (max-width: 767.98px) {
+                .workspace-header-card {
+                    padding: 1.25rem !important;
+                }
+                .workspace-header-card .d-flex {
+                    flex-direction: column !important;
+                    align-items: stretch !important;
+                }
+                .workspace-header-card .btn {
+                    width: 100%;
+                }
+                .profile-identity-card {
+                    padding: 1.25rem !important;
+                }
+                .metric-stat-card {
+                    padding: 0.85rem !important;
+                }
+                .metric-number {
+                    font-size: 1.2rem;
+                }
+                .table-responsive {
+                    border-radius: 8px;
+                    border: 1px solid var(--border-color);
+                }
+                .modal-dialog {
+                    margin: 0.5rem;
+                }
+            }
+
+            @media (max-width: 575.98px) {
+                .btn-sm {
+                    padding: 0.35rem 0.65rem;
+                    font-size: 0.72rem;
+                }
+                .badge {
+                    font-size: 0.65rem;
+                }
             }
         </style>
     @endpush
 
-    <!-- Mobile Dashboard Header (Visible only on mobile) -->
-    <div class="bg-white border-bottom p-2 d-md-none d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center">
-            <button class="btn btn-outline-secondary me-2 py-1 px-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
-                <i class="bi bi-list fs-5"></i>
-            </button>
-            <span class="fw-bold">Elite Portfolio CMS</span>
-        </div>
-        <div class="small-badge text-success small"><i class="bi bi-circle-fill me-1" style="font-size: 0.5rem;"></i> Active</div>
-    </div>
+    <!-- App Shell Container -->
+    <div class="career-workspace d-flex flex-column flex-lg-row">
+        <!-- Sidebar Navigation -->
+        <div class="workspace-sidebar p-3 d-none d-lg-block">
+            <div class="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom">
+                @if($portfolio->profile_image)
+                    <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle border" style="width: 42px; height: 42px; object-fit: cover;">
+                @else
+                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold" style="width: 42px; height: 42px; background-color: var(--brand-primary); font-size: 1rem;">
+                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                    </div>
+                @endif
+                <div class="min-w-0">
+                    <h6 class="fw-bold text-dark mb-0 text-truncate" style="font-size: 0.9rem;">{{ Auth::user()->name }}</h6>
+                    <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">{{ $portfolio->position ?? 'Professional User' }}</small>
+                </div>
+            </div>
 
-    <div class="d-flex flex-column flex-md-row" id="dashboard-wrapper">
-        <!-- Sidebar Navigation (Responsive Offcanvas) -->
-        <div class="offcanvas-md offcanvas-start bg-dark text-white p-3 d-flex flex-column" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel" style="width: 260px; min-width: 260px;">
-            <div class="offcanvas-header d-md-none border-bottom mb-3">
-                <h5 class="offcanvas-title text-white fw-bold" id="sidebarMenuLabel">Menu Navigation</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
-            </div>
-            <div class="brand-link text-center mb-4 pb-3 border-bottom text-white text-decoration-none d-none d-md-block">
-                <span class="brand-text fw-bold fs-5">Elite Portfolio CMS</span>
-            </div>
-            <div class="user-panel d-flex align-items-center mb-4 pb-3 border-bottom">
-                <div class="image me-3">
-                    @if($portfolio->profile_image)
-                        <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle shadow-sm" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid rgba(255,255,255,0.2);">
-                    @else
-                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px;">
-                            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-                        </div>
+            <!-- Sidebar Navigation Tabs -->
+            <div class="nav flex-column sidebar-menu" id="careerWorkspaceTabs" role="tablist">
+                <div class="sidebar-group-title">Main</div>
+                <button class="nav-link active text-start border-0 bg-transparent" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overviewPane" type="button" role="tab">
+                    <i class="fa-solid fa-gauge-high"></i> <span>Career Overview</span>
+                </button>
+
+                <!-- 1. PORTFOLIO -->
+                <div class="sidebar-group-title mt-2">Portfolio</div>
+                <button class="nav-link text-start border-0 bg-transparent" id="cms-tab" data-bs-toggle="tab" data-bs-target="#cmsPane" type="button" role="tab">
+                    <i class="fa-solid fa-id-card"></i> <span>My Portfolio CMS</span>
+                </button>
+                <button class="nav-link text-start border-0 bg-transparent" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settingsPane" type="button" role="tab">
+                    <i class="fa-solid fa-sliders"></i> <span>Portfolio Settings</span>
+                </button>
+                <button class="nav-link text-start border-0 bg-transparent" id="themes-tab" data-bs-toggle="tab" data-bs-target="#themesPane" type="button" role="tab">
+                    <i class="fa-solid fa-palette"></i> <span>Portfolio Themes</span>
+                </button>
+                <button class="nav-link text-start border-0 bg-transparent" id="network-tab" data-bs-toggle="tab" data-bs-target="#networkPane" type="button" role="tab">
+                    <i class="fa-solid fa-users"></i> <span>Connections</span>
+                    @if($pendingReceived->count() > 0)
+                        <span class="badge bg-warning text-dark rounded-pill ms-auto" style="font-size: 0.65rem;">{{ $pendingReceived->count() }}</span>
                     @endif
-                </div>
-                <div class="info">
-                    <a href="#" class="d-block text-white text-decoration-none fw-semibold text-truncate" style="max-width: 160px;">{{ Auth::user()->name }}</a>
-                    <span class="text-success small d-block mb-1"><i class="bi bi-circle-fill me-1" style="font-size: 0.6rem;"></i> Active</span>
-                    <a href="{{ route('portfolio.show', Auth::user()->username) }}" target="_blank" class="text-info small text-decoration-none d-flex align-items-center gap-1">
-                        <i class="bi bi-box-arrow-up-right"></i> Live Portfolio
-                    </a>
-                </div>
-            </div>
+                </button>
 
-            <!-- Sidebar Menu Links mapping to Tab Panes -->
-            <ul class="nav nav-pills flex-column mb-auto sidebar-menu" id="dashboardTabs" role="tablist">
-                <li class="nav-item mb-2">
-                    <button class="nav-link active text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboardPane" type="button" role="tab">
-                        <i class="bi bi-speedometer2"></i> <span>Dashboard</span>
-                    </button>
-                </li>
-                <li class="nav-item mb-2">
-                    <button class="nav-link text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="modules-tab" data-bs-toggle="tab" data-bs-target="#modulesPane" type="button" role="tab">
-                        <i class="bi bi-grid-3x3-gap"></i> <span>Modules / Sections</span>
-                    </button>
-                </li>
-                <li class="nav-item mb-2">
-                    <button class="nav-link text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settingsPane" type="button" role="tab">
-                        <i class="bi bi-gear"></i> <span>Settings</span>
-                    </button>
-                </li>
-                <li class="nav-item mb-2">
-                    <button class="nav-link text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="inbox-tab" data-bs-toggle="tab" data-bs-target="#inboxPane" type="button" role="tab">
-                        <i class="bi bi-envelope"></i> <span>Inbox / Messages</span>
-                        @php $unread = $portfolio->messages->where('is_read', false)->count(); @endphp
-                        @if($unread > 0)
-                            <span class="badge bg-danger rounded-pill ms-auto">{{ $unread }}</span>
-                        @endif
-                    </button>
-                </li>
-                <li class="nav-item mb-2">
-                    <button class="nav-link text-start text-white w-100 d-flex align-items-center gap-2 border-0 bg-transparent py-2 px-3" id="connections-tab" data-bs-toggle="tab" data-bs-target="#connectionsPane" type="button" role="tab">
-                        <i class="bi bi-people"></i> <span>Connections</span>
-                        @if($pendingReceived->count() > 0)
-                            <span class="badge bg-warning text-dark rounded-pill ms-auto">{{ $pendingReceived->count() }}</span>
-                        @endif
-                    </button>
-                </li>
-            </ul>
+                <!-- 2. COMPANY & ORGANIZATION -->
+                <div class="sidebar-group-title mt-2">Company & Organization</div>
+                <a class="nav-link text-start border-0 bg-transparent text-decoration-none" href="{{ route('companies.create') }}">
+                    <i class="fa-solid fa-building-user text-primary flex-shrink-0"></i> <span>Create Company Profile</span>
+                </a>
+                @if(Auth::user()->companies->isNotEmpty())
+                    @foreach(Auth::user()->companies as $myCompany)
+                        <a class="nav-link text-start border-0 bg-transparent text-decoration-none py-2" href="{{ route('companies.dashboard', $myCompany->id) }}" title="{{ $myCompany->name }} Dashboard" style="min-width: 0; max-width: 100%;">
+                            <i class="fa-solid fa-building text-success flex-shrink-0 mt-1"></i>
+                            <span class="flex-grow-1 min-w-0" style="word-break: break-word; overflow-wrap: anywhere; white-space: normal; line-height: 1.35; font-size: 0.82rem;">{{ Str::limit($myCompany->name, 28) }}</span>
+                        </a>
+                    @endforeach
+                @endif
+
+                <!-- 3. CAREER -->
+                <div class="sidebar-group-title mt-2">Career</div>
+                <button class="nav-link text-start border-0 bg-transparent" id="jobs-tab" data-bs-toggle="tab" data-bs-target="#jobsPane" type="button" role="tab">
+                    <i class="fa-solid fa-briefcase"></i> <span>Jobs & Opportunities</span>
+                </button>
+                <button class="nav-link text-start border-0 bg-transparent" id="applications-tab" data-bs-toggle="tab" data-bs-target="#applicationsPane" type="button" role="tab">
+                    <i class="fa-solid fa-paper-plane"></i> <span>My Applications</span>
+                    @if($myApplications->count() > 0)
+                        <span class="badge bg-primary rounded-pill ms-auto" style="font-size: 0.65rem;">{{ $myApplications->count() }}</span>
+                    @endif
+                </button>
+                <button class="nav-link text-start border-0 bg-transparent" id="saved-tab" data-bs-toggle="tab" data-bs-target="#savedPane" type="button" role="tab">
+                    <i class="fa-solid fa-bookmark"></i> <span>Saved Jobs</span>
+                    @if($savedOpportunities->count() > 0)
+                        <span class="badge bg-secondary rounded-pill ms-auto" style="font-size: 0.65rem;">{{ $savedOpportunities->count() }}</span>
+                    @endif
+                </button>
+                <button class="nav-link text-start border-0 bg-transparent" id="interview-tab" data-bs-toggle="tab" data-bs-target="#interviewPane" type="button" role="tab">
+                    <i class="fa-solid fa-robot"></i> <span>AI Mock Interview</span>
+                </button>
+
+                <!-- 4. NETWORK & COMMUNITY -->
+                <div class="sidebar-group-title mt-2">Network & Community</div>
+                <a class="nav-link text-start border-0 bg-transparent text-decoration-none" href="{{ route('feed.index') }}">
+                    <i class="fa-solid fa-rss"></i> <span>Social Feed</span>
+                </a>
+
+                <!-- 5. COMMUNICATION -->
+                <div class="sidebar-group-title mt-2">Communication</div>
+                <button class="nav-link text-start border-0 bg-transparent" id="inbox-tab" data-bs-toggle="tab" data-bs-target="#inboxPane" type="button" role="tab">
+                    <i class="fa-solid fa-envelope"></i> <span>Inquiries & Messages</span>
+                    @php $unreadMsg = $portfolio->messages->where('is_read', false)->count(); @endphp
+                    @if($unreadMsg > 0)
+                        <span class="badge bg-danger rounded-pill ms-auto" style="font-size: 0.65rem;">{{ $unreadMsg }}</span>
+                    @endif
+                </button>
+                <a class="nav-link text-start border-0 bg-transparent text-decoration-none" href="{{ route('notifications.index') }}">
+                    <i class="fa-solid fa-bell"></i> <span>Notifications</span>
+                    @if($unreadNotificationsCount > 0)
+                        <span class="badge bg-danger rounded-pill ms-auto" style="font-size: 0.65rem;">{{ $unreadNotificationsCount }}</span>
+                    @endif
+                </a>
+
+                <!-- 6. ACCOUNT -->
+                <div class="sidebar-group-title mt-2">Account</div>
+                <a class="nav-link text-start border-0 bg-transparent text-decoration-none" href="{{ route('preferences.edit') }}">
+                    <i class="fa-solid fa-user-gear"></i> <span>Career Preferences</span>
+                </a>
+            </div>
         </div>
 
-        <!-- Right Content Wrapper -->
-        <div class="flex-grow-1 p-4 bg-light overflow-auto" id="content-pane-wrapper">
+        <!-- Mobile Drawer Toggler Bar -->
+        <div class="d-lg-none bg-white p-3 border-bottom d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebarDrawer">
+                    <i class="fa-solid fa-bars me-1"></i> Menu
+                </button>
+                <span class="fw-bold text-dark small">Career Workspace</span>
+            </div>
+            <a href="{{ route('portfolio.show', Auth::user()->username) }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill">
+                <i class="fa-solid fa-eye me-1"></i> View Live
+            </a>
+        </div>
+
+        <!-- Mobile Sidebar Offcanvas Drawer -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebarDrawer">
+            <div class="offcanvas-header border-bottom">
+                <h5 class="offcanvas-title fw-bold text-dark" style="font-size: 1rem;">Navigation Workspace</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body p-3">
+                <div class="nav flex-column sidebar-menu" id="mobileCareerWorkspaceTabs" role="tablist">
+                    <button class="nav-link active text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#overviewPane" type="button" data-bs-dismiss="offcanvas">
+                        <i class="fa-solid fa-gauge-high"></i> <span>Career Overview</span>
+                    </button>
+
+                    <!-- 1. PORTFOLIO -->
+                    <div class="sidebar-group-title mt-2">Portfolio</div>
+                    <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#cmsPane" type="button" data-bs-dismiss="offcanvas">
+                        <i class="fa-solid fa-id-card"></i> <span>My Portfolio CMS</span>
+                    </button>
+                    <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#settingsPane" type="button" data-bs-dismiss="offcanvas">
+                        <i class="fa-solid fa-sliders"></i> <span>Portfolio Settings</span>
+                    </button>
+                    <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#themesPane" type="button" data-bs-dismiss="offcanvas">
+                        <i class="fa-solid fa-palette"></i> <span>Portfolio Themes</span>
+                    </button>
+                    <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#networkPane" type="button" data-bs-dismiss="offcanvas">
+                        <i class="fa-solid fa-users"></i> <span>Connections</span>
+                    </button>
+
+                    <!-- 2. COMPANY & ORGANIZATION -->
+                    <div class="sidebar-group-title mt-2">Company & Organization</div>
+                    <a class="nav-link text-start border-0 bg-transparent text-decoration-none" href="{{ route('companies.create') }}">
+                        <i class="fa-solid fa-building-user text-primary flex-shrink-0"></i> <span>Create Company Profile</span>
+                    </a>
+                    @if(Auth::user()->companies->isNotEmpty())
+                        @foreach(Auth::user()->companies as $myCompany)
+                            <a class="nav-link text-start border-0 bg-transparent text-decoration-none py-2" href="{{ route('companies.dashboard', $myCompany->id) }}" title="{{ $myCompany->name }} Dashboard" style="min-width: 0; max-width: 100%;">
+                                <i class="fa-solid fa-building text-success flex-shrink-0 mt-1"></i>
+                                <span class="flex-grow-1 min-w-0" style="word-break: break-word; overflow-wrap: anywhere; white-space: normal; line-height: 1.35; font-size: 0.82rem;">{{ Str::limit($myCompany->name, 28) }}</span>
+                            </a>
+                        @endforeach
+                    @endif
+
+                    <!-- 3. CAREER -->
+                    <div class="sidebar-group-title mt-2">Career</div>
+                    <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#jobsPane" type="button" data-bs-dismiss="offcanvas">
+                        <i class="fa-solid fa-briefcase"></i> <span>Jobs & Opportunities</span>
+                    </button>
+                    <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#applicationsPane" type="button" data-bs-dismiss="offcanvas">
+                        <i class="fa-solid fa-paper-plane"></i> <span>My Applications</span>
+                    </button>
+                    <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#savedPane" type="button" data-bs-dismiss="offcanvas">
+                        <i class="fa-solid fa-bookmark"></i> <span>Saved Jobs</span>
+                    </button>
+                    <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#interviewPane" type="button" data-bs-dismiss="offcanvas">
+                        <i class="fa-solid fa-robot"></i> <span>AI Mock Interview</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-grow-1 p-3 p-md-4 overflow-auto">
+            <!-- Flash Alerts -->
             @if (session('status'))
-                <div class="alert alert-success alert-dismissible shadow-sm border-0 fade show mb-4" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    {{ str_replace('-', ' ', ucfirst(session('status'))) }} successfully.
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i> {{ str_replace('-', ' ', ucfirst(session('status'))) }} successfully.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
 
             @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible shadow-sm border-0 fade show mb-4" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <strong class="d-block mb-1">Please fix the following errors:</strong>
-                    <ul class="mb-0 ps-3">
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+                    <i class="fa-solid fa-circle-exclamation me-2"></i> <strong>Please correct the following errors:</strong>
+                    <ul class="mb-0 ps-3 mt-1 small">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -213,100 +444,1203 @@
                 </div>
             @endif
 
-            <div class="tab-content" id="dashboardTabsContent">
-                <!-- 1. DASHBOARD TAB PANE -->
-                <div class="tab-pane fade show active" id="dashboardPane" role="tabpanel">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="fw-bold mb-0">Overview Dashboard</h3>
-                        <a href="{{ route('portfolio.show', Auth::user()->username) }}" target="_blank" class="btn btn-outline-primary btn-sm shadow-sm d-flex align-items-center gap-1 fw-bold">
-                            <i class="bi bi-eye"></i> View Live Portfolio
+            <div class="tab-content" id="careerWorkspaceTabContent">
+                <!-- ========================================== -->
+                <!-- 1. OVERVIEW DASHBOARD PANE -->
+                <!-- ========================================== -->
+                <div class="tab-pane fade show active" id="overviewPane" role="tabpanel">
+                    <!-- Personalized Welcome Banner -->
+                    <div class="workspace-header-card p-4 mb-4 shadow-sm">
+                        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 position-relative" style="z-index: 2;">
+                            <div>
+                                <span class="badge bg-white bg-opacity-20 text-white rounded-pill px-3 py-1 mb-2 fw-semibold" style="font-size: 0.72rem;">
+                                    <i class="fa-solid fa-sparkles me-1 text-warning"></i> Professional Career Command Center
+                                </span>
+                                <h1 class="h3 fw-bold text-white mb-1">
+                                    @php
+                                        $hour = date('H');
+                                        $greeting = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
+                                    @endphp
+                                    {{ $greeting }}, {{ Auth::user()->name }}!
+                                </h1>
+                                <p class="text-white-50 small mb-0">
+                                    @if($completionScore < 100)
+                                        Your professional profile is <strong>{{ $completionScore }}% complete</strong>. Complete remaining items to maximize your job visibility.
+                                    @elseif($myApplications->count() > 0)
+                                        You have <strong>{{ $myApplications->count() }} active job applications</strong>. Keep track of updates below.
+                                    @else
+                                        Welcome back! Discover top-matched jobs and build your professional presence.
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="d-flex gap-2 flex-shrink-0">
+                                <a href="{{ route('portfolio.show', Auth::user()->username) }}" target="_blank" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm fw-bold">
+                                    <i class="fa-solid fa-arrow-up-right-from-square me-1 text-primary"></i> Live Portfolio
+                                </a>
+                                <button onclick="document.getElementById('settings-tab').click();" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm fw-bold">
+                                    <i class="fa-solid fa-gear me-1"></i> Portfolio Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Career Snapshot KPI Bar -->
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-xl-5 g-3 mb-4">
+                        <div class="col">
+                            <div class="metric-stat-card">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="text-muted small fw-semibold">Profile Views</span>
+                                    <span class="badge bg-primary-subtle text-primary rounded-circle p-2"><i class="fa-solid fa-eye"></i></span>
+                                </div>
+                                <div class="metric-number">{{ $portfolio->views_count ?? 124 }}</div>
+                                <small class="text-success small fw-semibold" style="font-size: 0.72rem;"><i class="fa-solid fa-arrow-trend-up me-1"></i>+12% this week</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="metric-stat-card">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="text-muted small fw-semibold">Job Matches</span>
+                                    <span class="badge bg-success-subtle text-success rounded-circle p-2"><i class="fa-solid fa-bullseye"></i></span>
+                                </div>
+                                <div class="metric-number">{{ $recommendedOpportunities->count() }}</div>
+                                <small class="text-muted small" style="font-size: 0.72rem;">Top match: {{ $recommendedOpportunities->first()->match_evaluation['overall_score'] ?? 85 }}%</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="metric-stat-card">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="text-muted small fw-semibold">Applications</span>
+                                    <span class="badge bg-info-subtle text-info rounded-circle p-2"><i class="fa-solid fa-paper-plane"></i></span>
+                                </div>
+                                <div class="metric-number">{{ $myApplications->count() }}</div>
+                                <small class="text-muted small" style="font-size: 0.72rem;">{{ $pipelineCounts['under_review'] + $pipelineCounts['interview'] }} active review</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="metric-stat-card">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="text-muted small fw-semibold">Connections</span>
+                                    <span class="badge bg-warning-subtle text-warning rounded-circle p-2"><i class="fa-solid fa-users"></i></span>
+                                </div>
+                                <div class="metric-number">{{ $connectionsCount }}</div>
+                                <small class="text-muted small" style="font-size: 0.72rem;">{{ $pendingReceived->count() }} pending request</small>
+                            </div>
+                        </div>
+                        <div class="col col-md-12 col-xl-auto flex-grow-1">
+                            <div class="metric-stat-card">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="text-muted small fw-semibold">Saved Jobs</span>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-circle p-2"><i class="fa-solid fa-bookmark"></i></span>
+                                </div>
+                                <div class="metric-number">{{ $savedOpportunities->count() }}</div>
+                                <small class="text-muted small" style="font-size: 0.72rem;">Saved opportunities</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Grid: 2 Columns Layout -->
+                    <div class="row g-4 mb-4">
+                        <!-- Left Column (Primary Content) -->
+                        <div class="col-lg-8">
+                            <!-- Job Matching Section (Primary Feature) -->
+                            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                                <div class="card-header bg-white py-3 px-4 d-flex align-items-center justify-content-between rounded-top-3 border-bottom">
+                                    <div>
+                                        <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-wand-magic-sparkles text-primary me-2"></i> Recommended Opportunities For You</h5>
+                                        <small class="text-muted">Matched using your skills, experience, and career preferences</small>
+                                    </div>
+                                    <button onclick="document.getElementById('jobs-tab').click();" class="btn btn-outline-primary btn-sm rounded-pill">Explore All</button>
+                                </div>
+                                <div class="card-body p-3">
+                                    <div class="row g-3">
+                                        @forelse($recommendedOpportunities->take(4) as $opp)
+                                            <div class="col-12 col-md-6">
+                                                <div class="job-match-card p-3 h-100 d-flex flex-column">
+                                                    <div class="d-flex align-items-start justify-content-between gap-2 mb-2 w-100" style="min-width: 0;">
+                                                        <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 0; max-width: calc(100% - 85px);">
+                                                            @if($opp->company && $opp->company->logo_path)
+                                                                <img src="{{ Storage::url($opp->company->logo_path) }}" class="rounded border flex-shrink-0" style="width: 34px; height: 34px; object-fit: cover;">
+                                                            @else
+                                                                <div class="rounded bg-light border d-flex align-items-center justify-content-center text-primary fw-bold flex-shrink-0" style="width: 34px; height: 34px; font-size: 0.85rem;">
+                                                                    {{ strtoupper(substr($opp->company->name ?? 'C', 0, 1)) }}
+                                                                </div>
+                                                            @endif
+                                                            <div class="min-w-0 flex-grow-1" style="min-width: 0;">
+                                                                <a href="{{ route('opportunities.show', $opp->slug) }}" class="fw-bold text-dark text-decoration-none small text-truncate d-block">{{ $opp->title }}</a>
+                                                                <span class="text-muted d-block text-truncate" style="font-size: 0.73rem;">{{ $opp->company->name ?? 'Organization' }}</span>
+                                                            </div>
+                                                        </div>
+                                                        <span class="match-badge flex-shrink-0"><i class="fa-solid fa-bullseye me-1"></i>{{ $opp->match_evaluation['overall_score'] }}% Match</span>
+                                                    </div>
+
+                                                    <div class="d-flex flex-wrap gap-1 mb-2">
+                                                        <span class="badge bg-light text-secondary border" style="font-size: 0.68rem;"><i class="fa-solid fa-location-dot me-1"></i>{{ $opp->location ?? 'Remote' }}</span>
+                                                        <span class="badge bg-light text-secondary border" style="font-size: 0.68rem;"><i class="fa-solid fa-clock me-1"></i>{{ ucfirst($opp->employment_type ?? 'Full-time') }}</span>
+                                                    </div>
+
+                                                    <div class="mt-auto pt-2 border-top d-flex align-items-center justify-content-between">
+                                                        <small class="text-muted" style="font-size: 0.7rem;">{{ $opp->created_at->diffForHumans() }}</small>
+                                                        <a href="{{ route('opportunities.show', $opp->slug) }}" class="btn btn-sm btn-primary py-1 px-3">View Job</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div class="col-12 text-center py-4">
+                                                <i class="fa-solid fa-briefcase fa-2x text-muted mb-2"></i>
+                                                <h6 class="fw-bold text-dark mb-1">No recommended jobs yet</h6>
+                                                <p class="text-muted small mb-3">Add skills and experience to your portfolio to activate intelligent job matching.</p>
+                                                <button onclick="document.getElementById('cms-tab').click();" class="btn btn-primary btn-sm rounded-pill">Add Skills to Portfolio</button>
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Application Pipeline Tracker -->
+                            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                                <div class="card-header bg-white py-3 px-4 d-flex align-items-center justify-content-between rounded-top-3 border-bottom">
+                                    <div>
+                                        <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-list-check text-info me-2"></i> Application Pipeline</h5>
+                                        <small class="text-muted">Live application status tracking</small>
+                                    </div>
+                                    <a href="{{ route('applications.candidate.index') }}" class="btn btn-outline-secondary btn-sm rounded-pill">View All</a>
+                                </div>
+                                <div class="card-body p-3 p-md-4">
+                                    <div class="pipeline-wrapper mb-4">
+                                        <div class="pipeline-container d-flex justify-content-between align-items-center">
+                                            <div class="pipeline-step {{ $pipelineCounts['applied'] > 0 ? 'completed' : 'active' }}">
+                                                <div class="pipeline-dot"><i class="fa-solid fa-paper-plane"></i></div>
+                                                <div class="small fw-semibold mt-1">Applied ({{ $pipelineCounts['applied'] }})</div>
+                                            </div>
+                                            <div class="pipeline-step {{ $pipelineCounts['under_review'] > 0 ? 'active' : '' }}">
+                                                <div class="pipeline-dot"><i class="fa-solid fa-magnifying-glass"></i></div>
+                                                <div class="small fw-semibold mt-1">Review ({{ $pipelineCounts['under_review'] }})</div>
+                                            </div>
+                                            <div class="pipeline-step {{ $pipelineCounts['shortlisted'] > 0 ? 'active' : '' }}">
+                                                <div class="pipeline-dot"><i class="fa-solid fa-star"></i></div>
+                                                <div class="small fw-semibold mt-1">Shortlisted ({{ $pipelineCounts['shortlisted'] }})</div>
+                                            </div>
+                                            <div class="pipeline-step {{ $pipelineCounts['interview'] > 0 ? 'active' : '' }}">
+                                                <div class="pipeline-dot"><i class="fa-solid fa-comments"></i></div>
+                                                <div class="small fw-semibold mt-1">Interview ({{ $pipelineCounts['interview'] }})</div>
+                                            </div>
+                                            <div class="pipeline-step {{ $pipelineCounts['selected'] > 0 ? 'completed' : '' }}">
+                                                <div class="pipeline-dot"><i class="fa-solid fa-circle-check"></i></div>
+                                                <div class="small fw-semibold mt-1">Selected ({{ $pipelineCounts['selected'] }})</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column (Profile & Actions) -->
+                        <div class="col-lg-4">
+                            <!-- Professional Profile Card -->
+                            <div class="profile-identity-card p-4 mb-4">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    @if($portfolio->profile_image)
+                                        <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle border shadow-sm" style="width: 56px; height: 56px; object-fit: cover;">
+                                    @else
+                                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold fs-4" style="width: 56px; height: 56px; background-color: var(--brand-primary);">
+                                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                        </div>
+                                    @endif
+                                    <div class="min-w-0 flex-grow-1">
+                                        <h6 class="fw-bold text-dark mb-0 text-truncate">{{ Auth::user()->name }}</h6>
+                                        <small class="text-primary fw-semibold d-block text-truncate" style="font-size: 0.78rem;">{{ $portfolio->position ?? 'Professional Candidate' }}</small>
+                                        <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;"><i class="fa-solid fa-location-dot me-1"></i>{{ $portfolio->city ?? 'Location' }}, {{ $portfolio->country ?? 'Pakistan' }}</small>
+                                    </div>
+                                </div>
+
+                                <!-- Visibility Status Badge -->
+                                <div class="d-flex align-items-center justify-content-between bg-light p-2 rounded-3 mb-3 border">
+                                    <span class="small fw-semibold text-muted" style="font-size: 0.75rem;">Visibility Status</span>
+                                    <span class="badge rounded-pill {{ $portfolio->is_public ? 'bg-success' : 'bg-secondary' }}">
+                                        <i class="fa-solid {{ $portfolio->is_public ? 'fa-globe' : 'fa-lock' }} me-1"></i>{{ $portfolio->is_public ? 'PUBLIC' : 'PRIVATE' }}
+                                    </span>
+                                </div>
+
+                                <!-- Completion Score Bar -->
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center small mb-1">
+                                        <span class="fw-semibold text-dark" style="font-size: 0.78rem;">Profile Completeness</span>
+                                        <span class="fw-bold text-primary" style="font-size: 0.82rem;">{{ $completionScore }}%</span>
+                                    </div>
+                                    <div class="completion-bar-outer">
+                                        <div class="completion-bar-inner" style="width: {{ $completionScore }}%;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button onclick="document.getElementById('settings-tab').click();" class="btn btn-primary btn-sm rounded-pill fw-semibold">
+                                        <i class="fa-solid fa-sliders me-1"></i> Portfolio Settings
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 2. PORTFOLIO SETTINGS PANE -->
+                <!-- ========================================== -->
+                <div class="tab-pane fade" id="settingsPane" role="tabpanel">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4 pb-3 border-bottom">
+                        <div>
+                            <h3 class="fw-bold text-dark mb-0"><i class="fa-solid fa-sliders text-primary me-2"></i> Portfolio Settings & Controls</h3>
+                            <p class="text-secondary small mb-0">Configure your profile image, contact details, pitch tagline, and visibility parameters.</p>
+                        </div>
+                        <a href="{{ route('portfolio.show', Auth::user()->username) }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill flex-shrink-0">
+                            <i class="fa-solid fa-eye me-1"></i> View Live Portfolio
                         </a>
                     </div>
 
-                    <!-- Small Infographics widgets -->
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-3 mb-4">
-                        <div class="col">
-                            <div class="small-box" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6);">
-                                <div class="inner">
-                                    <h3>{{ $portfolio->projects->count() }}</h3>
-                                    <p>Projects</p>
-                                </div>
-                                <div class="icon"><i class="bi bi-laptop"></i></div>
+                    <form action="{{ route('portfolio.update') }}" method="POST" enctype="multipart/form-data" class="bg-white p-3 p-md-4 rounded-3 border shadow-sm mb-4">
+                        @csrf
+                        
+                        <!-- Profile Picture Upload & Primary Identity -->
+                        <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="fa-solid fa-image text-primary me-2"></i> Profile Photo & Core Info</h6>
+                        <div class="row g-3 mb-4 align-items-center">
+                            <div class="col-auto">
+                                @if($portfolio->profile_image)
+                                    <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle border shadow-sm" style="width: 65px; height: 65px; object-fit: cover;">
+                                @else
+                                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold fs-3" style="width: 65px; height: 65px; background-color: var(--brand-primary);">
+                                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold">Upload New Profile Picture</label>
+                                <input type="file" name="profile_image" class="form-control" accept="image/*">
+                                <small class="text-muted d-block mt-1">PNG or JPG, max 5MB.</small>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="small-box" style="background: linear-gradient(135deg, #065f46, #10b981);">
-                                <div class="inner">
-                                    <h3>{{ $portfolio->experiences->count() }}</h3>
-                                    <p>Work Records</p>
-                                </div>
-                                <div class="icon"><i class="bi bi-briefcase"></i></div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Portfolio Title / Headline</label>
+                                <input name="title" class="form-control" value="{{ $portfolio->title }}" required>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Professional Position / Role</label>
+                                <input name="position" class="form-control" value="{{ $portfolio->position }}">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Organization / Current Company</label>
+                                <input name="organization" class="form-control" value="{{ $portfolio->organization }}">
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label fw-bold">City</label>
+                                <input name="city" class="form-control" value="{{ $portfolio->city }}">
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label fw-bold">Country</label>
+                                <input name="country" class="form-control" value="{{ $portfolio->country }}">
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="small-box" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">
-                                <div class="inner">
-                                    <h3>{{ $portfolio->services->count() }}</h3>
-                                    <p>Services Offered</p>
+
+                        <!-- Contact Details & Social Links -->
+                        <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="fa-solid fa-address-book text-success me-2"></i> Contact Details & Links</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Account Email</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control bg-light" value="{{ Auth::user()->email }}" disabled>
+                                    <select name="show_email" class="form-select bg-white" style="max-width: 140px;">
+                                        <option value="show" {{ $portfolio->show_email ? 'selected' : '' }}>Show Email</option>
+                                        <option value="hide" {{ !$portfolio->show_email ? 'selected' : '' }}>Hide Email</option>
+                                    </select>
                                 </div>
-                                <div class="icon"><i class="bi bi-gear-fill"></i></div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Contact Number</label>
+                                <div class="input-group">
+                                    <input name="contact_number" class="form-control" value="{{ $portfolio->contact_number }}" placeholder="+92 300 1234567">
+                                    <select name="show_phone" class="form-select bg-white" style="max-width: 140px;">
+                                        <option value="show" {{ $portfolio->show_phone ? 'selected' : '' }}>Show Number</option>
+                                        <option value="hide" {{ !$portfolio->show_phone ? 'selected' : '' }}>Hide Number</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">LinkedIn Profile URL</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-brands fa-linkedin text-primary"></i></span>
+                                    <input name="linkedin_url" class="form-control" value="{{ $portfolio->linkedin_url }}" placeholder="https://linkedin.com/in/username">
+                                    <select name="show_linkedin" class="form-select bg-white" style="max-width: 150px;">
+                                        <option value="show" {{ $portfolio->show_linkedin ? 'selected' : '' }}>Show LinkedIn</option>
+                                        <option value="hide" {{ !$portfolio->show_linkedin ? 'selected' : '' }}>Hide LinkedIn</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="small-box" style="background: linear-gradient(135deg, #7c2d12, #f97316);">
-                                <div class="inner">
-                                    <h3>{{ $portfolio->certifications->count() + $portfolio->publications->count() }}</h3>
-                                    <p>Certs & Pubs</p>
-                                </div>
-                                <div class="icon"><i class="bi bi-award"></i></div>
+
+                        <!-- Pitch Tagline & Summary -->
+                        <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="fa-solid fa-comment-dots text-warning me-2"></i> Pitch Hook & Summary</h6>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Short Pitch Hook / Summary</label>
+                            <textarea name="description" class="form-control" rows="3">{{ $portfolio->description }}</textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Detailed Bio</label>
+                            <textarea name="detailed_bio" class="form-control js-summernote" data-height="160">{{ $portfolio->detailed_bio }}</textarea>
+                        </div>
+
+                        <!-- Visibility Controls -->
+                        <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="fa-solid fa-eye text-info me-2"></i> Portfolio Link Status & Visibility</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Portfolio Link Status</label>
+                                <select name="is_active" class="form-select">
+                                    <option value="active" {{ $portfolio->is_active === 'active' ? 'selected' : '' }}>Active (Portfolio link is live)</option>
+                                    <option value="inactive" {{ $portfolio->is_active === 'inactive' ? 'selected' : '' }}>Inactive (Portfolio link is disabled)</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Public Search Visibility</label>
+                                <select name="is_public" class="form-select">
+                                    <option value="public" {{ $portfolio->is_public ? 'selected' : '' }}>Public (Discoverable by employers)</option>
+                                    <option value="private" {{ !$portfolio->is_public ? 'selected' : '' }}>Private (Connections only)</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="small-box" style="background: linear-gradient(135deg, #991b1b, #ef4444);">
-                                <div class="inner">
-                                    <h3>{{ $portfolio->messages->count() }}</h3>
-                                    <p>Inquiries</p>
-                                </div>
-                                <div class="icon"><i class="bi bi-envelope"></i></div>
+
+                        <!-- Section Display Toggles -->
+                        <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="fa-solid fa-layer-group text-primary me-2"></i> Content Section Display Toggles</h6>
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mb-4">
+                            <div class="col">
+                                <label class="form-label fw-bold small">Technical Skills</label>
+                                <select name="show_skills" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_skills ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_skills ? 'selected' : '' }}>Hide Section</option>
+                                </select>
                             </div>
+                            <div class="col">
+                                <label class="form-label fw-bold small">Projects Showcase</label>
+                                <select name="show_projects" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_projects ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_projects ? 'selected' : '' }}>Hide Section</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold small">Work Experience</label>
+                                <select name="show_experience" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_experience ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_experience ? 'selected' : '' }}>Hide Section</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold small">Education Records</label>
+                                <select name="show_education" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_education ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_education ? 'selected' : '' }}>Hide Section</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold small">Services Offered</label>
+                                <select name="show_services" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_services ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_services ? 'selected' : '' }}>Hide Section</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold small">Certifications</label>
+                                <select name="show_certifications" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_certifications ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_certifications ? 'selected' : '' }}>Hide Section</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold small">Trainings & Courses</label>
+                                <select name="show_trainings" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_trainings ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_trainings ? 'selected' : '' }}>Hide Section</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold small">Achievements</label>
+                                <select name="show_achievements" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_achievements ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_achievements ? 'selected' : '' }}>Hide Section</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold small">Contributions</label>
+                                <select name="show_contributions" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_contributions ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_contributions ? 'selected' : '' }}>Hide Section</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold small">Testimonials</label>
+                                <select name="show_testimonials" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_testimonials ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_testimonials ? 'selected' : '' }}>Hide Section</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold small">Media Appearances</label>
+                                <select name="show_media" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_media ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_media ? 'selected' : '' }}>Hide Section</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label fw-bold small">Publications</label>
+                                <select name="show_publications" class="form-select form-select-sm">
+                                    <option value="show" {{ $portfolio->show_publications ? 'selected' : '' }}>Show Section</option>
+                                    <option value="hide" {{ !$portfolio->show_publications ? 'selected' : '' }}>Hide Section</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-top d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary px-4 rounded-pill fw-bold shadow-sm w-100 w-sm-auto">
+                                <i class="fa-solid fa-floppy-disk me-1"></i> Save Portfolio Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 3. PORTFOLIO THEMES PANE -->
+                <!-- ========================================== -->
+                <div class="tab-pane fade" id="themesPane" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div>
+                            <h3 class="fw-bold text-dark mb-0"><i class="fa-solid fa-palette text-primary me-2"></i> Portfolio Themes & Visual Engine</h3>
+                            <p class="text-secondary small mb-0">Select an active visual layout theme for your public portfolio.</p>
                         </div>
                     </div>
 
-                    <!-- Dashboard Alerts & Notifications / Recent Inbox Messages -->
-                    <div class="card border-0 shadow-sm rounded-3 mb-4">
-                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 fw-bold"><i class="bi bi-bell me-2 text-warning"></i>Recent Public Inquiries & Messages</h5>
-                            <button onclick="document.getElementById('inbox-tab').click();" class="btn btn-sm btn-outline-primary">Open Inbox</button>
+                    <div class="row g-3 g-md-4">
+                        @foreach($themes as $theme)
+                            @php
+                                $tKey = str_contains(strtolower($theme->name), 'premium') ? 'premium' : (str_contains(strtolower($theme->name), 'elegant') ? 'elegant' : 'classic');
+                                $currentThemeKey = str_contains(strtolower($portfolio->theme ?? 'classic'), 'premium') ? 'premium' : (str_contains(strtolower($portfolio->theme ?? 'classic'), 'elegant') ? 'elegant' : 'classic');
+                                $isCurrentActive = ($currentThemeKey === $tKey);
+                            @endphp
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="theme-card p-4 h-100 d-flex flex-column {{ $isCurrentActive ? 'active-theme' : '' }}">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="fw-bold text-dark mb-0">{{ $theme->name }} Theme</h5>
+                                        @if($isCurrentActive)
+                                            <span class="badge bg-primary rounded-pill"><i class="fa-solid fa-check me-1"></i> Active</span>
+                                        @endif
+                                    </div>
+                                    <p class="text-muted small mb-4 flex-grow-1">{{ $theme->description ?? 'Modern layout theme.' }}</p>
+                                    
+                                    <form action="{{ route('portfolio.update') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="theme" value="{{ $tKey }}">
+                                        @if($isCurrentActive)
+                                            <button type="button" class="btn btn-outline-primary btn-sm w-100 rounded-pill" disabled>Currently Selected</button>
+                                        @else
+                                            <button type="submit" class="btn btn-primary btn-sm w-100 rounded-pill fw-bold">Apply Theme</button>
+                                        @endif
+                                    </form>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 4. MY PORTFOLIO CMS PANE -->
+                <!-- ========================================== -->
+                <div class="tab-pane fade" id="cmsPane" role="tabpanel">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom">
+                        <div>
+                            <h3 class="fw-bold text-dark mb-0"><i class="fa-solid fa-id-card text-primary me-2"></i> Portfolio Content Modules</h3>
+                            <p class="text-secondary small mb-0">Manage your skills, projects, work history, credentials, and resume documents.</p>
                         </div>
+                    </div>
+
+                    <!-- Profile Completeness Progress Card -->
+                    <div class="card border-0 shadow-sm rounded-3 p-4 mb-4 bg-white">
+                        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-3">
+                            <div>
+                                <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1 mb-1 fw-bold" style="font-size: 0.75rem;">
+                                    <i class="fa-solid fa-chart-line me-1"></i> Real-time Profile Optimization Engine
+                                </span>
+                                <h5 class="fw-bold text-dark mb-0">Profile Completeness: <span class="text-primary">{{ $completionScore }}%</span></h5>
+                                <small class="text-muted">Populating items across all 13 content modules maximizes your job matching score & employer reach.</small>
+                            </div>
+                            <div class="flex-shrink-0 text-md-end">
+                                <span class="badge {{ $completionScore >= 100 ? 'bg-success' : ($completionScore >= 60 ? 'bg-primary' : 'bg-warning text-dark') }} fs-6 rounded-pill px-3 py-2">
+                                    <i class="fa-solid {{ $completionScore >= 100 ? 'fa-circle-check' : 'fa-spinner fa-spin-pulse' }} me-1"></i>
+                                    {{ $completionScore >= 100 ? 'Fully Optimized (100%)' : $completionScore . '% Completed' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="progress rounded-pill mb-3" style="height: 12px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated {{ $completionScore >= 100 ? 'bg-success' : ($completionScore >= 60 ? 'bg-primary' : 'bg-warning') }}" 
+                                 role="progressbar" 
+                                 style="width: {{ $completionScore }}%;" 
+                                 aria-valuenow="{{ $completionScore }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100"></div>
+                        </div>
+
+                        @if(count($missingItems) > 0)
+                            <div class="bg-light p-3 rounded-3 border mb-2">
+                                <small class="fw-bold text-dark d-block mb-1"><i class="fa-solid fa-circle-info text-primary me-1"></i> Core modules to add for 100% completeness:</small>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach($missingItems as $missing)
+                                        <span class="badge bg-white text-secondary border rounded-pill shadow-xs" style="font-size: 0.73rem;">
+                                            <i class="fa-solid fa-plus text-primary me-1"></i> {{ $missing }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <div class="bg-success-subtle text-success p-3 rounded-3 border border-success-subtle d-flex align-items-center gap-2 mb-2">
+                                <i class="fa-solid fa-circle-check fs-5"></i>
+                                <span class="small fw-bold">Outstanding! Core data has been added across all essential modules. Your profile is 100% complete!</span>
+                            </div>
+                        @endif
+
+                        @if(isset($optionalMissingItems) && count($optionalMissingItems) > 0)
+                            <div class="bg-white p-2 px-3 rounded-3 border d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                <small class="text-muted" style="font-size: 0.75rem;"><i class="fa-solid fa-sparkles text-warning me-1"></i> <strong>Optional Bonus Showcase Modules Empty:</strong> {{ implode(', ', $optionalMissingItems) }}</small>
+                                <small class="text-secondary" style="font-size: 0.72rem;">(Optional features to further showcase public presence)</small>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- Grid of 13 Section Modules -->
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3" id="modulesGrid">
+                        @php
+                            $modulesConfig = [
+                                'skills' => ['title' => 'Skills', 'icon' => 'fa-screwdriver-wrench', 'count' => $portfolio->skills->count(), 'desc' => 'Technical expertise, percentage bars & categories.'],
+                                'projects' => ['title' => 'Projects', 'icon' => 'fa-laptop-code', 'count' => $portfolio->projects->count(), 'desc' => 'Flagship projects, showcases, and live URLs.'],
+                                'experience' => ['title' => 'Work Experience', 'icon' => 'fa-briefcase', 'count' => $portfolio->experiences->count(), 'desc' => 'Job history, roles, and achievements.'],
+                                'education' => ['title' => 'Education', 'icon' => 'fa-graduation-cap', 'count' => $portfolio->education->count(), 'desc' => 'Degrees, universities, and academic records.'],
+                                'services' => ['title' => 'Services Offered', 'icon' => 'fa-layer-group', 'count' => $portfolio->services->count(), 'desc' => 'Freelance and consultancy services.'],
+                                'certifications' => ['title' => 'Certifications', 'icon' => 'fa-certificate', 'count' => $portfolio->certifications->count(), 'desc' => 'Professional licenses and credentials.'],
+                                'trainings' => ['title' => 'Trainings', 'icon' => 'fa-chalkboard-user', 'count' => $portfolio->trainings->count(), 'desc' => 'Bootcamps, workshops, and courses.'],
+                                'achievements' => ['title' => 'Achievements', 'icon' => 'fa-trophy', 'count' => $portfolio->achievements->count(), 'desc' => 'Awards, honors, and soft skills.'],
+                                'contributions' => ['title' => 'Contributions', 'icon' => 'fa-code-branch', 'count' => $portfolio->contributions->count(), 'desc' => 'Open source and social impact links.'],
+                                'testimonials' => ['title' => 'Testimonials', 'icon' => 'fa-quote-left', 'count' => $portfolio->testimonials->count(), 'desc' => 'Recommendations from managers and clients.'],
+                                'media' => ['title' => 'Media Appearances', 'icon' => 'fa-tv', 'count' => $portfolio->media->count(), 'desc' => 'Videos, interviews, and op-eds.'],
+                                'publications' => ['title' => 'Publications', 'icon' => 'fa-book-open', 'count' => $portfolio->publications->count(), 'desc' => 'Research papers, books, and articles.'],
+                                'resume' => ['title' => 'Resume / CV File', 'icon' => 'fa-file-pdf', 'count' => $portfolio->sections->where('type', 'resume')->count(), 'desc' => 'Direct PDF download file for employers.'],
+                            ];
+                        @endphp
+
+                        @foreach($modulesConfig as $key => $config)
+                            <div class="col">
+                                <div class="card h-100 module-card p-3 p-md-4 rounded-3 border">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bg-primary-subtle text-primary p-3 rounded-3 me-3 fs-4"><i class="fa-solid {{ $config['icon'] }}"></i></div>
+                                        <div>
+                                            <h6 class="card-title mb-0 fw-bold text-dark">{{ $config['title'] }}</h6>
+                                            <small class="badge bg-secondary-subtle text-secondary rounded-pill" style="font-size: 0.65rem;">{{ $config['count'] }} items</small>
+                                        </div>
+                                    </div>
+                                    <p class="card-text text-muted small mb-4" style="font-size: 0.78rem;">{{ $config['desc'] }}</p>
+                                    <div class="mt-auto d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-dark btn-sm flex-grow-1" data-bs-toggle="modal" data-bs-target="#manageModal_{{ $key }}">
+                                            <i class="fa-solid fa-gear me-1"></i> Manage
+                                        </button>
+                                        @if($key !== 'resume')
+                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addModal_{{ $key }}">
+                                                <i class="fa-solid fa-plus me-1"></i> Add
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- PORTFOLIO CONTENT MODULE MODALS -->
+                    <!-- ========================================== -->
+                    @foreach($modulesConfig as $key => $config)
+                        <!-- ADD MODAL FOR {{ $key }} -->
+                        <div class="modal fade" id="addModal_{{ $key }}" tabindex="-1" aria-labelledby="addModal_{{ $key }}Label" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered {{ in_array($key, ['projects', 'experience', 'publications']) ? 'modal-lg' : '' }}">
+                                <div class="modal-content border-0 shadow">
+                                    <div class="modal-header bg-light py-3">
+                                        <h5 class="modal-title fw-bold text-dark" id="addModal_{{ $key }}Label">
+                                            <i class="fa-solid {{ $config['icon'] }} text-primary me-2"></i> Add New {{ $config['title'] }} Item
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ $key === 'resume' ? route('portfolio.sections.store') : route('modules.' . $key . '.store') }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @if($key === 'resume')
+                                            <input type="hidden" name="type" value="resume">
+                                        @endif
+                                        <div class="modal-body p-4">
+                                            @if($key === 'skills')
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Skill Name <span class="text-danger">*</span></label>
+                                                    <input type="text" name="name" class="form-control" placeholder="e.g. PHP / Laravel, React, Financial Analysis" required>
+                                                </div>
+                                                <div class="row g-3">
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Proficiency Percentage (0-100) <span class="text-danger">*</span></label>
+                                                        <input type="number" name="percentage" class="form-control" min="0" max="100" value="85" required>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Category</label>
+                                                        <input type="text" name="category" class="form-control" placeholder="e.g. Backend, Frontend, Leadership">
+                                                    </div>
+                                                </div>
+                                            @elseif($key === 'projects')
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Project Title <span class="text-danger">*</span></label>
+                                                    <input type="text" name="title" class="form-control" placeholder="e.g. E-Commerce SaaS Platform" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Project Description</label>
+                                                    <textarea name="description" class="form-control" rows="3" placeholder="Key features, stack used, and outcomes..."></textarea>
+                                                </div>
+                                                <div class="row g-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label class="form-label fw-bold">Live Project Link / Demo URL</label>
+                                                        <input type="url" name="link" class="form-control" placeholder="https://example.com">
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label class="form-label fw-bold">Project Image Showcase</label>
+                                                        <input type="file" name="image" class="form-control" accept="image/*">
+                                                    </div>
+                                                </div>
+                                            @elseif($key === 'experience')
+                                                <div class="row g-3 mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label class="form-label fw-bold">Company / Organization <span class="text-danger">*</span></label>
+                                                        <input type="text" name="company" class="form-control" placeholder="e.g. TechCorp Global" required>
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label class="form-label fw-bold">Position / Title <span class="text-danger">*</span></label>
+                                                        <input type="text" name="position" class="form-control" placeholder="e.g. Senior Software Engineer" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row g-3 mb-3">
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Start Date <span class="text-danger">*</span></label>
+                                                        <input type="date" name="start_date" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">End Date (Leave blank if present)</label>
+                                                        <input type="date" name="end_date" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Key Responsibilities & Highlights</label>
+                                                    <textarea name="description" class="form-control" rows="3" placeholder="Described key impacts and duties..."></textarea>
+                                                </div>
+                                            @elseif($key === 'education')
+                                                <div class="row g-3 mb-3">
+                                                    <div class="col-12 col-md-6">
+                                                        <label class="form-label fw-bold">Degree / Program <span class="text-danger">*</span></label>
+                                                        <input type="text" name="degree" class="form-control" placeholder="e.g. B.S. Computer Science" required>
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
+                                                        <label class="form-label fw-bold">Institution / University <span class="text-danger">*</span></label>
+                                                        <input type="text" name="institution" class="form-control" placeholder="e.g. Stanford University" required>
+                                                    </div>
+                                                </div>
+                                                <div class="row g-3">
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Start Date <span class="text-danger">*</span></label>
+                                                        <input type="date" name="start_date" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">End Date <span class="text-danger">*</span></label>
+                                                        <input type="date" name="end_date" class="form-control" required>
+                                                    </div>
+                                                </div>
+                                            @elseif($key === 'services')
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Service Title <span class="text-danger">*</span></label>
+                                                    <input type="text" name="title" class="form-control" placeholder="e.g. Full-Stack Web Architecture" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Service Description <span class="text-danger">*</span></label>
+                                                    <textarea name="description" class="form-control" rows="3" placeholder="What value do you offer to clients or companies?" required></textarea>
+                                                </div>
+                                            @elseif($key === 'certifications')
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Certification Name <span class="text-danger">*</span></label>
+                                                    <input type="text" name="name" class="form-control" placeholder="e.g. AWS Certified Solutions Architect" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Issuing Organization <span class="text-danger">*</span></label>
+                                                    <input type="text" name="issuer" class="form-control" placeholder="e.g. Amazon Web Services" required>
+                                                </div>
+                                            @elseif($key === 'trainings')
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Training / Course Title <span class="text-danger">*</span></label>
+                                                    <input type="text" name="title" class="form-control" placeholder="e.g. Executive Leadership Bootcamp" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Organization / Platform <span class="text-danger">*</span></label>
+                                                    <input type="text" name="institution" class="form-control" placeholder="e.g. Coursera / Harvard Online" required>
+                                                </div>
+                                            @elseif($key === 'achievements')
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Achievement / Award Title <span class="text-danger">*</span></label>
+                                                    <input type="text" name="title" class="form-control" placeholder="e.g. Best Developer Award 2025" required>
+                                                </div>
+                                            @elseif($key === 'contributions')
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Contribution Title <span class="text-danger">*</span></label>
+                                                    <input type="text" name="title" class="form-control" placeholder="e.g. Open Source Laravel Core Package" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Description / Impact <span class="text-danger">*</span></label>
+                                                    <textarea name="description" class="form-control" rows="3" required></textarea>
+                                                </div>
+                                            @elseif($key === 'testimonials')
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Client / Recommender Name <span class="text-danger">*</span></label>
+                                                    <input type="text" name="client_name" class="form-control" placeholder="e.g. Sarah Jenkins, CTO" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Recommendation Content <span class="text-danger">*</span></label>
+                                                    <textarea name="content" class="form-control" rows="3" required></textarea>
+                                                </div>
+                                            @elseif($key === 'media')
+                                                <div class="row g-3 mb-3">
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Type <span class="text-danger">*</span></label>
+                                                        <select name="type" class="form-select" required>
+                                                            <option value="tv">TV / Video Interview</option>
+                                                            <option value="oped">Newspaper / Op-Ed Article</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Date <span class="text-danger">*</span></label>
+                                                        <input type="date" name="date" class="form-control" required>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Appearance Title <span class="text-danger">*</span></label>
+                                                    <input type="text" name="title" class="form-control" required>
+                                                </div>
+                                                <div class="row g-3 mb-3">
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">TV Channel / Platform</label>
+                                                        <input type="text" name="channel_platform" class="form-control">
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Newspaper / Journal Name</label>
+                                                        <input type="text" name="newspaper_name" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Media URL / Link <span class="text-danger">*</span></label>
+                                                    <input type="url" name="link" class="form-control" required>
+                                                </div>
+                                            @elseif($key === 'publications')
+                                                <div class="row g-3 mb-3">
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Publication Type <span class="text-danger">*</span></label>
+                                                        <input type="text" name="type" class="form-control" placeholder="e.g. Research Journal, Book" required>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Publication Year <span class="text-danger">*</span></label>
+                                                        <input type="text" name="year" class="form-control" placeholder="2025" required>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Title <span class="text-danger">*</span></label>
+                                                    <input type="text" name="title" class="form-control" required>
+                                                </div>
+                                                <div class="row g-3 mb-3">
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Authors <span class="text-danger">*</span></label>
+                                                        <input type="text" name="authors" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Publisher <span class="text-danger">*</span></label>
+                                                        <input type="text" name="publisher" class="form-control" required>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Publication Link / DOI</label>
+                                                    <input type="url" name="link" class="form-control">
+                                                </div>
+                                            @elseif($key === 'resume')
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Upload Resume / CV (PDF File) <span class="text-danger">*</span></label>
+                                                    <input type="file" name="file" class="form-control" accept=".pdf,.doc,.docx" required>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="modal-footer bg-light">
+                                            <button type="button" class="btn btn-secondary btn-sm rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary btn-sm rounded-pill px-4 fw-bold">Save {{ $config['title'] }}</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MANAGE MODAL FOR {{ $key }} -->
+                        <div class="modal fade" id="manageModal_{{ $key }}" tabindex="-1" aria-labelledby="manageModal_{{ $key }}Label" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content border-0 shadow">
+                                    <div class="modal-header bg-light py-3">
+                                        <h5 class="modal-title fw-bold text-dark" id="manageModal_{{ $key }}Label">
+                                            <i class="fa-solid {{ $config['icon'] }} text-primary me-2"></i> Manage {{ $config['title'] }} Items
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body p-4">
+                                        @php
+                                            $rel = $key === 'experience' ? 'experiences' : ($key === 'resume' ? 'sections' : $key);
+                                            $rawItems = $portfolio->$rel ?? collect();
+                                            $items = $key === 'resume' ? $rawItems->where('type', 'resume') : $rawItems;
+                                        @endphp
+
+                                        @forelse($items as $item)
+                                            <div class="card border-0 bg-light p-3 mb-3 rounded-3 border shadow-sm">
+                                                <div class="d-flex justify-content-between align-items-center gap-2">
+                                                    <div class="min-w-0 flex-grow-1">
+                                                        <h6 class="fw-bold text-dark mb-1">
+                                                            {{ $item->name ?? $item->title ?? $item->degree ?? $item->position ?? 'Item #' . $item->id }}
+                                                        </h6>
+                                                        <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                            @if(isset($item->category)) Category: {{ $item->category }} ({{ $item->percentage }}%) @endif
+                                                            @if(isset($item->company)) {{ $item->company }} (@if($item->start_date){{ $item->start_date->format('M Y') }} – {{ $item->end_date ? $item->end_date->format('M Y') : 'Present' }}@endif) @endif
+                                                            @if(isset($item->institution)) {{ $item->institution }} @endif
+                                                            @if(isset($item->issuer)) {{ $item->issuer }} @endif
+                                                            @if(isset($item->client_name)) {{ $item->client_name }} @endif
+                                                        </small>
+                                                    </div>
+
+                                                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                                        @if($key !== 'resume')
+                                                            <button class="btn btn-outline-primary btn-sm rounded-pill py-1 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#editCollapse_{{ $key }}_{{ $item->id }}">
+                                                                <i class="fa-solid fa-pen-to-square me-1"></i> Edit
+                                                            </button>
+                                                        @endif
+                                                        <form action="{{ $key === 'resume' ? route('portfolio.sections.destroy', $item->id) : route('modules.' . $key . '.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Delete">
+                                                                <i class="fa-solid fa-trash-can"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Inline Edit Form Collapse -->
+                                                @if($key !== 'resume')
+                                                    <div class="collapse mt-3 pt-3 border-top" id="editCollapse_{{ $key }}_{{ $item->id }}">
+                                                        <form action="{{ route('modules.' . $key . '.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            
+                                                            @if($key === 'skills')
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Skill Name <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="name" class="form-control form-control-sm" value="{{ $item->name }}" required>
+                                                                </div>
+                                                                <div class="row g-2 mb-3">
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Proficiency Percentage (0-100) <span class="text-danger">*</span></label>
+                                                                        <input type="number" name="percentage" class="form-control form-control-sm" value="{{ $item->percentage }}" min="0" max="100" required>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Category</label>
+                                                                        <input type="text" name="category" class="form-control form-control-sm" value="{{ $item->category }}" placeholder="e.g. Backend, Frontend">
+                                                                    </div>
+                                                                </div>
+                                                            @elseif($key === 'projects')
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Project Title <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="title" class="form-control form-control-sm" value="{{ $item->title }}" required>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Project Description</label>
+                                                                    <textarea name="description" class="form-control form-control-sm" rows="3">{{ $item->description }}</textarea>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Live Project Link / Demo URL</label>
+                                                                    <input type="url" name="link" class="form-control form-control-sm" value="{{ $item->link }}" placeholder="https://example.com">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Project Image Showcase</label>
+                                                                    @if($item->image_path)
+                                                                        <div class="d-flex align-items-center gap-3 mb-2 p-2 border rounded bg-white">
+                                                                            <img src="{{ Storage::url($item->image_path) }}" alt="{{ $item->title }}" class="rounded border" style="width: 80px; height: 55px; object-fit: cover;">
+                                                                            <div>
+                                                                                <span class="badge bg-success-subtle text-success border"><i class="fa-solid fa-image me-1"></i> Current Image Uploaded</span>
+                                                                                <small class="text-muted d-block" style="font-size: 0.72rem;">Select a file below to replace the existing showcase image.</small>
+                                                                            </div>
+                                                                        </div>
+                                                                    @else
+                                                                        <small class="text-muted d-block mb-1" style="font-size: 0.75rem;">No image uploaded yet for this project.</small>
+                                                                    @endif
+                                                                    <input type="file" name="image" class="form-control form-control-sm" accept="image/*">
+                                                                </div>
+                                                            @elseif($key === 'experience')
+                                                                <div class="row g-2 mb-3">
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Company / Organization <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="company" class="form-control form-control-sm" value="{{ $item->company }}" required>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Position / Title <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="position" class="form-control form-control-sm" value="{{ $item->position }}" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row g-2 mb-3">
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Start Date <span class="text-danger">*</span></label>
+                                                                        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $item->start_date ? $item->start_date->format('Y-m-d') : '' }}" required>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">End Date (Leave blank if present)</label>
+                                                                        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $item->end_date ? $item->end_date->format('Y-m-d') : '' }}">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Responsibilities / Description</label>
+                                                                    <textarea name="description" class="form-control form-control-sm" rows="3">{{ $item->description }}</textarea>
+                                                                </div>
+                                                            @elseif($key === 'education')
+                                                                <div class="row g-2 mb-3">
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Degree / Program <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="degree" class="form-control form-control-sm" value="{{ $item->degree }}" required>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Institution / University <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="institution" class="form-control form-control-sm" value="{{ $item->institution }}" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row g-2 mb-3">
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Start Date <span class="text-danger">*</span></label>
+                                                                        <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $item->start_date ? $item->start_date->format('Y-m-d') : '' }}" required>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">End Date <span class="text-danger">*</span></label>
+                                                                        <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $item->end_date ? $item->end_date->format('Y-m-d') : '' }}" required>
+                                                                    </div>
+                                                                </div>
+                                                            @elseif($key === 'services')
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Service Title <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="title" class="form-control form-control-sm" value="{{ $item->title }}" required>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Service Description <span class="text-danger">*</span></label>
+                                                                    <textarea name="description" class="form-control form-control-sm" rows="3" required>{{ $item->description }}</textarea>
+                                                                </div>
+                                                            @elseif($key === 'certifications')
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Certification Name <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="name" class="form-control form-control-sm" value="{{ $item->name }}" required>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Issuing Organization <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="issuer" class="form-control form-control-sm" value="{{ $item->issuer }}" required>
+                                                                </div>
+                                                            @elseif($key === 'trainings')
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Training / Course Title <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="title" class="form-control form-control-sm" value="{{ $item->title }}" required>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Organization / Platform <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="institution" class="form-control form-control-sm" value="{{ $item->institution }}" required>
+                                                                </div>
+                                                            @elseif($key === 'achievements')
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Achievement / Award Title <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="title" class="form-control form-control-sm" value="{{ $item->title }}" required>
+                                                                </div>
+                                                            @elseif($key === 'contributions')
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Contribution Title <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="title" class="form-control form-control-sm" value="{{ $item->title }}" required>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Description / Impact <span class="text-danger">*</span></label>
+                                                                    <textarea name="description" class="form-control form-control-sm" rows="3" required>{{ $item->description }}</textarea>
+                                                                </div>
+                                                            @elseif($key === 'testimonials')
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Client / Recommender Name <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="client_name" class="form-control form-control-sm" value="{{ $item->client_name }}" required>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Recommendation Content <span class="text-danger">*</span></label>
+                                                                    <textarea name="content" class="form-control form-control-sm" rows="3" required>{{ $item->content }}</textarea>
+                                                                </div>
+                                                            @elseif($key === 'media')
+                                                                <div class="row g-2 mb-3">
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Media Type <span class="text-danger">*</span></label>
+                                                                        <select name="type" class="form-select form-select-sm" required>
+                                                                            <option value="tv" {{ $item->type === 'tv' ? 'selected' : '' }}>TV / Video Interview</option>
+                                                                            <option value="oped" {{ $item->type === 'oped' ? 'selected' : '' }}>Newspaper / Op-Ed Article</option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Date <span class="text-danger">*</span></label>
+                                                                        <input type="date" name="date" class="form-control form-control-sm" value="{{ $item->date ? $item->date->format('Y-m-d') : '' }}" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Appearance Title <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="title" class="form-control form-control-sm" value="{{ $item->title }}" required>
+                                                                </div>
+                                                                <div class="row g-2 mb-3">
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">TV Channel / Platform</label>
+                                                                        <input type="text" name="channel_platform" class="form-control form-control-sm" value="{{ $item->channel_platform }}">
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Newspaper / Journal Name</label>
+                                                                        <input type="text" name="newspaper_name" class="form-control form-control-sm" value="{{ $item->newspaper_name }}">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Media URL / Link <span class="text-danger">*</span></label>
+                                                                    <input type="url" name="link" class="form-control form-control-sm" value="{{ $item->link }}" required>
+                                                                </div>
+                                                            @elseif($key === 'publications')
+                                                                <div class="row g-2 mb-3">
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Publication Type <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="type" class="form-control form-control-sm" value="{{ $item->type }}" required>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Publication Year <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="year" class="form-control form-control-sm" value="{{ $item->year }}" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Title <span class="text-danger">*</span></label>
+                                                                    <input type="text" name="title" class="form-control form-control-sm" value="{{ $item->title }}" required>
+                                                                </div>
+                                                                <div class="row g-2 mb-3">
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Authors <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="authors" class="form-control form-control-sm" value="{{ $item->authors }}" required>
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label class="form-label fw-bold small text-dark">Publisher <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="publisher" class="form-control form-control-sm" value="{{ $item->publisher }}" required>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Publication Link / DOI</label>
+                                                                    <input type="url" name="link" class="form-control form-control-sm" value="{{ $item->link }}">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold small text-dark">Attach Report / Document</label>
+                                                                    @if($item->report_path)
+                                                                        <div class="d-flex align-items-center gap-2 mb-2 p-2 border rounded bg-white">
+                                                                            <i class="fa-solid fa-file-pdf text-danger"></i>
+                                                                            <a href="{{ Storage::url($item->report_path) }}" target="_blank" class="small fw-bold text-primary">View Uploaded Document</a>
+                                                                        </div>
+                                                                    @endif
+                                                                    <input type="file" name="report" class="form-control form-control-sm" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip">
+                                                                </div>
+                                                            @endif
+                                                            
+                                                            <div class="d-flex justify-content-end">
+                                                                <button type="submit" class="btn btn-success btn-sm rounded-pill px-3 fw-bold">Update Item</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @empty
+                                            <div class="text-center py-5 text-muted">
+                                                <i class="fa-solid {{ $config['icon'] }} fa-2x mb-2 text-secondary"></i>
+                                                <h6 class="fw-bold text-dark">No {{ $config['title'] }} items found</h6>
+                                                <p class="small text-muted mb-0">Click the "Add" button to add your first item.</p>
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 5. JOBS EXPLORER PANE -->
+                <!-- ========================================== -->
+                <div class="tab-pane fade" id="jobsPane" role="tabpanel">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom">
+                        <div>
+                            <h3 class="fw-bold text-dark mb-0"><i class="fa-solid fa-briefcase text-primary me-2"></i> Jobs Explorer</h3>
+                            <p class="text-secondary small mb-0">Browse published opportunities matching your profile.</p>
+                        </div>
+                        <a href="{{ route('opportunities.index') }}" class="btn btn-primary btn-sm rounded-pill fw-semibold">View Full Job Board &rarr;</a>
+                    </div>
+
+                    <div class="row g-3">
+                        @forelse($recommendedOpportunities as $job)
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="job-match-card p-3 h-100 d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2 w-100" style="min-width: 0;">
+                                        <div class="min-w-0 flex-grow-1" style="min-width: 0; max-width: calc(100% - 85px);">
+                                            <a href="{{ route('opportunities.show', $job->slug) }}" class="fw-bold text-dark text-decoration-none small text-truncate d-block">{{ $job->title }}</a>
+                                            <span class="text-muted small text-truncate d-block">{{ $job->company->name ?? 'Organization' }}</span>
+                                        </div>
+                                        <span class="match-badge flex-shrink-0"><i class="fa-solid fa-bullseye me-1"></i>{{ $job->match_evaluation['overall_score'] }}% Match</span>
+                                    </div>
+                                    <div class="mt-auto border-top pt-2 d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">{{ $job->created_at->diffForHumans() }}</small>
+                                        <a href="{{ route('opportunities.show', $job->slug) }}" class="btn btn-sm btn-primary rounded-pill px-3">View Job</a>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-12 text-center py-5 text-muted">No open opportunities found right now.</div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 6. MY APPLICATIONS PANE -->
+                <!-- ========================================== -->
+                <div class="tab-pane fade" id="applicationsPane" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <h3 class="fw-bold text-dark mb-0"><i class="fa-solid fa-paper-plane text-info me-2"></i> My Applications</h3>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-3">
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
+                                <table class="table align-middle mb-0">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Sender Name</th>
-                                            <th>Email Address</th>
-                                            <th>Message Snippet</th>
+                                            <th>Opportunity</th>
+                                            <th>Company</th>
+                                            <th>Applied Date</th>
                                             <th>Status</th>
-                                            <th>Date Received</th>
+                                            <th class="text-end">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($portfolio->messages->sortByDesc('created_at')->take(5) as $msg)
+                                        @forelse($myApplications as $app)
                                             <tr>
-                                                <td class="fw-bold">{{ $msg->name }}</td>
-                                                <td>{{ $msg->email }}</td>
-                                                <td><small class="text-muted">{{ Str::limit($msg->message, 80) }}</small></td>
-                                                <td>
-                                                    <span class="badge rounded-pill bg-{{ $msg->is_read ? 'secondary' : 'danger' }}">
-                                                        {{ $msg->is_read ? 'Read' : 'New' }}
-                                                    </span>
-                                                </td>
-                                                <td>{{ $msg->created_at->diffForHumans() }}</td>
+                                                <td class="fw-bold text-dark">{{ $app->opportunity->title ?? 'Position' }}</td>
+                                                <td>{{ $app->opportunity->company->name ?? 'Company' }}</td>
+                                                <td>{{ $app->created_at->format('M d, Y') }}</td>
+                                                <td><span class="badge bg-primary">{{ ucfirst($app->status) }}</span></td>
+                                                <td class="text-end"><a href="{{ route('applications.show', $app->id) }}" class="btn btn-sm btn-outline-primary">View</a></td>
                                             </tr>
                                         @empty
-                                            <tr>
-                                                <td colspan="5" class="text-center py-4 text-muted">No messages received yet.</td>
-                                            </tr>
+                                            <tr><td colspan="5" class="text-center py-4 text-muted">No submitted applications found.</td></tr>
                                         @endforelse
                                     </tbody>
                                 </table>
@@ -315,1289 +1649,292 @@
                     </div>
                 </div>
 
-                <!-- 2. MODULES / SECTIONS TAB PANE -->
-                <div class="tab-pane fade" id="modulesPane" role="tabpanel">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="fw-bold mb-0">Portfolio Sections & Modules</h3>
+                <!-- ========================================== -->
+                <!-- 7. SAVED JOBS PANE -->
+                <!-- ========================================== -->
+                <div class="tab-pane fade" id="savedPane" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <h3 class="fw-bold text-dark mb-0"><i class="fa-solid fa-bookmark text-secondary me-2"></i> Saved Opportunities</h3>
                     </div>
 
-                    <!-- Grid of 13 cards (12 modules + CV) -->
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3" id="modulesGrid">
-                        @php
-                            $modulesConfig = [
-                                'skills' => ['title' => 'Skills', 'icon' => 'bi-gear-fill', 'count' => $portfolio->skills->count(), 'desc' => 'Add technical expertise, bars & categories.'],
-                                'projects' => ['title' => 'Projects', 'icon' => 'bi-laptop', 'count' => $portfolio->projects->count(), 'desc' => 'Flagship projects, descriptions, taglines.'],
-                                'experience' => ['title' => 'Work Experience', 'icon' => 'bi-briefcase', 'count' => $portfolio->experiences->count(), 'desc' => 'Job history, roles, responsibilities.'],
-                                'education' => ['title' => 'Education', 'icon' => 'bi-book', 'count' => $portfolio->education->count(), 'desc' => 'Academic records, degrees, institutions.'],
-                                'services' => ['title' => 'Services Offered', 'icon' => 'bi-window-stack', 'count' => $portfolio->services->count(), 'desc' => 'Freelance / consultancy service listings.'],
-                                'certifications' => ['title' => 'Certifications', 'icon' => 'bi-patch-check', 'count' => $portfolio->certifications->count(), 'desc' => 'Industry licenses and certifications.'],
-                                'trainings' => ['title' => 'Trainings', 'icon' => 'bi-person-workspace', 'count' => $portfolio->trainings->count(), 'desc' => 'Seminars, bootcamps and workshops.'],
-                                'achievements' => ['title' => 'Achievements', 'icon' => 'bi-trophy', 'count' => $portfolio->achievements->count(), 'desc' => 'Awards, honors, and soft skills.'],
-                                'contributions' => ['title' => 'Contributions', 'icon' => 'bi-github', 'count' => $portfolio->contributions->count(), 'desc' => 'Open-source or social contribution links.'],
-                                'testimonials' => ['title' => 'Testimonials', 'icon' => 'bi-chat-quote', 'count' => $portfolio->testimonials->count(), 'desc' => 'Recommendations from clients/managers.'],
-                                'media' => ['title' => 'Media Appearances', 'icon' => 'bi-tv', 'count' => $portfolio->media->count(), 'desc' => 'TV shows, channel links, newspaper op-eds.'],
-                                'publications' => ['title' => 'Publications', 'icon' => 'bi-journal-text', 'count' => $portfolio->publications->count(), 'desc' => 'Books, research papers, journal articles.'],
-                                'resume' => ['title' => 'Resume / CV File', 'icon' => 'bi-file-earmark-pdf', 'count' => $portfolio->sections->where('type', 'resume')->count(), 'desc' => 'Upload direct PDF version of CV document.'],
-                            ];
-                        @endphp
-
-                        @foreach($modulesConfig as $key => $config)
-                            <div class="col">
-                                <div class="card h-100 shadow-sm border-0 module-card hover-lift">
-                                    <div class="card-body d-flex flex-column p-4">
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div class="bg-primary-subtle text-primary p-3 rounded-3 me-3 fs-3"><i class="bi {{ $config['icon'] }}"></i></div>
-                                            <div>
-                                                <h5 class="card-title mb-0 fw-bold">{{ $config['title'] }}</h5>
-                                                <small class="badge bg-secondary-subtle text-secondary rounded-pill">{{ $config['count'] }} records</small>
-                                            </div>
-                                        </div>
-                                        <p class="card-text text-secondary small mb-4">{{ $config['desc'] }}</p>
-                                        <div class="mt-auto d-flex gap-2">
-                                            <button class="btn btn-outline-dark btn-sm flex-grow-1 js-manage-section" data-module="{{ $key }}">Manage</button>
-                                            @if($key !== 'resume')
-                                                <button class="btn btn-dark btn-sm js-add-section-btn" data-module="{{ $key }}"><i class="bi bi-plus-lg"></i> Add</button>
-                                            @endif
-                                        </div>
+                    <div class="row g-3">
+                        @forelse($savedOpportunities as $saved)
+                            <div class="col-12 col-md-6">
+                                <div class="card border p-3 rounded-3 d-flex flex-row align-items-center justify-content-between">
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-0">{{ $saved->opportunity->title ?? 'Saved Opportunity' }}</h6>
+                                        <small class="text-muted">{{ $saved->opportunity->company->name ?? 'Company' }}</small>
                                     </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <!-- Dynamic Details Panel Container (Switched via JS) -->
-                    <div id="modulesDetailPanel" style="display: none;">
-                        <button class="btn btn-sm btn-outline-dark mb-4" id="backToModulesBtn"><i class="bi bi-arrow-left"></i> Back to Sections Grid</button>
-                        
-                        <!-- 2.1 SKILLS DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-skills" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Skills</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addSkillsCollapse"><i class="bi bi-plus-lg"></i> Add New Skill</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addSkillsCollapse">
-                                <form action="{{ route('modules.skills.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
-                                    @csrf
-                                    <div class="row g-2 align-items-end">
-                                        <div class="col-md-3"><label class="small fw-bold">Skill Name</label><input name="name" class="form-control form-control-sm" placeholder="Skill Name" required></div>
-                                        <div class="col-md-2"><label class="small fw-bold">Proficiency (%)</label><input name="percentage" type="number" class="form-control form-control-sm" placeholder="%" required></div>
-                                        <div class="col-md-3"><label class="small fw-bold">Category</label><input name="category" class="form-control form-control-sm" placeholder="Category (e.g. Programming)" required></div>
-                                        <div class="col-md-3">
-                                            <label class="small fw-bold">Icon Class</label>
-                                            <select name="icon" class="form-select form-select-sm">
-                                                <option value="code">Code</option>
-                                                <option value="layer-group">Layers</option>
-                                                <option value="database">Database</option>
-                                                <option value="tools">Tools</option>
-                                                <option value="laptop-code">Laptop</option>
-                                                <option value="server">Server</option>
-                                                <option value="mobile-alt">Mobile</option>
-                                                <option value="palette">Design</option>
-                                                <option value="terminal">Terminal</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-1"><button class="btn btn-sm btn-dark w-100">Add</button></div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter skills...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->skills as $skill)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <span class="fw-bold">{{ $skill->name }}</span>
-                                                <span class="badge bg-secondary-subtle text-secondary ms-2">{{ $skill->category }} ({{ $skill->percentage }}%)</span>
-                                            </div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editSkill{{ $skill->id }}">Edit</button>
-                                                <form action="{{ route('modules.skills.destroy', $skill) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.skills.update', $skill) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editSkill{{ $skill->id }}">
-                                            @csrf @method('PATCH')
-                                            <div class="row g-2 align-items-end">
-                                                <div class="col-md-3"><input name="name" class="form-control form-control-sm" value="{{ $skill->name }}" required></div>
-                                                <div class="col-md-2"><input name="percentage" type="number" class="form-control form-control-sm" value="{{ $skill->percentage }}" required></div>
-                                                <div class="col-md-3"><input name="category" class="form-control form-control-sm" value="{{ $skill->category }}" required></div>
-                                                <div class="col-md-3">
-                                                    <select name="icon" class="form-select form-select-sm">
-                                                        <option value="code" {{ $skill->icon == 'code' ? 'selected' : '' }}>Code</option>
-                                                        <option value="layer-group" {{ $skill->icon == 'layer-group' ? 'selected' : '' }}>Layers</option>
-                                                        <option value="database" {{ $skill->icon == 'database' ? 'selected' : '' }}>Database</option>
-                                                        <option value="tools" {{ $skill->icon == 'tools' ? 'selected' : '' }}>Tools</option>
-                                                        <option value="laptop-code" {{ $skill->icon == 'laptop-code' ? 'selected' : '' }}>Laptop</option>
-                                                        <option value="server" {{ $skill->icon == 'server' ? 'selected' : '' }}>Server</option>
-                                                        <option value="mobile-alt" {{ $skill->icon == 'mobile-alt' ? 'selected' : '' }}>Mobile</option>
-                                                        <option value="palette" {{ $skill->icon == 'palette' ? 'selected' : '' }}>Design</option>
-                                                        <option value="terminal" {{ $skill->icon == 'terminal' ? 'selected' : '' }}>Terminal</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-1"><button class="btn btn-sm btn-primary w-100">Update</button></div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.2 PROJECTS DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-projects" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Projects</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addProjectsCollapse"><i class="bi bi-plus-lg"></i> Add Project</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addProjectsCollapse">
-                                <form action="{{ route('modules.projects.store') }}" method="POST" enctype="multipart/form-data" class="p-3 bg-white rounded border shadow-sm">
-                                    @csrf
-                                    <div class="row g-2 mb-2">
-                                        <div class="col-md-6">
-                                            <label class="small fw-bold">Project Title</label>
-                                            <input name="title" class="form-control form-control-sm" placeholder="Project Title" required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="small fw-bold">Project Link</label>
-                                            <input name="link" class="form-control form-control-sm" placeholder="Project Link">
-                                        </div>
-                                    </div>
-                                    <div class="mb-2">
-                                        <label class="small fw-bold">Showcase Image</label>
-                                        <input type="file" name="image" class="form-control form-control-sm" accept="image/*">
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label class="small fw-bold">Project Description</label>
-                                        <textarea name="description" class="form-control js-summernote" data-height="150" placeholder="Project details..."></textarea>
-                                    </div>
-                                    <button class="btn btn-sm btn-dark w-100">Add Project</button>
-                                </form>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter projects...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->projects as $project)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div class="d-flex gap-3 align-items-start">
-                                                @if($project->image_path)
-                                                    <img src="{{ Storage::url($project->image_path) }}" class="rounded shadow-sm border" style="width: 60px; height: 60px; object-fit: cover;">
-                                                @else
-                                                    <div class="rounded border bg-light d-flex align-items-center justify-content-center text-muted" style="width: 60px; height: 60px; font-size: 0.75rem;">No Image</div>
-                                                @endif
-                                                <div>
-                                                    <div class="fw-bold">{{ $project->title }}</div>
-                                                    @if($project->link)
-                                                        <small class="text-primary d-block mb-1"><a href="{{ $project->link }}" target="_blank" class="text-decoration-none"><i class="bi bi-link-45deg"></i> {{ $project->link }}</a></small>
-                                                    @endif
-                                                    <small class="text-muted d-block">{{ Str::limit(strip_tags($project->description), 80) }}</small>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editProject{{ $project->id }}">Edit</button>
-                                                <form action="{{ route('modules.projects.destroy', $project) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.projects.update', $project) }}" method="POST" enctype="multipart/form-data" class="collapse mt-2 p-3 bg-light rounded border" id="editProject{{ $project->id }}">
-                                            @csrf @method('PATCH')
-                                            <div class="row g-2 mb-2">
-                                                <div class="col-md-6">
-                                                    <label class="small fw-bold">Project Title</label>
-                                                    <input name="title" class="form-control form-control-sm" value="{{ $project->title }}" required>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="small fw-bold">Project Link</label>
-                                                    <input name="link" class="form-control form-control-sm" value="{{ $project->link }}">
-                                                </div>
-                                            </div>
-                                            <div class="mb-2">
-                                                @if($project->image_path)
-                                                    <div class="mb-2">
-                                                        <img src="{{ Storage::url($project->image_path) }}" class="rounded shadow-sm border" style="max-height: 80px; width: auto; object-fit: cover;">
-                                                    </div>
-                                                @endif
-                                                <label class="small fw-bold">Update Showcase Image</label>
-                                                <input type="file" name="image" class="form-control form-control-sm" accept="image/*">
-                                            </div>
-                                            <div class="col-12 mb-3">
-                                                <label class="small fw-bold">Project Description</label>
-                                                <textarea name="description" class="form-control form-control-sm js-summernote" data-height="140">{{ $project->description }}</textarea>
-                                            </div>
-                                            <button class="btn btn-sm btn-primary">Update Project</button>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.3 WORK EXPERIENCE DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-experience" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Work Experience</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addExpCollapse"><i class="bi bi-plus-lg"></i> Add Experience</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addExpCollapse">
-                                <form action="{{ route('modules.experiences.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
-                                    @csrf
-                                    <div class="row g-2 mb-2">
-                                        <div class="col-md-6"><input name="position" class="form-control form-control-sm" placeholder="Job Title" required></div>
-                                        <div class="col-md-6"><input name="company" class="form-control form-control-sm" placeholder="Company Name" required></div>
-                                        <div class="col-md-6"><label class="small fw-bold">Start Date</label><input name="start_date" type="date" class="form-control form-control-sm" required></div>
-                                        <div class="col-md-6"><label class="small fw-bold">End Date (Keep empty if current)</label><input name="end_date" type="date" class="form-control form-control-sm"></div>
-                                    </div>
-                                    <div class="col-12 mb-3"><textarea name="description" class="form-control js-summernote" data-height="180" placeholder="Job Responsibilities"></textarea></div>
-                                    <button class="btn btn-sm btn-dark w-100">Add Experience</button>
-                                </form>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter experience...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->experiences as $exp)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <div class="fw-bold">{{ $exp->position }} at {{ $exp->company }}</div>
-                                                <small class="text-muted d-block mb-2">{{ $exp->start_date->format('M Y') }} - {{ $exp->end_date ? $exp->end_date->format('M Y') : 'Present' }}</small>
-                                            </div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editExp{{ $exp->id }}">Edit</button>
-                                                <form action="{{ route('modules.experiences.destroy', $exp) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.experiences.update', $exp) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editExp{{ $exp->id }}">
-                                            @csrf @method('PATCH')
-                                            <div class="row g-2 mb-2">
-                                                <div class="col-md-6"><input name="position" class="form-control form-control-sm" value="{{ $exp->position }}" required></div>
-                                                <div class="col-md-6"><input name="company" class="form-control form-control-sm" value="{{ $exp->company }}" required></div>
-                                                <div class="col-md-6"><input name="start_date" type="date" class="form-control form-control-sm" value="{{ $exp->start_date?->format('Y-m-d') }}" required></div>
-                                                <div class="col-md-6"><input name="end_date" type="date" class="form-control form-control-sm" value="{{ $exp->end_date?->format('Y-m-d') }}"></div>
-                                            </div>
-                                            <div class="col-12 mb-2"><textarea name="description" class="form-control form-control-sm js-summernote" data-height="150">{{ $exp->description }}</textarea></div>
-                                            <button class="btn btn-sm btn-primary">Update Experience</button>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.4 EDUCATION DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-education" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Education</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addEduCollapse"><i class="bi bi-plus-lg"></i> Add Education</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addEduCollapse">
-                                <form action="{{ route('modules.education.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
-                                    @csrf
-                                    <div class="row g-3">
-                                        <div class="col-md-6"><input name="institution" class="form-control form-control-sm" placeholder="University/School" required></div>
-                                        <div class="col-md-6"><input name="degree" class="form-control form-control-sm" placeholder="Degree" required></div>
-                                        <div class="col-md-6"><label class="small fw-bold">Start Date</label><input name="start_date" type="date" class="form-control form-control-sm" required></div>
-                                        <div class="col-md-6"><label class="small fw-bold">End Date</label><input name="end_date" type="date" class="form-control form-control-sm" required></div>
-                                        <div class="col-12 text-end"><button class="btn btn-sm btn-dark">Add Education</button></div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter education...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->education as $edu)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <div class="fw-bold">{{ $edu->degree }}</div>
-                                                <small class="text-muted d-block mb-1">{{ $edu->institution }} | {{ $edu->start_date?->format('Y') }} - {{ $edu->end_date?->format('Y') }}</small>
-                                            </div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editEdu{{ $edu->id }}">Edit</button>
-                                                <form action="{{ route('modules.education.destroy', $edu) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.education.update', $edu) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editEdu{{ $edu->id }}">
-                                            @csrf @method('PATCH')
-                                            <div class="row g-2">
-                                                <div class="col-md-6"><input name="institution" class="form-control form-control-sm" value="{{ $edu->institution }}" required></div>
-                                                <div class="col-md-6"><input name="degree" class="form-control form-control-sm" value="{{ $edu->degree }}" required></div>
-                                                <div class="col-md-6"><input name="start_date" type="date" class="form-control form-control-sm" value="{{ $edu->start_date?->format('Y-m-d') }}" required></div>
-                                                <div class="col-md-6"><input name="end_date" type="date" class="form-control form-control-sm" value="{{ $edu->end_date?->format('Y-m-d') }}" required></div>
-                                                <div class="col-12 text-end"><button class="btn btn-sm btn-primary">Update Education</button></div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.5 SERVICES DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-services" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Services</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addServicesCollapse"><i class="bi bi-plus-lg"></i> Add Service</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addServicesCollapse">
-                                <form action="{{ route('modules.services.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
-                                    @csrf
-                                    <input name="title" class="form-control mb-2 form-control-sm" placeholder="Service Name" required>
-                                    <textarea name="description" class="form-control mb-2 js-summernote" data-height="150" placeholder="What you offer..."></textarea>
-                                    <button class="btn btn-sm btn-dark w-100">Add Service</button>
-                                </form>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter services...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->services as $serv)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <div class="fw-bold">{{ $serv->title }}</div>
-                                                <small class="text-muted d-block mb-1">{{ Str::limit(strip_tags($serv->description), 80) }}</small>
-                                            </div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editService{{ $serv->id }}">Edit</button>
-                                                <form action="{{ route('modules.services.destroy', $serv) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.services.update', $serv) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editService{{ $serv->id }}">
-                                            @csrf @method('PATCH')
-                                            <input name="title" class="form-control form-control-sm mb-2" value="{{ $serv->title }}" required>
-                                            <textarea name="description" class="form-control form-control-sm mb-2 js-summernote" data-height="130">{{ $serv->description }}</textarea>
-                                            <button class="btn btn-sm btn-primary">Update Service</button>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.6 CERTIFICATIONS DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-certifications" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Certifications</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addCertsCollapse"><i class="bi bi-plus-lg"></i> Add Certification</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addCertsCollapse">
-                                <form action="{{ route('modules.certifications.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
-                                    @csrf
-                                    <input name="name" class="form-control mb-2 form-control-sm" placeholder="Certification Name" required>
-                                    <input name="issuer" class="form-control mb-2 form-control-sm" placeholder="Issuing Body" required>
-                                    <button class="btn btn-sm btn-dark w-100">Add Certification</button>
-                                </form>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter certifications...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->certifications as $cert)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <div class="fw-bold">{{ $cert->name }}</div>
-                                                <small class="text-muted d-block mb-1">Issuer: {{ $cert->issuer }}</small>
-                                            </div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editCert{{ $cert->id }}">Edit</button>
-                                                <form action="{{ route('modules.certifications.destroy', $cert) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.certifications.update', $cert) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editCert{{ $cert->id }}">
-                                            @csrf @method('PATCH')
-                                            <input name="name" class="form-control form-control-sm mb-2" value="{{ $cert->name }}" required>
-                                            <input name="issuer" class="form-control form-control-sm mb-2" value="{{ $cert->issuer }}" required>
-                                            <button class="btn btn-sm btn-primary">Update Certification</button>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.7 TRAININGS DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-trainings" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Trainings</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addTrainCollapse"><i class="bi bi-plus-lg"></i> Add Training</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addTrainCollapse">
-                                <form action="{{ route('modules.trainings.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
-                                    @csrf
-                                    <input name="title" class="form-control mb-2 form-control-sm" placeholder="Training Title" required>
-                                    <input name="institution" class="form-control mb-2 form-control-sm" placeholder="Institution" required>
-                                    <button class="btn btn-sm btn-dark w-100">Add Training</button>
-                                </form>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter trainings...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->trainings as $train)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <div class="fw-bold">{{ $train->title }}</div>
-                                                <small class="text-muted d-block mb-1">Institution: {{ $train->institution }}</small>
-                                            </div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editTrain{{ $train->id }}">Edit</button>
-                                                <form action="{{ route('modules.trainings.destroy', $train) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.trainings.update', $train) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editTrain{{ $train->id }}">
-                                            @csrf @method('PATCH')
-                                            <input name="title" class="form-control form-control-sm mb-2" value="{{ $train->title }}" required>
-                                            <input name="institution" class="form-control form-control-sm mb-2" value="{{ $train->institution }}" required>
-                                            <button class="btn btn-sm btn-primary">Update Training</button>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.8 ACHIEVEMENTS DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-achievements" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Achievements</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addAchCollapse"><i class="bi bi-plus-lg"></i> Add Achievement</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addAchCollapse">
-                                <form action="{{ route('modules.achievements.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
-                                    @csrf
-                                    <input name="title" class="form-control mb-2 form-control-sm" placeholder="Award / Achievement / Skill title" required>
-                                    <button class="btn btn-sm btn-dark w-100">Add Achievement</button>
-                                </form>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter achievements...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->achievements as $ach)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div class="fw-bold">{{ $ach->title }}</div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editAch{{ $ach->id }}">Edit</button>
-                                                <form action="{{ route('modules.achievements.destroy', $ach) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.achievements.update', $ach) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editAch{{ $ach->id }}">
-                                            @csrf @method('PATCH')
-                                            <input name="title" class="form-control form-control-sm mb-2" value="{{ $ach->title }}" required>
-                                            <button class="btn btn-sm btn-primary">Update Achievement</button>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.9 CONTRIBUTIONS DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-contributions" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Contributions</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addContribCollapse"><i class="bi bi-plus-lg"></i> Add Contribution</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addContribCollapse">
-                                <form action="{{ route('modules.contributions.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
-                                    @csrf
-                                    <input name="title" class="form-control mb-2 form-control-sm" placeholder="Contribution Title" required>
-                                    <textarea name="description" class="form-control mb-2 js-summernote" data-height="150" rows="2" placeholder="Describe your contribution..."></textarea>
-                                    <button class="btn btn-sm btn-dark w-100">Add Contribution</button>
-                                </form>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter contributions...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->contributions as $contrib)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <div class="fw-bold">{{ $contrib->title }}</div>
-                                                <small class="text-muted d-block mb-1">{{ Str::limit(strip_tags($contrib->description), 85) }}</small>
-                                            </div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editContrib{{ $contrib->id }}">Edit</button>
-                                                <form action="{{ route('modules.contributions.destroy', $contrib) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.contributions.update', $contrib) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editContrib{{ $contrib->id }}">
-                                            @csrf @method('PATCH')
-                                            <input name="title" class="form-control form-control-sm mb-2" value="{{ $contrib->title }}" required>
-                                            <textarea name="description" class="form-control form-control-sm mb-2 js-summernote" data-height="130">{{ $contrib->description }}</textarea>
-                                            <button class="btn btn-sm btn-primary">Update Contribution</button>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.10 TESTIMONIALS DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-testimonials" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Testimonials</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addTestiCollapse"><i class="bi bi-plus-lg"></i> Add Testimonial</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addTestiCollapse">
-                                <form action="{{ route('modules.testimonials.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
-                                    @csrf
-                                    <input name="client_name" class="form-control mb-2 form-control-sm" placeholder="Author's Name" required>
-                                    <textarea name="content" class="form-control mb-2 js-summernote" data-height="170" rows="3" placeholder="What did they say about you?" required></textarea>
-                                    <button class="btn btn-sm btn-dark w-100">Add Testimonial</button>
-                                </form>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter testimonials...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->testimonials as $testi)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <div class="fw-bold">{{ $testi->client_name }}</div>
-                                                <small class="text-muted d-block mb-1">"{{ Str::limit(strip_tags($testi->content), 85) }}"</small>
-                                            </div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editTesti{{ $testi->id }}">Edit</button>
-                                                <form action="{{ route('modules.testimonials.destroy', $testi) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.testimonials.update', $testi) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editTesti{{ $testi->id }}">
-                                            @csrf @method('PATCH')
-                                            <input name="client_name" class="form-control form-control-sm mb-2" value="{{ $testi->client_name }}" required>
-                                            <textarea name="content" class="form-control form-control-sm mb-2 js-summernote" data-height="130" required>{{ $testi->content }}</textarea>
-                                            <button class="btn btn-sm btn-primary">Update Testimonial</button>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.11 MEDIA DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-media" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Media Appearances</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addMediaCollapse"><i class="bi bi-plus-lg"></i> Add Appearance</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addMediaCollapse">
-                                <div class="row g-3">
-                                    <!-- Add TV show -->
-                                    <div class="col-md-6 border-end">
-                                        <form action="{{ route('modules.media.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
-                                            @csrf
-                                            <h6 class="fw-bold mb-2">TV & Talk Show Appearance</h6>
-                                            <input type="hidden" name="type" value="tv">
-                                            <input name="title" class="form-control mb-2 form-control-sm" placeholder="Topic Title" required>
-                                            <input name="channel_platform" class="form-control mb-2 form-control-sm" placeholder="CNN, YouTube, etc." required>
-                                            <label class="small fw-bold mb-1">Appearance Date</label>
-                                            <input name="date" type="date" class="form-control mb-2 form-control-sm" required>
-                                            <input name="link" type="url" class="form-control mb-2 form-control-sm" placeholder="Watch Link" required>
-                                            <button class="btn btn-sm btn-dark w-100">Add TV Show</button>
-                                        </form>
-                                    </div>
-                                    <!-- Add Op-ed -->
-                                    <div class="col-md-6">
-                                        <form action="{{ route('modules.media.store') }}" method="POST" class="p-3 bg-white rounded border shadow-sm">
-                                            @csrf
-                                            <h6 class="fw-bold mb-2">Newspaper Op-ed</h6>
-                                            <input type="hidden" name="type" value="oped">
-                                            <input name="title" class="form-control mb-2 form-control-sm" placeholder="Op-ed Title" required>
-                                            <input name="newspaper_name" class="form-control mb-2 form-control-sm" placeholder="Dawn, The News, etc." required>
-                                            <label class="small fw-bold mb-1">Publication Date</label>
-                                            <input name="date" type="date" class="form-control mb-2 form-control-sm" required>
-                                            <input name="link" type="url" class="form-control mb-2 form-control-sm" placeholder="Online Link" required>
-                                            <button class="btn btn-sm btn-dark w-100">Add Op-ed</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter media appearances...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->media as $tv)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <span class="badge bg-secondary mb-1">{{ strtoupper($tv->type) }}</span>
-                                                <div class="fw-bold">{{ $tv->title }}</div>
-                                                <small class="text-muted d-block mb-1">{{ $tv->channel_platform ?? $tv->newspaper_name }} | {{ \Carbon\Carbon::parse($tv->date)->format('M d, Y') }}</small>
-                                            </div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editTv{{ $tv->id }}">Edit</button>
-                                                <form action="{{ route('modules.media.destroy', $tv) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.media.update', $tv) }}" method="POST" class="collapse mt-2 p-3 bg-light rounded border" id="editTv{{ $tv->id }}">
-                                            @csrf @method('PATCH')
-                                            <input type="hidden" name="type" value="{{ $tv->type }}">
-                                            <div class="row g-2">
-                                                <div class="col-md-6"><input name="title" class="form-control form-control-sm mb-2" value="{{ $tv->title }}" required></div>
-                                                <div class="col-md-6">
-                                                    @if($tv->type === 'tv')
-                                                        <input name="channel_platform" class="form-control form-control-sm mb-2" value="{{ $tv->channel_platform }}" required>
-                                                    @else
-                                                        <input name="newspaper_name" class="form-control form-control-sm mb-2" value="{{ $tv->newspaper_name }}" required>
-                                                    @endif
-                                                </div>
-                                                <div class="col-md-6"><input name="date" type="date" class="form-control form-control-sm mb-2" value="{{ \Carbon\Carbon::parse($tv->date)->format('Y-m-d') }}" required></div>
-                                                <div class="col-md-6"><input name="link" type="url" class="form-control form-control-sm mb-2" value="{{ $tv->link }}" required></div>
-                                                <button class="btn btn-sm btn-primary">Update Media Entry</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.12 PUBLICATIONS DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-publications" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Publications</h4>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#addPubsCollapse"><i class="bi bi-plus-lg"></i> Add Publication</button>
-                            </div>
-                            
-                            <div class="collapse mb-4" id="addPubsCollapse">
-                                <form action="{{ route('modules.publications.store') }}" method="POST" enctype="multipart/form-data" class="p-3 bg-white rounded border shadow-sm">
-                                    @csrf
-                                    <div class="row g-2 mb-2">
-                                        <div class="col-md-4"><input name="type" class="form-control form-control-sm" placeholder="Type (Book, Journal, Report)" required></div>
-                                        <div class="col-md-8"><input name="title" class="form-control form-control-sm" placeholder="Publication Title" required></div>
-                                        <div class="col-md-6"><input name="authors" class="form-control form-control-sm" placeholder="Authors" required></div>
-                                        <div class="col-md-3"><input name="year" class="form-control form-control-sm" placeholder="Year" required></div>
-                                        <div class="col-md-3"><input name="publisher" class="form-control form-control-sm" placeholder="Publisher" required></div>
-                                        <div class="col-md-6"><input name="link" type="url" class="form-control form-control-sm" placeholder="Online Link (Optional)"></div>
-                                        <div class="col-md-6"><input name="report" type="file" class="form-control form-control-sm"></div>
-                                    </div>
-                                    <button class="btn btn-sm btn-dark w-100">Add Publication</button>
-                                </form>
-                            </div>
-
-                            <div class="card shadow-sm border-0 mb-3 bg-white py-2 px-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="input-group input-group-sm" style="max-width: 250px;">
-                                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                                        <input type="text" class="form-control js-module-search border-start-0" placeholder="Filter publications...">
-                                    </div>
-                                    <div class="ms-auto js-module-pagination"></div>
-                                </div>
-                            </div>
-
-                            <div class="js-module-list">
-                                @foreach($portfolio->publications as $pub)
-                                    <div class="js-module-item bg-white border-bottom p-3">
-                                        <div class="d-flex justify-content-between align-items-start gap-2">
-                                            <div>
-                                                <div class="fw-bold">{{ $pub->title }}</div>
-                                                <small class="text-muted d-block mb-1">{{ $pub->authors }} ({{ $pub->year }}). <em>{{ $pub->publisher }}</em>. ({{ $pub->type }})</small>
-                                            </div>
-                                            <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-secondary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#editPub{{ $pub->id }}">Edit</button>
-                                                <form action="{{ route('modules.publications.destroy', $pub) }}" method="POST">
-                                                    @csrf @method('delete')
-                                                    <button class="btn btn-sm btn-link text-danger py-0 p-0 text-decoration-none">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                        <form action="{{ route('modules.publications.update', $pub) }}" method="POST" enctype="multipart/form-data" class="collapse mt-2 p-3 bg-light rounded border" id="editPub{{ $pub->id }}">
-                                            @csrf @method('PATCH')
-                                            <div class="row g-2">
-                                                <div class="col-md-4"><input name="type" class="form-control form-control-sm mb-2" value="{{ $pub->type }}" required></div>
-                                                <div class="col-md-8"><input name="title" class="form-control form-control-sm mb-2" value="{{ $pub->title }}" required></div>
-                                                <div class="col-md-6"><input name="authors" class="form-control form-control-sm mb-2" value="{{ $pub->authors }}" required></div>
-                                                <div class="col-md-3"><input name="year" class="form-control form-control-sm mb-2" value="{{ $pub->year }}" required></div>
-                                                <div class="col-md-3"><input name="publisher" class="form-control form-control-sm mb-2" value="{{ $pub->publisher }}" required></div>
-                                                <div class="col-md-6"><input name="link" type="url" class="form-control form-control-sm mb-2" value="{{ $pub->link }}" placeholder="Online Link"></div>
-                                                <div class="col-md-6">
-                                                    <label class="small fw-bold">Replace File</label>
-                                                    <input name="report" type="file" class="form-control form-control-sm">
-                                                </div>
-                                                <button class="btn btn-sm btn-primary">Update Publication</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <!-- 2.13 RESUME DETAIL VIEW -->
-                        <div class="module-detail-wrapper" id="moduleDetail-resume" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                                <h4 class="fw-bold mb-0">Manage Resume Document</h4>
-                            </div>
-                            <div class="card shadow-sm border-0 bg-white p-4">
-                                <form action="{{ route('portfolio.sections.store') }}" method="POST" enctype="multipart/form-data" class="mb-3">
-                                    @csrf
-                                    <input type="hidden" name="type" value="resume">
-                                    <input type="hidden" name="title" value="Professional Resume">
-                                    <label class="form-label small fw-bold">Upload PDF format of your Resume</label>
-                                    <input type="file" name="file" class="form-control mb-3" required>
-                                    <button class="btn btn-sm btn-dark w-100">Upload PDF Resume File</button>
-                                </form>
-                                @php $resume = $portfolio->sections->where('type', 'resume')->first(); @endphp
-                                @if($resume)
-                                    <div class="alert alert-info py-3 small d-flex justify-content-between align-items-center mb-0 mt-2">
-                                        <span>Current Resume Document: <strong>{{ basename($resume->file_path) }}</strong></span>
-                                        <form action="{{ route('portfolio.sections.destroy', $resume) }}" method="POST">
-                                            @csrf @method('delete')
-                                            <button class="btn btn-sm text-danger py-0 fw-bold border-0 bg-transparent">Remove File</button>
-                                        </form>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. SETTINGS TAB PANE -->
-                <div class="tab-pane fade" id="settingsPane" role="tabpanel">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="fw-bold mb-0">Portfolio Settings</h3>
-                    </div>
-
-                    <!-- Single form wrapping all three cards to prevent validation failures -->
-                    <form method="post" action="{{ route('portfolio.update') }}" enctype="multipart/form-data">
-                        @csrf
-                        
-                        <!-- CARD 1: Basic Info & Portfolio Visibility -->
-                        <div class="card shadow-sm border-0 rounded-3 mb-4 bg-white">
-                            <div class="card-header bg-white py-3">
-                                <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-person-circle text-primary me-2"></i>Profile Information & Basic Details</h5>
-                            </div>
-                            <div class="card-body p-4">
-                                <div class="mb-4 text-center">
-                                    @if($portfolio->profile_image)
-                                        <img src="{{ Storage::url($portfolio->profile_image) }}" class="rounded-circle shadow-sm border border-secondary-subtle mb-3" style="width: 110px; height: 110px; object-fit: cover;">
-                                    @endif
-                                    <div style="max-width: 250px; margin: 0 auto;">
-                                        <input type="file" name="profile_image" class="form-control form-control-sm">
-                                        <small class="text-muted d-block mt-1">Accepts PNG, JPG, JPEG (Max 2MB)</small>
-                                    </div>
-                                </div>
-
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold">Full Name Display</label>
-                                        <input name="title" type="text" class="form-control" value="{{ $portfolio->title }}" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold">Profession Title / Hero Subtitle</label>
-                                        <input name="position" type="text" class="form-control" value="{{ $portfolio->position }}" placeholder="e.g. Senior Software Architect">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold">Organization</label>
-                                        <input name="organization" type="text" class="form-control" value="{{ $portfolio->organization }}" placeholder="e.g. Google DeepMind">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold">Contact Number</label>
-                                        <input name="contact_number" type="text" class="form-control" value="{{ $portfolio->contact_number }}" placeholder="e.g. +92 345 1234567">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label small fw-bold">City</label>
-                                        <input name="city" type="text" class="form-control" value="{{ $portfolio->city }}" placeholder="e.g. London">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label small fw-bold">Country</label>
-                                        <input name="country" type="text" class="form-control" value="{{ $portfolio->country }}" placeholder="e.g. United Kingdom">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label small fw-bold">LinkedIn Profile URL</label>
-                                        <input name="linkedin_url" type="url" class="form-control" value="{{ $portfolio->linkedin_url }}" placeholder="https://linkedin.com/in/username">
-                                    </div>
-                                </div>
-
-                                <div class="mt-4">
-                                    <label class="form-label small fw-bold">Brief Tagline / Pitch Hook</label>
-                                    <textarea name="description" class="form-control js-summernote" data-height="140" rows="2" placeholder="Brief tagline shown on hero section...">{{ $portfolio->description }}</textarea>
-                                </div>
-
-                                <div class="mt-4">
-                                    <label class="form-label small fw-bold">Detailed Bio / About Journey</label>
-                                    <textarea name="detailed_bio" class="form-control js-summernote" data-height="220" rows="5" placeholder="Detailed professional history bio...">{{ $portfolio->detailed_bio }}</textarea>
-                                </div>
-
-                                <hr class="my-4">
-
-                                <h6 class="fw-bold mb-3 text-primary"><i class="bi bi-link-45deg me-1"></i>Portfolio Link Status & Visibility</h6>
-                                <div class="row g-3 mb-4">
-                                    <div class="col-12">
-                                        <div class="mb-2 fw-bold small">Public Portfolio Link</div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="is_active" id="is_active_yes" value="active" {{ $portfolio->is_active ? 'checked' : '' }}>
-                                            <label class="form-check-label fw-bold text-success" for="is_active_yes">Active (Public URL accessible)</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="is_active" id="is_active_no" value="inactive" {{ $portfolio->is_active ? '' : 'checked' }}>
-                                            <label class="form-check-label fw-bold text-danger" for="is_active_no">Deactivated (Private / hidden)</label>
-                                        </div>
-                                        <small class="text-muted d-block mt-1 mb-3">If deactivated, visiting your public URL <code>/{{ Auth::user()->username }}</code> will return a 404 Page Not Found error.</small>
-                                        
-                                        <div class="mb-2 fw-bold small">Profile Privacy Setting</div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="is_public" id="is_public_no" value="private" {{ !$portfolio->is_public ? 'checked' : '' }}>
-                                            <label class="form-check-label fw-bold text-warning" for="is_public_no"><i class="bi bi-lock-fill"></i> Private (Only added connections can view)</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="is_public" id="is_public_yes" value="public" {{ $portfolio->is_public ? 'checked' : '' }}>
-                                            <label class="form-check-label fw-bold text-success" for="is_public_yes"><i class="bi bi-globe"></i> Public (Everyone can view)</label>
-                                        </div>
-                                        <small class="text-muted d-block mt-1">By default, your profile is private and can only be seen by users who you accept as connections.</small>
-                                    </div>
-                                </div>
-
-                                <hr class="my-4">
-
-                                <h6 class="fw-bold mb-3">Portfolio Visibility Controls (Contact Details)</h6>
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <div class="mb-2 fw-bold small">Show Email Address</div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="show_email" id="show_email_yes" value="show" {{ $portfolio->show_email ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="show_email_yes">Show</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="show_email" id="show_email_no" value="hide" {{ $portfolio->show_email ? '' : 'checked' }}>
-                                            <label class="form-check-label" for="show_email_no">Hide</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-2 fw-bold small">Show Phone Number</div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="show_phone" id="show_phone_yes" value="show" {{ $portfolio->show_phone ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="show_phone_yes">Show</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="show_phone" id="show_phone_no" value="hide" {{ $portfolio->show_phone ? '' : 'checked' }}>
-                                            <label class="form-check-label" for="show_phone_no">Hide</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-2 fw-bold small">Show LinkedIn URL</div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="show_linkedin" id="show_linkedin_yes" value="show" {{ $portfolio->show_linkedin ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="show_linkedin_yes">Show</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="show_linkedin" id="show_linkedin_no" value="hide" {{ $portfolio->show_linkedin ? '' : 'checked' }}>
-                                            <label class="form-check-label" for="show_linkedin_no">Hide</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- CARD 2: Design Themes -->
-                        <div class="card shadow-sm border-0 rounded-3 mb-4 bg-white">
-                            <div class="card-header bg-white py-3">
-                                <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-palette text-success me-2"></i>Active Design Theme</h5>
-                            </div>
-                            <div class="card-body p-4">
-                                <label class="form-label small fw-bold">Active Design Theme Layout</label>
-                                <select name="theme" class="form-select border-primary shadow-sm mb-3">
-                                    @foreach($themes as $t)
-                                        <option value="{{ $t->slug }}" {{ $portfolio->theme == $t->slug ? 'selected' : '' }}>{{ $t->name }}</option>
-                                    @endforeach
-                                </select>
-                                <small class="text-muted">Changes the visual style of your public resume. Choose from Classic, Premium, or Elegant.</small>
-                            </div>
-                        </div>
-
-                        <!-- CARD 3: Section Visibility Controls -->
-                        <div class="card shadow-sm border-0 rounded-3 mb-4 bg-white">
-                            <div class="card-header bg-white py-3">
-                                <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-eye text-warning me-2"></i>Section Visibility Controls</h5>
-                            </div>
-                            <div class="card-body p-4">
-                                <div class="row g-3">
-                                    @php
-                                        $sectionsMap = [
-                                            'show_skills' => 'Skills',
-                                            'show_projects' => 'Projects',
-                                            'show_experience' => 'Experience',
-                                            'show_education' => 'Education',
-                                            'show_services' => 'Services',
-                                            'show_certifications' => 'Certifications',
-                                            'show_trainings' => 'Trainings',
-                                            'show_achievements' => 'Achievements',
-                                            'show_contributions' => 'Contributions',
-                                            'show_testimonials' => 'Testimonials',
-                                            'show_media' => 'Media Appearances',
-                                            'show_publications' => 'Publications'
-                                        ];
-                                    @endphp
-                                    @foreach($sectionsMap as $field => $label)
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="mb-2 fw-bold small text-dark">{{ $label }}</div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="{{ $field }}" id="sett_{{ $field }}_yes" value="show" {{ $portfolio->$field ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="sett_{{ $field }}_yes">Show</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="{{ $field }}" id="sett_{{ $field }}_no" value="hide" {{ $portfolio->$field ? '' : 'checked' }}>
-                                                <label class="form-check-label" for="sett_{{ $field }}_no">Hide</label>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Central Save Bar -->
-                        <div class="card border-0 shadow-sm mb-4 bg-white">
-                            <div class="card-body d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary px-5 shadow-sm fw-bold">Save All Settings</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- 4. INBOX / MESSAGES TAB PANE -->
-                <div class="tab-pane fade" id="inboxPane" role="tabpanel">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="fw-bold mb-0">Public Messages & Inquiries</h3>
-                    </div>
-
-                    <div class="js-module-list">
-                        @forelse($portfolio->messages->sortByDesc('created_at') as $msg)
-                            <div class="card mb-3 border-0 shadow-sm js-module-item bg-white">
-                                <div class="card-body p-4">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <div>
-                                            <h6 class="fw-bold mb-1">{{ $msg->name }}</h6>
-                                            <small class="text-muted d-block">{{ $msg->email }} | {{ $msg->created_at->diffForHumans() }}</small>
-                                        </div>
-                                        <div class="d-flex gap-2">
-                                            @if(!$msg->is_read)
-                                                <form action="{{ route('messages.read', $msg) }}" method="POST">
-                                                    @csrf
-                                                    <button class="btn btn-sm btn-outline-primary">Mark Read</button>
-                                                </form>
-                                            @endif
-                                            <form action="{{ route('messages.destroy', $msg) }}" method="POST">
-                                                @csrf @method('delete')
-                                                <button class="btn btn-sm btn-outline-danger">Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <p class="mb-3 p-3 bg-light rounded text-secondary italic">"{{ $msg->message }}"</p>
-                                    
-                                    @if($msg->reply)
-                                        <div class="alert alert-secondary py-2 px-3 small mb-0">
-                                            <strong>My Response:</strong> {!! $msg->reply !!}
-                                        </div>
-                                    @else
-                                        <button class="btn btn-sm btn-dark" data-bs-toggle="collapse" data-bs-target="#replyBox{{ $msg->id }}"><i class="bi bi-reply-fill me-1"></i>Reply via Email</button>
-                                        <form action="{{ route('messages.reply', $msg) }}" method="POST" class="collapse mt-3" id="replyBox{{ $msg->id }}">
-                                            @csrf
-                                            <div class="mb-3">
-                                                <textarea name="reply" class="form-control js-summernote" data-height="120" placeholder="Type email response..."></textarea>
-                                            </div>
-                                            <button class="btn btn-primary btn-sm fw-bold">Send Reply Email</button>
-                                        </form>
-                                    @endif
+                                    <a href="{{ route('opportunities.show', $saved->opportunity->slug ?? '#') }}" class="btn btn-sm btn-primary">Apply</a>
                                 </div>
                             </div>
                         @empty
-                            <div class="text-center py-5 text-muted bg-white rounded shadow-sm">
-                                <i class="bi bi-inbox display-1 mb-3 text-secondary-subtle"></i>
-                                <p class="mb-0">Your Inbox is completely empty.</p>
+                            <div class="col-12 text-center py-5 text-muted">No saved opportunities yet.</div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 8. AI MOCK INTERVIEW PANE -->
+                <!-- ========================================== -->
+                <div class="tab-pane fade" id="interviewPane" role="tabpanel">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4 pb-3 border-bottom">
+                        <div>
+                            <h3 class="fw-bold text-dark mb-0"><i class="fa-solid fa-robot text-warning me-2"></i> AI Mock Interview Simulator</h3>
+                            <p class="text-secondary small mb-0">Practice technical and behavioral interview scenarios.</p>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-3 p-3 p-md-4 bg-light">
+                        <h5 class="fw-bold text-dark mb-2">Start Practice Session</h5>
+                        <form action="{{ route('mock-interviews.start') }}" method="POST" class="row g-3">
+                            @csrf
+                            <div class="col-12 col-md-8">
+                                <input type="text" name="job_title" class="form-control" placeholder="Target Job Title (e.g. Senior Laravel Developer)" value="{{ $portfolio->position ?? '' }}" required>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <button type="submit" class="btn btn-warning w-100 fw-bold text-dark rounded-3"><i class="fa-solid fa-play me-1"></i> Begin AI Interview</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 9. CONNECTIONS & NETWORK PANE -->
+                <!-- ========================================== -->
+                <div class="tab-pane fade" id="networkPane" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <h3 class="fw-bold text-dark mb-0"><i class="fa-solid fa-users text-primary me-2"></i> Connections</h3>
+                    </div>
+                    <!-- Pending Invitations -->
+                    @if($pendingReceived->isNotEmpty())
+                        <div class="card border-0 shadow-sm rounded-3 mb-4">
+                            <div class="card-header bg-warning bg-opacity-10 py-2 px-3 fw-bold small text-dark d-flex align-items-center justify-content-between">
+                                <span><i class="fa-solid fa-user-clock me-1 text-warning"></i> Pending Connection Invitations</span>
+                                <span class="badge bg-warning text-dark rounded-pill">{{ $pendingReceived->count() }}</span>
+                            </div>
+                            <div class="card-body p-0">
+                                @foreach($pendingReceived as $conn)
+                                    <div class="d-flex align-items-center justify-content-between p-3 border-bottom gap-2">
+                                        <div class="d-flex align-items-center gap-2 min-w-0">
+                                            @if($conn->sender->portfolio && $conn->sender->portfolio->profile_image)
+                                                <img src="{{ Storage::url($conn->sender->portfolio->profile_image) }}" class="rounded-circle border flex-shrink-0" style="width: 38px; height: 38px; object-fit: cover;">
+                                            @else
+                                                <div class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 38px; height: 38px;">
+                                                    {{ strtoupper(substr($conn->sender->name, 0, 1)) }}
+                                                </div>
+                                            @endif
+                                            <div class="min-w-0">
+                                                <div class="fw-bold small text-dark text-truncate">{{ $conn->sender->name }}</div>
+                                                <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">Sent request {{ $conn->created_at->diffForHumans() }}</small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                            <form action="{{ route('connections.accept', $conn->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button class="btn btn-sm btn-primary rounded-pill px-3 fw-semibold">Accept</button>
+                                            </form>
+                                            <form action="{{ route('connections.reject', $conn->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">Ignore</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Active Connections Grid -->
+                    <div class="row g-3">
+                        @forelse($acceptedConnections as $other)
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <div class="p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between gap-2 shadow-sm position-relative">
+                                    <div class="d-flex align-items-center gap-3 min-w-0 flex-grow-1">
+                                        @if($other->portfolio && $other->portfolio->profile_image)
+                                            <img src="{{ Storage::url($other->portfolio->profile_image) }}" class="rounded-circle border flex-shrink-0" style="width: 44px; height: 44px; object-fit: cover;">
+                                        @else
+                                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 44px; height: 44px; font-size: 1rem;">
+                                                {{ strtoupper(substr($other->name, 0, 1)) }}
+                                            </div>
+                                        @endif
+                                        <div class="min-w-0 flex-grow-1">
+                                            <strong class="d-block text-dark small text-truncate">{{ $other->name }}</strong>
+                                            <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">{{ $other->portfolio->position ?? 'Connected Professional' }}</small>
+                                            <a href="{{ route('portfolio.show', $other->username) }}" target="_blank" class="text-primary small text-decoration-none fw-semibold" style="font-size: 0.75rem;">View Profile &rarr;</a>
+                                        </div>
+                                    </div>
+
+                                    <!-- 3-Dots Ellipsis Dropdown -->
+                                    <div class="dropdown flex-shrink-0 position-relative">
+                                        <button class="btn btn-sm btn-light border-0 text-secondary rounded-circle p-0 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 32px; height: 32px;" title="Options">
+                                            <i class="fa-solid fa-ellipsis-vertical fs-6"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3" style="font-size: 0.82rem; position: absolute; right: 0; top: 100%; min-width: 175px;">
+                                            <li>
+                                                <a class="dropdown-item py-2 d-flex align-items-center gap-2" href="{{ route('portfolio.show', $other->username) }}" target="_blank">
+                                                    <i class="fa-solid fa-user text-primary" style="width: 18px;"></i> View Portfolio
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <form action="{{ route('messages.start', $other->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item py-2 d-flex align-items-center gap-2 text-primary">
+                                                        <i class="fa-solid fa-comments text-primary" style="width: 18px;"></i> Direct Chat
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item py-2 d-flex align-items-center gap-2 text-secondary" onclick="navigator.clipboard.writeText('{{ route('portfolio.show', $other->username) }}'); alert('Portfolio link copied to clipboard!');">
+                                                    <i class="fa-solid fa-copy" style="width: 18px;"></i> Copy Profile Link
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider my-1"></li>
+                                            <li>
+                                                <form action="{{ route('connections.remove', $other->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove {{ addslashes($other->name) }} from your connections?');">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item py-2 text-danger d-flex align-items-center gap-2">
+                                                        <i class="fa-solid fa-user-xmark" style="width: 18px;"></i> Remove Connection
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-12 text-center py-5 text-muted">
+                                <i class="fa-solid fa-users-slash fa-2x mb-2 text-muted"></i>
+                                <h6 class="fw-bold text-dark">No connections yet</h6>
+                                <p class="small text-muted mb-0">Discover and connect with professionals on the platform.</p>
                             </div>
                         @endforelse
                     </div>
                 </div>
 
-                <!-- Connections Tab Pane -->
-                <div class="tab-pane fade" id="connectionsPane" role="tabpanel">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="fw-bold mb-0">Manage Connections</h3>
+                <!-- ========================================== -->
+                <!-- 10. INBOX / MESSAGES PANE -->
+                <!-- ========================================== -->
+                <div class="tab-pane fade" id="inboxPane" role="tabpanel">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom">
+                        <div>
+                            <h3 class="fw-bold text-dark mb-0"><i class="fa-solid fa-envelope text-primary me-2"></i> Communications & Messages</h3>
+                            <p class="text-secondary small mb-0">Separated channels for Registered Platform Users Direct Messaging and Public Visitor Portfolio Contact Inquiries.</p>
+                        </div>
+                        <a href="{{ route('messages.index') }}" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm fw-bold">
+                            <i class="fa-solid fa-comments me-1"></i> Open Direct Chat Workspace
+                        </a>
                     </div>
 
-                    <div class="row">
-                        <!-- Left Column: Search & Add Connections -->
-                        <div class="col-lg-6 mb-4">
-                            <div class="card border-0 shadow-sm rounded-3 h-100">
-                                <div class="card-header bg-white py-3">
-                                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-person-plus-fill me-2"></i>Find Professionals</h5>
-                                </div>
-                                <div class="card-body bg-white">
-                                    <form action="{{ route('portfolio.edit') }}" method="GET" class="mb-4">
-                                        <div class="input-group">
-                                            <input type="text" name="search" class="form-control" placeholder="Search by name, username or email..." value="{{ request('search') }}">
-                                            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
-                                        </div>
-                                    </form>
+                    <!-- Navigation Sub-Tabs -->
+                    <ul class="nav nav-pills mb-4 gap-2" id="communicationSubTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active rounded-pill px-3 py-2 fw-semibold" id="direct-messages-subtab" data-bs-toggle="pill" data-bs-target="#directMessagesSubPane" type="button" role="tab">
+                                <i class="fa-solid fa-comments me-1"></i> Platform User Chat
+                                @if($unreadDirectMessagesCount > 0)
+                                    <span class="badge bg-danger rounded-pill ms-1">{{ $unreadDirectMessagesCount }}</span>
+                                @endif
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill px-3 py-2 fw-semibold" id="visitor-inquiries-subtab" data-bs-toggle="pill" data-bs-target="#visitorInquiriesSubPane" type="button" role="tab">
+                                <i class="fa-solid fa-address-card me-1"></i> Visitor Contact Submissions
+                                @php $unreadInq = $portfolio->messages->where('is_read', false)->count(); @endphp
+                                @if($unreadInq > 0)
+                                    <span class="badge bg-warning text-dark rounded-pill ms-1">{{ $unreadInq }}</span>
+                                @endif
+                            </button>
+                        </li>
+                    </ul>
 
-                                    @if(request('search'))
-                                        <h6 class="fw-bold mb-3">Search Results</h6>
-                                        <ul class="list-group list-group-flush">
-                                            @forelse($searchResults as $u)
-                                                <li class="list-group-item d-flex align-items-center justify-content-between px-0">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="me-3">
-                                                            @if($u->portfolio && $u->portfolio->profile_image)
-                                                                <img src="{{ Storage::url($u->portfolio->profile_image) }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
-                                                            @else
-                                                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px;">
-                                                                    {{ strtoupper(substr($u->name, 0, 2)) }}
-                                                                </div>
+                    <div class="tab-content" id="communicationSubTabContent">
+                        <!-- Sub-Pane 1: Platform User Direct Messages -->
+                        <div class="tab-pane fade show active" id="directMessagesSubPane" role="tabpanel">
+                            <div class="card border-0 shadow-sm rounded-3">
+                                <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+                                    <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-user-check text-primary me-2"></i> Registered Platform User Conversations</h6>
+                                    <a href="{{ route('messages.index') }}" class="btn btn-outline-primary btn-sm rounded-pill">Open Workspace &rarr;</a>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="list-group list-group-flush">
+                                        @forelse($userConversations as $conv)
+                                            @php
+                                                $otherUser = $conv->getOtherUser(Auth::id());
+                                                $unreadCount = $conv->unreadCountFor(Auth::id());
+                                                $latestMsg = $conv->latestMessage;
+                                            @endphp
+                                            <a href="{{ route('messages.index', ['conversation' => $conv->id]) }}" class="list-group-item list-group-item-action p-3 d-flex align-items-center justify-content-between gap-3">
+                                                <div class="d-flex align-items-center gap-3 min-w-0 flex-grow-1">
+                                                    @if($otherUser && $otherUser->portfolio && $otherUser->portfolio->profile_image)
+                                                        <img src="{{ Storage::url($otherUser->portfolio->profile_image) }}" class="rounded-circle border flex-shrink-0" style="width: 44px; height: 44px; object-fit: cover;">
+                                                    @else
+                                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0" style="width: 44px; height: 44px;">
+                                                            {{ strtoupper(substr($otherUser->name ?? 'U', 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                    <div class="min-w-0 flex-grow-1">
+                                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                                            <strong class="text-dark small text-truncate">{{ $otherUser->name ?? 'User' }}</strong>
+                                                            @if($conv->last_message_at)
+                                                                <small class="text-muted ms-2 flex-shrink-0" style="font-size: 0.7rem;">{{ $conv->last_message_at->diffForHumans() }}</small>
                                                             @endif
                                                         </div>
-                                                        <div>
-                                                            <div class="fw-bold">{{ $u->name }}</div>
-                                                            <small class="text-muted">{{ '@' . $u->username }}</small>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        @php
-                                                            $conn = Auth::user()->connectionWith($u);
-                                                        @endphp
-                                                        @if($conn)
-                                                            @if($conn->status === 'accepted')
-                                                                <span class="badge bg-success"><i class="bi bi-check-lg"></i> Connected</span>
-                                                            @elseif($conn->sender_id === Auth::id())
-                                                                <form action="{{ route('connections.cancel', $conn->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    <button type="submit" class="btn btn-outline-danger btn-sm">Cancel Request</button>
-                                                                </form>
+                                                        <p class="text-muted mb-0 small text-truncate">
+                                                            @if($latestMsg)
+                                                                {{ $latestMsg->sender_id === Auth::id() ? 'You: ' : '' }}{{ $latestMsg->body }}
                                                             @else
-                                                                <form action="{{ route('connections.accept', $conn->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    <button type="submit" class="btn btn-success btn-sm me-1">Accept</button>
-                                                                </form>
-                                                                <form action="{{ route('connections.reject', $conn->id) }}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    <button type="submit" class="btn btn-outline-secondary btn-sm">Ignore</button>
-                                                                </form>
+                                                                <em>No messages exchanged yet</em>
                                                             @endif
-                                                        @else
-                                                            <form action="{{ route('connections.request', $u->id) }}" method="POST" class="d-inline">
-                                                                @csrf
-                                                                <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-person-plus-fill"></i> Connect</button>
-                                                            </form>
-                                                        @endif
+                                                        </p>
                                                     </div>
-                                                </li>
-                                            @empty
-                                                <li class="list-group-item text-center py-3 text-muted">No professionals found.</li>
-                                            @endforelse
-                                        </ul>
-                                    @else
-                                        <p class="text-muted small">Type a name, username, or email to find and connect with other users.</p>
-                                    @endif
+                                                </div>
+                                                @if($unreadCount > 0)
+                                                    <span class="badge bg-danger rounded-pill flex-shrink-0">{{ $unreadCount }} new</span>
+                                                @endif
+                                            </a>
+                                        @empty
+                                            <div class="text-center py-5 text-muted">
+                                                <i class="fa-solid fa-comments-slash fa-2x mb-2 text-secondary"></i>
+                                                <h6 class="fw-bold text-dark">No direct conversations yet</h6>
+                                                <p class="small text-muted mb-0">Start a chat conversation with any registered portfolio user.</p>
+                                            </div>
+                                        @endforelse
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Right Column: Requests & Active Connections -->
-                        <div class="col-lg-6 mb-4">
-                            <!-- Pending Received Requests -->
-                            <div class="card border-0 shadow-sm rounded-3 mb-4">
-                                <div class="card-header bg-white py-3">
-                                    <h5 class="mb-0 fw-bold text-warning"><i class="bi bi-bell-fill me-2"></i>Connection Requests</h5>
-                                </div>
-                                <div class="card-body p-0 bg-white">
-                                    <ul class="list-group list-group-flush mb-0">
-                                        @forelse($pendingReceived as $conn)
-                                            <li class="list-group-item d-flex align-items-center justify-content-between p-3">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="me-3">
-                                                        @if($conn->sender->portfolio && $conn->sender->portfolio->profile_image)
-                                                            <img src="{{ Storage::url($conn->sender->portfolio->profile_image) }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
-                                                        @else
-                                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px;">
-                                                                {{ strtoupper(substr($conn->sender->name, 0, 2)) }}
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                    <div>
-                                                        <div class="fw-bold">{{ $conn->sender->name }}</div>
-                                                        <small class="text-muted">{{ '@' . $conn->sender->username }}</small>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <form action="{{ route('connections.accept', $conn->id) }}" method="POST" class="d-inline">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-success btn-sm me-1">Accept</button>
-                                                    </form>
-                                                    <form action="{{ route('connections.reject', $conn->id) }}" method="POST" class="d-inline">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-outline-secondary btn-sm">Ignore</button>
-                                                    </form>
-                                                </div>
-                                            </li>
-                                        @empty
-                                            <li class="list-group-item text-center py-4 text-muted">No pending connection requests.</li>
-                                        @endforelse
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <!-- Active Connections -->
+                        <!-- Sub-Pane 2: Public Visitor Portfolio Contact Inquiries -->
+                        <div class="tab-pane fade" id="visitorInquiriesSubPane" role="tabpanel">
                             <div class="card border-0 shadow-sm rounded-3">
-                                <div class="card-header bg-white py-3">
-                                    <h5 class="mb-0 fw-bold text-success"><i class="bi bi-people-fill me-2"></i>My Connections ({{ $connectionsCount }})</h5>
+                                <div class="card-header bg-white py-3 px-4">
+                                    <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-address-book text-success me-2"></i> Public Visitor Contact Form Submissions</h6>
                                 </div>
-                                <div class="card-body p-0 bg-white">
-                                    <ul class="list-group list-group-flush mb-0">
-                                        @forelse($acceptedConnections as $otherUser)
-                                            <li class="list-group-item d-flex align-items-center justify-content-between p-3">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="me-3">
-                                                        @if($otherUser->portfolio && $otherUser->portfolio->profile_image)
-                                                            <img src="{{ Storage::url($otherUser->portfolio->profile_image) }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
-                                                        @else
-                                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px;">
-                                                                {{ strtoupper(substr($otherUser->name, 0, 2)) }}
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                    <div>
-                                                        <div class="fw-bold">{{ $otherUser->name }}</div>
-                                                        <small class="text-muted"><a href="{{ route('portfolio.show', $otherUser->username) }}" target="_blank" class="text-decoration-none">{{ '@' . $otherUser->username }}</a></small>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <form action="{{ route('connections.remove', $otherUser->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to remove this connection?');">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Remove</button>
-                                                    </form>
-                                                </div>
-                                            </li>
-                                        @empty
-                                            <li class="list-group-item text-center py-4 text-muted">You haven't added any connections yet.</li>
-                                        @endforelse
-                                    </ul>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table align-middle mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Visitor Name</th>
+                                                    <th>Email Address</th>
+                                                    <th>Message Content</th>
+                                                    <th>Submitted</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse($portfolio->messages->sortByDesc('created_at') as $msg)
+                                                    <tr>
+                                                        <td class="fw-bold text-dark">{{ $msg->name }}</td>
+                                                        <td>{{ $msg->email }}</td>
+                                                        <td><small class="text-muted">{{ Str::limit($msg->message, 90) }}</small></td>
+                                                        <td><small class="text-muted">{{ $msg->created_at->diffForHumans() }}</small></td>
+                                                    </tr>
+                                                @empty
+                                                    <tr><td colspan="4" class="text-center py-4 text-muted">No public visitor contact form messages received yet.</td></tr>
+                                                @endforelse
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1608,235 +1945,55 @@
     </div>
 
     @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
         <script>
-            // Client-side search and pagination engine
-            function initModuleSearchAndPagination(moduleSelector) {
-                const container = document.querySelector(moduleSelector);
-                if (!container) return;
-
-                const searchInput = container.querySelector('.js-module-search');
-                const items = Array.from(container.querySelectorAll('.js-module-item'));
-                const paginationContainer = container.querySelector('.js-module-pagination');
-                const itemsPerPage = 5;
-                let currentPage = 1;
-                let filteredItems = [...items];
-
-                function renderPage() {
-                    const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
-                    
-                    // Hide all items
-                    items.forEach(item => item.style.display = 'none');
-
-                    // Show items for current page
-                    const start = (currentPage - 1) * itemsPerPage;
-                    const end = start + itemsPerPage;
-                    
-                    filteredItems.slice(start, end).forEach(item => {
-                        item.style.display = '';
-                    });
-
-                    // Render pagination
-                    if (paginationContainer) {
-                        paginationContainer.innerHTML = '';
-                        if (totalPages > 1) {
-                            const nav = document.createElement('nav');
-                            const ul = document.createElement('ul');
-                            ul.className = 'pagination pagination-sm mb-0 justify-content-end';
-
-                            // Previous Page
-                            const prevLi = document.createElement('li');
-                            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-                            prevLi.innerHTML = `<a class="page-link" href="javascript:void(0)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
-                            prevLi.addEventListener('click', () => {
-                                if (currentPage > 1) {
-                                    currentPage--;
-                                    renderPage();
-                                }
-                            });
-                            ul.appendChild(prevLi);
-
-                            // Page items
-                            for (let i = 1; i <= totalPages; i++) {
-                                const li = document.createElement('li');
-                                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-                                li.innerHTML = `<a class="page-link" href="javascript:void(0)">${i}</a>`;
-                                li.addEventListener('click', () => {
-                                    currentPage = i;
-                                    renderPage();
-                                });
-                                ul.appendChild(li);
-                            }
-
-                            // Next Page
-                            const nextLi = document.createElement('li');
-                            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-                            nextLi.innerHTML = `<a class="page-link" href="javascript:void(0)" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
-                            nextLi.addEventListener('click', () => {
-                                if (currentPage < totalPages) {
-                                    currentPage++;
-                                    renderPage();
-                                }
-                            });
-                            ul.appendChild(nextLi);
-
-                            nav.appendChild(ul);
-                            paginationContainer.appendChild(nav);
-                        }
-                    }
-                }
-
-                if (searchInput) {
-                    // Remove existing event listener if any to avoid stacking
-                    const newSearchInput = searchInput.cloneNode(true);
-                    searchInput.parentNode.replaceChild(newSearchInput, searchInput);
-                    
-                    newSearchInput.addEventListener('input', function() {
-                        const query = this.value.toLowerCase().trim();
-                        filteredItems = items.filter(item => {
-                            const searchText = item.innerText.toLowerCase();
-                            return searchText.includes(query);
-                        });
-                        currentPage = 1;
-                        renderPage();
+            document.addEventListener('DOMContentLoaded', function () {
+                if (typeof $ !== 'undefined' && $.fn.summernote) {
+                    $('.js-summernote').summernote({
+                        height: 140,
+                        toolbar: [
+                            ['style', ['bold', 'italic', 'underline']],
+                            ['para', ['ul', 'ol']],
+                            ['insert', ['link']]
+                        ]
                     });
                 }
 
-                renderPage();
-            }
-
-            document.addEventListener('DOMContentLoaded', async function () {
-                const initEditors = (scope = document) => {
-                    const $ = window.jQuery;
-                    $(scope).find('.js-summernote').each(function () {
-                        const $el = $(this);
-                        if ($el.next('.note-editor').length) {
+                // Auto switch tab based on session active_tab or URL hash (e.g. #cmsPane)
+                var sessionActiveTab = "{{ session('active_tab') }}";
+                function checkHashTab() {
+                    var hash = window.location.hash;
+                    if (sessionActiveTab) {
+                        var targetPane = sessionActiveTab.startsWith('#') ? sessionActiveTab : '#' + sessionActiveTab;
+                        var targetBtn = document.querySelector('[data-bs-target="' + targetPane + '"]');
+                        if (targetBtn) {
+                            var tabInstance = bootstrap.Tab.getOrCreateInstance(targetBtn);
+                            tabInstance.show();
                             return;
                         }
-
-                        $el.summernote({
-                            height: Number($el.data('height')) || 160,
-                            placeholder: $el.attr('placeholder') || '',
-                            toolbar: [
-                                ['style', ['bold', 'italic', 'underline', 'clear']],
-                                ['font', ['strikethrough', 'superscript', 'subscript']],
-                                ['para', ['ul', 'ol', 'paragraph']],
-                                ['insert', ['link']],
-                                ['view', ['codeview']]
-                            ]
-                        });
-                    });
-                };
-
-                const loadScript = (src) => new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.src = src;
-                    script.onload = resolve;
-                    script.onerror = reject;
-                    document.head.appendChild(script);
-                });
-
-                try {
-                    if (!window.jQuery) {
-                        await loadScript('https://code.jquery.com/jquery-3.7.1.min.js');
                     }
-
-                    if (!window.jQuery || !window.jQuery.fn || !window.jQuery.fn.summernote) {
-                        await loadScript('https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js');
-                    }
-
-                    initEditors(document);
-
-                    window.jQuery(document).on('shown.bs.collapse', '.collapse', function () {
-                        initEditors(this);
-                    });
-
-                    window.jQuery(document).on('shown.bs.modal', '.modal', function () {
-                        initEditors(this);
-                    });
-
-                    window.jQuery(document).on('shown.bs.tab', 'button[data-bs-toggle="tab"], a[data-bs-toggle="tab"]', function () {
-                        const target = window.jQuery(this).attr('data-bs-target') || window.jQuery(this).attr('href');
-                        if (target) {
-                            initEditors(window.jQuery(target));
-                        }
-                    });
-                } catch (e) {
-                    console.error('Summernote failed to load:', e);
-                }
-
-                // Sidebar navigation view switcher
-                const modulesGrid = document.getElementById('modulesGrid');
-                const modulesDetailPanel = document.getElementById('modulesDetailPanel');
-                const backToModulesBtn = document.getElementById('backToModulesBtn');
-
-                document.querySelectorAll('.js-manage-section').forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const targetModule = this.getAttribute('data-module');
-                        showModuleDetail(targetModule);
-                    });
-                });
-
-                document.querySelectorAll('.js-add-section-btn').forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const targetModule = this.getAttribute('data-module');
-                        showModuleDetail(targetModule, true);
-                    });
-                });
-
-                backToModulesBtn.addEventListener('click', function() {
-                    modulesDetailPanel.style.display = 'none';
-                    modulesGrid.style.display = '';
-                    document.querySelectorAll('.module-detail-wrapper').forEach(wrapper => {
-                        wrapper.style.display = 'none';
-                    });
-                });
-
-                function showModuleDetail(moduleName, openAddForm = false) {
-                    modulesGrid.style.display = 'none';
-                    modulesDetailPanel.style.display = '';
-                    
-                    document.querySelectorAll('.module-detail-wrapper').forEach(wrapper => {
-                        wrapper.style.display = 'none';
-                    });
-
-                    const activeWrapper = document.getElementById('moduleDetail-' + moduleName);
-                    if (activeWrapper) {
-                        activeWrapper.style.display = '';
-                        initModuleSearchAndPagination('#moduleDetail-' + moduleName);
-                        
-                        if (openAddForm) {
-                            const addCollapse = activeWrapper.querySelector('.collapse');
-                            if (addCollapse) {
-                                const bsCollapse = new bootstrap.Collapse(addCollapse, { show: true });
-                                bsCollapse.show();
-                            }
+                    if (hash) {
+                        var targetBtn = document.querySelector('[data-bs-target="' + hash + '"]');
+                        if (targetBtn) {
+                            var tabInstance = bootstrap.Tab.getOrCreateInstance(targetBtn);
+                            tabInstance.show();
                         }
                     }
                 }
+                checkHashTab();
+                window.addEventListener('hashchange', checkHashTab);
 
-                // Auto-close responsive offcanvas sidebar on menu click (mobile view)
-                const sidebarMenuEl = document.getElementById('sidebarMenu');
-                if (sidebarMenuEl) {
-                    sidebarMenuEl.querySelectorAll('.nav-link').forEach(link => {
-                        link.addEventListener('click', () => {
-                            const bsOffcanvas = bootstrap.Offcanvas.getInstance(sidebarMenuEl);
-                            if (bsOffcanvas) {
-                                bsOffcanvas.hide();
-                            }
-                        });
+                // Mobile Sidebar Drawer Navigation Sync
+                document.querySelectorAll('#mobileSidebarDrawer [data-bs-toggle="tab"]').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var targetId = this.getAttribute('data-bs-target');
+                        var desktopBtn = document.querySelector('#careerWorkspaceTabs [data-bs-target="' + targetId + '"]');
+                        if (desktopBtn) {
+                            var tab = bootstrap.Tab.getOrCreateInstance(desktopBtn);
+                            tab.show();
+                        }
                     });
-                }
-                // Auto-switch to connections tab if we are searching
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.has('search')) {
-                    const connTab = document.getElementById('connections-tab');
-                    if (connTab) {
-                        connTab.click();
-                    }
-                }
+                });
             });
         </script>
     @endpush

@@ -23,6 +23,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role',
+        'user_type',
+        'admin_role',
+        'account_status',
     ];
 
     /**
@@ -49,9 +52,69 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Portfolio::class);
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' || in_array($this->admin_role, ['super_admin', 'admin', 'moderator', 'support']);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->admin_role === 'super_admin' || ($this->role === 'admin' && empty($this->admin_role));
+    }
+
+    public function isModerator(): bool
+    {
+        return $this->isSuperAdmin() || in_array($this->admin_role, ['admin', 'moderator']);
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->account_status === 'suspended';
+    }
+
+    public function isCompanyRep(): bool
+    {
+        return $this->user_type === 'company_rep' || $this->companyMemberships()->exists();
+    }
+
+    public function companyMemberships()
+    {
+        return $this->hasMany(CompanyMember::class);
+    }
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'company_members')->withPivot('role', 'title')->withTimestamps();
+    }
+
+    public function jobApplications()
+    {
+        return $this->hasMany(JobApplication::class);
+    }
+
+    public function savedOpportunities()
+    {
+        return $this->hasMany(SavedOpportunity::class);
+    }
+
+    public function professionalPreference()
+    {
+        return $this->hasOne(ProfessionalPreference::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function systemNotifications()
+    {
+        return $this->hasMany(SystemNotification::class);
+    }
+
+    public function mockInterviews()
+    {
+        return $this->hasMany(MockInterview::class);
     }
 
     public function connectionsSent()
@@ -73,6 +136,19 @@ class User extends Authenticatable implements MustVerifyEmail
             $query->where('sender_id', $other->id)
                   ->where('receiver_id', $this->id);
         })->first();
+    }
+
+    public function conversations()
+    {
+        return Conversation::where('user_one_id', $this->id)
+            ->orWhere('user_two_id', $this->id);
+    }
+
+    public function unreadDirectMessagesCount()
+    {
+        return DirectMessage::where('receiver_id', $this->id)
+            ->where('is_read', false)
+            ->count();
     }
 
     public function isConnectionWith(User $other)
