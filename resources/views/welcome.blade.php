@@ -611,16 +611,18 @@
                 <!-- Right Match Flow Mockup -->
                 <div class="col-lg-6">
                     <div class="card border-0 shadow-md rounded-3 p-3 bg-white border-top border-4" style="border-color: var(--brand-primary) !important;">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="badge bg-primary-subtle text-primary border border-primary">JOB: Senior Backend Dev</span>
-                            <i class="fa-solid fa-arrow-right text-muted"></i>
-                            <span class="badge bg-success rounded-pill fs-6">92% MATCH</span>
-                            <i class="fa-solid fa-arrow-right text-muted"></i>
-                            <span class="badge bg-light text-dark border">CANDIDATE: Fazal Khan</span>
+                        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between gap-2 mb-3 text-center">
+                            <span class="badge bg-primary-subtle text-primary border border-primary py-2 px-3 text-wrap" style="max-width: 100%;">JOB: Senior Backend Dev</span>
+                            <i class="fa-solid fa-arrow-right d-none d-md-inline-block text-muted"></i>
+                            <i class="fa-solid fa-arrow-down d-inline-block d-md-none text-muted"></i>
+                            <span class="badge bg-success rounded-pill px-3 py-2 fs-6">92% MATCH</span>
+                            <i class="fa-solid fa-arrow-right d-none d-md-inline-block text-muted"></i>
+                            <i class="fa-solid fa-arrow-down d-inline-block d-md-none text-muted"></i>
+                            <span class="badge bg-light text-dark border py-2 px-3 text-wrap" style="max-width: 100%;">CANDIDATE: Fazal Khan</span>
                         </div>
 
                         <div class="p-2 bg-light rounded-3 small">
-                            <div class="d-flex justify-content-between text-muted mb-1" style="font-size: 0.78rem;">
+                            <div class="d-flex flex-wrap justify-content-between text-muted mb-1 gap-1" style="font-size: 0.78rem;">
                                 <span>Skills Match: 96%</span>
                                 <span>Experience Match: 90%</span>
                                 <span>Location Match: 100%</span>
