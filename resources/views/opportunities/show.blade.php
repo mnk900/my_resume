@@ -50,11 +50,16 @@
 
                     <!-- Job Description -->
                     <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-file-text text-primary me-2"></i> Role Overview</h5>
-                    <div class="text-secondary lh-lg mb-4">{!! nl2br(e($opportunity->description)) !!}</div>
+                    <div class="text-secondary lh-lg mb-4">{!! $opportunity->description !!}</div>
 
                     @if($opportunity->responsibilities)
                     <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-list-check text-primary me-2"></i> Key Responsibilities</h5>
-                    <div class="text-secondary lh-lg mb-4">{!! nl2br(e($opportunity->responsibilities)) !!}</div>
+                    <div class="text-secondary lh-lg mb-4">{!! $opportunity->responsibilities !!}</div>
+                    @endif
+
+                    @if($opportunity->education_required)
+                    <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-graduation-cap text-primary me-2"></i> Required Background & Education</h5>
+                    <div class="text-secondary lh-lg mb-4">{!! $opportunity->education_required !!}</div>
                     @endif
 
                     @if($opportunity->skills->isNotEmpty())

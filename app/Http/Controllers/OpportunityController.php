@@ -139,7 +139,7 @@ class OpportunityController extends Controller
             'industry' => 'nullable|string|max:255',
             'min_experience' => 'required|integer|min:0',
             'max_experience' => 'nullable|integer|gte:min_experience',
-            'education_required' => 'nullable|string|max:255',
+            'education_required' => 'nullable|string',
             'location_type' => 'required|string|in:onsite,remote,hybrid',
             'city' => 'nullable|string|max:100',
             'country' => 'nullable|string|max:100',
@@ -194,7 +194,8 @@ class OpportunityController extends Controller
 
         // Process attached skills string
         if (!empty($validated['skills'])) {
-            $skillNames = array_map('trim', explode(',', $validated['skills']));
+            $rawSkills = trim(strip_tags($validated['skills']));
+            $skillNames = array_map('trim', explode(',', $rawSkills));
             foreach ($skillNames as $name) {
                 if (!empty($name)) {
                     OpportunitySkill::create([
@@ -276,7 +277,7 @@ class OpportunityController extends Controller
             'industry' => 'nullable|string|max:255',
             'min_experience' => 'required|integer|min:0',
             'max_experience' => 'nullable|integer|gte:min_experience',
-            'education_required' => 'nullable|string|max:255',
+            'education_required' => 'nullable|string',
             'location_type' => 'required|string|in:onsite,remote,hybrid',
             'city' => 'nullable|string|max:100',
             'country' => 'nullable|string|max:100',
@@ -320,7 +321,8 @@ class OpportunityController extends Controller
         // Sync skills
         OpportunitySkill::where('opportunity_id', $opportunity->id)->delete();
         if (!empty($validated['skills'])) {
-            $skillNames = array_map('trim', explode(',', $validated['skills']));
+            $rawSkills = trim(strip_tags($validated['skills']));
+            $skillNames = array_map('trim', explode(',', $rawSkills));
             foreach ($skillNames as $name) {
                 if (!empty($name)) {
                     OpportunitySkill::create([

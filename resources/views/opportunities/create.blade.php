@@ -45,18 +45,23 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
-                            <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="5" required placeholder="Detailed job overview and requirements...">{{ old('description') }}</textarea>
+                            <textarea name="description" class="form-control js-summernote @error('description') is-invalid @enderror" rows="5" required placeholder="Detailed job overview and requirements...">{{ old('description') }}</textarea>
                             @error('description')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Responsibilities</label>
-                            <textarea name="responsibilities" class="form-control" rows="3" placeholder="Key day-to-day responsibilities...">{{ old('responsibilities') }}</textarea>
+                            <textarea name="responsibilities" class="form-control js-summernote" rows="3" placeholder="Key day-to-day responsibilities...">{{ old('responsibilities') }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Required Background & Education</label>
+                            <textarea name="education_required" class="form-control js-summernote" rows="3" placeholder="Educational qualification or domain background required (e.g. BS Computer Science or equivalent experience)...">{{ old('education_required') }}</textarea>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Required Skills (Comma separated)</label>
-                            <input type="text" name="skills" class="form-control" value="{{ old('skills') }}" placeholder="PHP, Laravel, MySQL, Bootstrap, REST APIs">
+                            <textarea name="skills" class="form-control js-summernote-skills" rows="2" placeholder="PHP, Laravel, MySQL, Bootstrap, REST APIs">{{ old('skills') }}</textarea>
                         </div>
 
                         <div class="row g-3 mb-3">
@@ -116,4 +121,49 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+<style>
+    .note-editor.note-frame {
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+    .note-editor .note-toolbar {
+        background-color: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof $ !== 'undefined' && $.fn.summernote) {
+            $('.js-summernote').summernote({
+                height: 180,
+                toolbar: [
+                    ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link', 'hr']],
+                    ['view', ['codeview', 'undo', 'redo']]
+                ]
+            });
+
+            $('.js-summernote-skills').summernote({
+                height: 90,
+                toolbar: [
+                    ['style', ['bold', 'italic', 'clear']],
+                    ['para', ['ul', 'paragraph']],
+                    ['view', ['codeview']]
+                ]
+            });
+        }
+    });
+</script>
+@endpush
 @endsection

@@ -781,7 +781,7 @@
                         <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="fa-solid fa-comment-dots text-warning me-2"></i> Pitch Hook & Summary</h6>
                         <div class="mb-4">
                             <label class="form-label fw-bold">Short Pitch Hook / Summary</label>
-                            <textarea name="description" class="form-control" rows="3">{{ $portfolio->description }}</textarea>
+                            <textarea name="description" class="form-control js-summernote" data-height="120">{{ $portfolio->description }}</textarea>
                         </div>
                         <div class="mb-4">
                             <label class="form-label fw-bold">Detailed Bio</label>
@@ -1945,19 +1945,38 @@
     </div>
 
     @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                if (typeof $ !== 'undefined' && $.fn.summernote) {
-                    $('.js-summernote').summernote({
-                        height: 140,
-                        toolbar: [
-                            ['style', ['bold', 'italic', 'underline']],
-                            ['para', ['ul', 'ol']],
-                            ['insert', ['link']]
-                        ]
-                    });
+                function initSummernote() {
+                    if (typeof $ !== 'undefined' && $.fn.summernote) {
+                        $('.js-summernote').each(function() {
+                            if (!$(this).next('.note-editor').length) {
+                                var h = $(this).data('height') || 140;
+                                $(this).summernote({
+                                    height: h,
+                                    toolbar: [
+                                        ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+                                        ['font', ['strikethrough']],
+                                        ['para', ['ul', 'ol', 'paragraph']],
+                                        ['insert', ['link', 'hr']],
+                                        ['view', ['codeview', 'undo', 'redo']]
+                                    ]
+                                });
+                            }
+                        });
+                    }
                 }
+
+                initSummernote();
+
+                // Re-init on Bootstrap tab switch if needed
+                document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(function(tabBtn) {
+                    tabBtn.addEventListener('shown.bs.tab', function () {
+                        setTimeout(initSummernote, 50);
+                    });
+                });
 
                 // Auto switch tab based on session active_tab or URL hash (e.g. #cmsPane)
                 var sessionActiveTab = "{{ session('active_tab') }}";
