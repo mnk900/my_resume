@@ -96,17 +96,40 @@
                         </div>
 
                         <div class="row g-3 mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold">City</label>
                                 <input type="text" name="city" class="form-control" value="{{ old('city', $opportunity->city) }}" placeholder="e.g. Gilgit">
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold">Min Salary ($)</label>
-                                <input type="number" name="salary_min" class="form-control" value="{{ old('salary_min', $opportunity->salary_min) }}" placeholder="50000">
-                            </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold">Vacancies Count</label>
                                 <input type="number" name="vacancies_count" class="form-control" value="{{ old('vacancies_count', $opportunity->vacancies_count) }}" min="1" required>
+                            </div>
+                        </div>
+
+                        <!-- Salary & Compensation Row -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Currency</label>
+                                <select name="salary_currency" class="form-select">
+                                    <option value="PKR" {{ old('salary_currency', $opportunity->salary_currency ?? 'PKR') === 'PKR' ? 'selected' : '' }}>PKR (Rs.)</option>
+                                    <option value="USD" {{ old('salary_currency', $opportunity->salary_currency ?? 'PKR') === 'USD' ? 'selected' : '' }}>USD ($)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Min Salary</label>
+                                <input type="number" name="salary_min" class="form-control" value="{{ old('salary_min', $opportunity->salary_min) }}" placeholder="e.g. 100000">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Max Salary (Optional)</label>
+                                <input type="number" name="salary_max" class="form-control" value="{{ old('salary_max', $opportunity->salary_max) }}" placeholder="e.g. 150000">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Salary Period</label>
+                                <select name="salary_period" class="form-select">
+                                    <option value="monthly" {{ old('salary_period', $opportunity->salary_period ?? 'monthly') === 'monthly' ? 'selected' : '' }}>Monthly</option>
+                                    <option value="yearly" {{ old('salary_period', $opportunity->salary_period ?? 'monthly') === 'yearly' ? 'selected' : '' }}>Yearly</option>
+                                    <option value="hourly" {{ old('salary_period', $opportunity->salary_period ?? 'monthly') === 'hourly' ? 'selected' : '' }}>Hourly</option>
+                                </select>
                             </div>
                         </div>
 
