@@ -777,9 +777,36 @@
                                     <span class="text-muted small d-block"><i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ $cand->portfolio->city ?? 'Gilgit, Pakistan' }}</span>
                                 </div>
                             </div>
-                            <div class="pt-2 border-top d-flex justify-content-between align-items-center mt-auto">
-                                <span class="badge bg-success-subtle text-success border border-success">94% Match</span>
-                                <a href="{{ route('portfolio.show', $cand->username) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3">View Portfolio</a>
+                            <div class="pt-2 border-top d-flex justify-content-between align-items-center mt-auto gap-2">
+                                <a href="{{ route('portfolio.show', $cand->username) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-2" style="font-size: 0.75rem;">View Portfolio</a>
+                                <div class="d-flex gap-1">
+                                    @auth
+                                        @if(Auth::id() !== $cand->id)
+                                            @php
+                                                $conn = \App\Models\Connection::where(function($q) use ($cand) {
+                                                    $q->where('sender_id', Auth::id())->where('receiver_id', $cand->id);
+                                                })->orWhere(function($q) use ($cand) {
+                                                    $q->where('sender_id', $cand->id)->where('receiver_id', Auth::id());
+                                                })->first();
+                                            @endphp
+                                            @if($conn && $conn->status === 'accepted')
+                                                <a href="{{ route('messages.index', ['user_id' => $cand->id]) }}" class="btn btn-sm btn-primary rounded-pill px-2" style="font-size: 0.75rem;" title="Message"><i class="fa-solid fa-comments me-1"></i> Message</a>
+                                            @elseif($conn && $conn->status === 'pending')
+                                                <span class="badge bg-secondary-subtle text-secondary border px-2 py-1 me-1" style="font-size: 0.72rem;">Pending</span>
+                                                <a href="{{ route('messages.index', ['user_id' => $cand->id]) }}" class="btn btn-sm btn-outline-primary rounded-pill px-2" style="font-size: 0.75rem;" title="Message"><i class="fa-solid fa-comments me-1"></i> Message</a>
+                                            @else
+                                                <form action="{{ route('connections.request', $cand->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-2" style="font-size: 0.75rem;" title="Connect"><i class="fa-solid fa-user-plus me-1"></i> Connect</button>
+                                                </form>
+                                                <a href="{{ route('messages.index', ['user_id' => $cand->id]) }}" class="btn btn-sm btn-outline-primary rounded-pill px-2" style="font-size: 0.75rem;" title="Message"><i class="fa-solid fa-comments me-1"></i> Message</a>
+                                            @endif
+                                        @endif
+                                    @else
+                                        <a href="{{ route('login') }}" class="btn btn-sm btn-outline-success rounded-pill px-2" style="font-size: 0.75rem;" title="Connect"><i class="fa-solid fa-user-plus me-1"></i> Connect</a>
+                                        <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary rounded-pill px-2" style="font-size: 0.75rem;" title="Message"><i class="fa-solid fa-comments me-1"></i> Message</a>
+                                    @endauth
+                                </div>
                             </div>
                         </div>
                     </div>

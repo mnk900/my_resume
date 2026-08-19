@@ -126,6 +126,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Job & Opportunity Management
     Route::get('/opportunities/create', [\App\Http\Controllers\OpportunityController::class, 'create'])->name('opportunities.create');
     Route::post('/opportunities', [\App\Http\Controllers\OpportunityController::class, 'store'])->name('opportunities.store');
+    Route::get('/opportunities/{opportunity}/edit', [\App\Http\Controllers\OpportunityController::class, 'edit'])->name('opportunities.edit');
+    Route::put('/opportunities/{opportunity}', [\App\Http\Controllers\OpportunityController::class, 'update'])->name('opportunities.update');
+    Route::delete('/opportunities/{opportunity}', [\App\Http\Controllers\OpportunityController::class, 'destroy'])->name('opportunities.destroy');
     Route::post('/opportunities/{opportunity}/save', [\App\Http\Controllers\OpportunityController::class, 'toggleSave'])->name('opportunities.save');
 
     // Applications & ATS Workflow

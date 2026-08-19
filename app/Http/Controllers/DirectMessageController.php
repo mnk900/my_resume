@@ -45,6 +45,18 @@ class DirectMessageController extends Controller
 
         if ($request->has('conversation')) {
             $activeConversation = $conversations->firstWhere('id', $request->query('conversation'));
+        } elseif ($request->has('user_id')) {
+            $targetUser = User::find($request->query('user_id'));
+            if ($targetUser && $targetUser->id !== $user->id) {
+                $activeConversation = Conversation::findOrCreateBetween($user->id, $targetUser->id);
+                $activeConversation->update(['last_message_at' => now()]);
+                // Re-fetch conversations to include the active/new conversation
+                $conversations = Conversation::where('user_one_id', $user->id)
+                    ->orWhere('user_two_id', $user->id)
+                    ->with(['userOne.portfolio', 'userTwo.portfolio', 'latestMessage'])
+                    ->orderBy('last_message_at', 'desc')
+                    ->get();
+            }
         }
 
         if (!$activeConversation && $conversations->isNotEmpty()) {

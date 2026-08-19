@@ -29,8 +29,36 @@
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm rounded-3 p-3">
                     <h6 class="fw-bold mb-1"><a href="{{ route('portfolio.show', $p->username) }}" class="text-decoration-none text-dark">{{ $p->name }}</a></h6>
-                    <span class="text-primary small fw-semibold d-block mb-1">{{ $p->portfolio->position ?? 'Candidate' }}</span>
-                    <a href="{{ route('portfolio.show', $p->username) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 mt-2">View Portfolio</a>
+                    <span class="text-primary small fw-semibold d-block mb-2">{{ $p->portfolio->position ?? 'Candidate' }}</span>
+                    <div class="d-flex justify-content-between align-items-center gap-1 mt-auto pt-2 border-top">
+                        <a href="{{ route('portfolio.show', $p->username) }}" class="btn btn-sm btn-outline-primary rounded-pill px-2" style="font-size: 0.75rem;">View Portfolio</a>
+                        <div class="d-flex gap-1">
+                            @auth
+                                @if(Auth::id() !== $p->id)
+                                    @php
+                                        $conn = \App\Models\Connection::where(function($q) use ($p) {
+                                            $q->where('sender_id', Auth::id())->where('receiver_id', $p->id);
+                                        })->orWhere(function($q) use ($p) {
+                                            $q->where('sender_id', $p->id)->where('receiver_id', Auth::id());
+                                        })->first();
+                                    @endphp
+                                    @if($conn && $conn->status === 'accepted')
+                                        <a href="{{ route('messages.index', ['user_id' => $p->id]) }}" class="btn btn-sm btn-primary rounded-pill px-2" style="font-size: 0.75rem;" title="Message"><i class="fa-solid fa-comments me-1"></i> Message</a>
+                                    @elseif($conn && $conn->status === 'pending')
+                                        <span class="badge bg-secondary-subtle text-secondary border px-2 py-1" style="font-size: 0.72rem;">Pending</span>
+                                    @else
+                                        <form action="{{ route('connections.request', $p->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-2" style="font-size: 0.75rem;" title="Connect"><i class="fa-solid fa-user-plus me-1"></i> Connect</button>
+                                        </form>
+                                    @endif
+                                @endif
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-sm btn-outline-success rounded-pill px-2" style="font-size: 0.75rem;" title="Connect"><i class="fa-solid fa-user-plus me-1"></i> Connect</a>
+                                <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary rounded-pill px-2" style="font-size: 0.75rem;" title="Message"><i class="fa-solid fa-comments me-1"></i> Message</a>
+                            @endauth
+                        </div>
+                    </div>
                 </div>
             </div>
             @empty

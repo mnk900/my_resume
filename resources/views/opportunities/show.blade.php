@@ -20,14 +20,24 @@
                                 &bull; <i class="fa-solid fa-location-dot text-danger"></i> {{ ucfirst($opportunity->location_type) }} ({{ $opportunity->city ?? 'Global' }})
                             </p>
                         </div>
-                        @auth
-                        <form action="{{ route('opportunities.save', $opportunity->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-outline-secondary btn-sm rounded-circle p-2" title="{{ $isSaved ? 'Unsave Job' : 'Save Job' }}">
-                                <i class="fa-{{ $isSaved ? 'solid' : 'regular' }} fa-bookmark fa-lg text-warning"></i>
-                            </button>
-                        </form>
-                        @endauth
+                        <div class="d-flex align-items-center gap-2">
+                            @auth
+                            @if(Auth::id() === $opportunity->posted_by_user_id || ($opportunity->company && $opportunity->company->user_id === Auth::id()) || Auth::user()->isAdmin())
+                                <a href="{{ route('opportunities.edit', $opportunity->id) }}" class="btn btn-outline-primary btn-sm rounded-pill"><i class="fa-solid fa-pen-to-square me-1"></i> Edit Job</a>
+                                <form action="{{ route('opportunities.destroy', $opportunity->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this job posting?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill"><i class="fa-solid fa-trash-can me-1"></i> Delete</button>
+                                </form>
+                            @endif
+                            <form action="{{ route('opportunities.save', $opportunity->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-secondary btn-sm rounded-circle p-2" title="{{ $isSaved ? 'Unsave Job' : 'Save Job' }}">
+                                    <i class="fa-{{ $isSaved ? 'solid' : 'regular' }} fa-bookmark fa-lg text-warning"></i>
+                                </button>
+                            </form>
+                            @endauth
+                        </div>
                     </div>
 
                     <!-- Meta Tags Row -->
@@ -115,7 +125,7 @@
                     <button type="submit" class="btn btn-warning w-100 fw-bold rounded-pill"><i class="fa-solid fa-play me-1"></i> Take AI Mock Interview</button>
                 </form>
                 @else
-                <a href="{{ route('login') }}" class="btn btn-warning w-100 fw-bold rounded-pill">Sign In to Take Interview</a>
+                <button type="button" class="btn btn-warning w-100 fw-bold rounded-pill" data-bs-toggle="modal" data-bs-target="#guestApplyModal">Sign In to Take Interview</button>
                 @endauth
             </div>
 
@@ -126,13 +136,18 @@
                         <div class="alert alert-info border-0 shadow-sm mb-0 rounded-3 text-center">
                             <h6 class="fw-bold text-dark mb-1"><i class="fa-solid fa-building-circle-check text-primary me-2"></i> Posted by Your Company</h6>
                             <p class="text-secondary small mb-3">You manage this position as an employer representative.</p>
-                            <a href="{{ route('companies.dashboard', $opportunity->company_id) }}" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold shadow-sm">
-                                <i class="fa-solid fa-gauge me-1"></i> Manage Job & Applicants
-                            </a>
+                            <div class="d-flex gap-2 justify-content-center">
+                                <a href="{{ route('opportunities.edit', $opportunity->id) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                    <i class="fa-solid fa-pen-to-square me-1"></i> Edit Job
+                                </a>
+                                <a href="{{ route('companies.dashboard', $opportunity->company_id) }}" class="btn btn-sm btn-primary rounded-pill px-3 fw-bold shadow-sm">
+                                    <i class="fa-solid fa-gauge me-1"></i> Manage Applicants
+                                </a>
+                            </div>
                         </div>
                     @elseif($userApplication)
                         <div class="alert alert-success mb-0 rounded-3">
-                            <i class="fa-solid fa-circle-check me-1"></i> You applied on {{ $userApplication->applied_at->format('M d, Y') }}
+                            <i class="fa-solid fa-circle-check me-1"></i> You applied on {{ $userApplication->created_at ? \Carbon\Carbon::parse($userApplication->created_at)->format('M d, Y') : 'Recently' }}
                             <div class="fw-bold mt-1">Status: {{ strtoupper(str_replace('_', ' ', $userApplication->status)) }}</div>
                         </div>
                     @else
@@ -141,14 +156,16 @@
                         </button>
                     @endif
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-primary btn-lg w-100 fw-bold rounded-pill shadow-sm">Sign In to Apply</a>
+                    <button type="button" class="btn btn-primary btn-lg w-100 fw-bold rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#guestApplyModal">
+                        <i class="fa-solid fa-paper-plane me-1"></i> Apply Now with Portfolio
+                    </button>
                 @endauth
             </div>
         </div>
     </div>
 </div>
 
-<!-- Apply Modal -->
+<!-- Apply Modal (Logged In Users) -->
 @auth
 <div class="modal fade" id="applyModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -172,6 +189,36 @@
                     <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm">Submit Application</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+@else
+<!-- Guest Application Prompt Modal -->
+<div class="modal fade" id="guestApplyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 text-center p-4">
+            <div class="modal-header border-0 pb-0 justify-content-end">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <div class="rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                    <i class="fa-solid fa-briefcase fa-2xl"></i>
+                </div>
+                <h4 class="fw-bold text-dark mb-2">Apply for {{ $opportunity->title }}</h4>
+                <p class="text-secondary small mb-4">
+                    Job postings are publicly visible on MyResume.cloud. To submit your application and match your skills with this role, please sign in or create a free portfolio account.
+                </p>
+
+                <div class="d-grid gap-2 col-11 mx-auto mb-3">
+                    <a href="{{ route('register') }}" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm">
+                        <i class="fa-solid fa-user-plus me-2"></i> Create Portfolio Account
+                    </a>
+                    <a href="{{ route('login') }}" class="btn btn-outline-secondary btn-lg rounded-pill fw-semibold">
+                        <i class="fa-solid fa-right-to-bracket me-2"></i> Sign In to Existing Account
+                    </a>
+                </div>
+                <small class="text-muted" style="font-size: 0.78rem;">Takes less than 1 minute to setup your professional portfolio.</small>
+            </div>
         </div>
     </div>
 </div>

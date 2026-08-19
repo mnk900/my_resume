@@ -112,7 +112,14 @@
 
                 <div class="pt-3 border-top d-flex justify-content-between align-items-center mt-auto">
                     <span class="fw-bold text-dark small">{{ $opp->salary_min ? '$' . number_format($opp->salary_min) . ' / ' . $opp->salary_period : 'Competitive' }}</span>
-                    <a href="{{ route('opportunities.show', $opp->slug) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">View Details</a>
+                    <div class="d-flex gap-1 align-items-center">
+                        @auth
+                            @if(Auth::id() === $opp->posted_by_user_id || ($opp->company && $opp->company->user_id === Auth::id()) || Auth::user()->isAdmin())
+                                <a href="{{ route('opportunities.edit', $opp->id) }}" class="btn btn-sm btn-outline-secondary rounded-circle p-1 px-2" title="Edit Job"><i class="fa-solid fa-pen-to-square"></i></a>
+                            @endif
+                        @endauth
+                        <a href="{{ route('opportunities.show', $opp->slug) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">View Details</a>
+                    </div>
                 </div>
             </div>
         </div>

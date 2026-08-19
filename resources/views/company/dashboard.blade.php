@@ -91,7 +91,15 @@
                                     </td>
                                     <td><span class="badge bg-secondary rounded-pill">{{ $opp->applications_count }}</span></td>
                                     <td class="text-end">
-                                        <a href="{{ route('opportunities.applications', $opp->id) }}" class="btn btn-sm btn-outline-primary rounded-pill">ATS Applicants</a>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <a href="{{ route('opportunities.edit', $opp->id) }}" class="btn btn-sm btn-outline-secondary rounded-circle p-1 px-2" title="Edit Job"><i class="fa-solid fa-pen-to-square"></i></a>
+                                            <form action="{{ route('opportunities.destroy', $opp->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this job posting?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle p-1 px-2" title="Delete Job"><i class="fa-solid fa-trash-can"></i></button>
+                                            </form>
+                                            <a href="{{ route('opportunities.applications', $opp->id) }}" class="btn btn-sm btn-outline-primary rounded-pill">ATS Applicants</a>
+                                        </div>
                                     </td>
                                 </tr>
                                 @empty

@@ -231,4 +231,127 @@ class OpportunityController extends Controller
 
         return back()->with('success', 'Job saved successfully.');
     }
+
+    /**
+     * Show Opportunity edit form.
+     */
+    public function edit(Opportunity $opportunity)
+    {
+        $user = Auth::user();
+        $isOwner = $user->id === $opportunity->posted_by_user_id || 
+                   ($opportunity->company && $opportunity->company->user_id === $user->id) || 
+                   $user->isAdmin();
+
+        if (!$isOwner) {
+            abort(403, 'Unauthorized to edit this job posting.');
+        }
+
+        $companies = $user->companies;
+        $existingSkills = $opportunity->skills->pluck('skill_name')->implode(', ');
+
+        return view('opportunities.edit', compact('opportunity', 'companies', 'existingSkills'));
+    }
+
+    /**
+     * Update existing opportunity.
+     */
+    public function update(Request $request, Opportunity $opportunity)
+    {
+        $user = Auth::user();
+        $isOwner = $user->id === $opportunity->posted_by_user_id || 
+                   ($opportunity->company && $opportunity->company->user_id === $user->id) || 
+                   $user->isAdmin();
+
+        if (!$isOwner) {
+            abort(403, 'Unauthorized to update this job posting.');
+        }
+
+        $validated = $request->validate([
+            'company_id' => 'nullable|exists:companies,id',
+            'type' => 'required|string|in:job,internship,freelance,training,workshop,scholarship,event,volunteer,other',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'responsibilities' => 'nullable|string',
+            'category' => 'nullable|string|max:255',
+            'industry' => 'nullable|string|max:255',
+            'min_experience' => 'required|integer|min:0',
+            'max_experience' => 'nullable|integer|gte:min_experience',
+            'education_required' => 'nullable|string|max:255',
+            'location_type' => 'required|string|in:onsite,remote,hybrid',
+            'city' => 'nullable|string|max:100',
+            'country' => 'nullable|string|max:100',
+            'employment_type' => 'required|string|in:full-time,part-time,contract,freelance,internship',
+            'salary_min' => 'nullable|numeric|min:0',
+            'salary_max' => 'nullable|numeric|gte:salary_min',
+            'salary_currency' => 'nullable|string|max:10',
+            'salary_period' => 'nullable|string|in:yearly,monthly,hourly',
+            'application_deadline' => 'nullable|date',
+            'external_url' => 'nullable|url|max:255',
+            'is_internal_application' => 'nullable|boolean',
+            'vacancies_count' => 'required|integer|min:1',
+            'skills' => 'nullable|string',
+        ]);
+
+        $opportunity->update([
+            'company_id' => $validated['company_id'] ?? null,
+            'type' => $validated['type'],
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'responsibilities' => $validated['responsibilities'] ?? null,
+            'category' => $validated['category'] ?? null,
+            'industry' => $validated['industry'] ?? null,
+            'min_experience' => $validated['min_experience'],
+            'max_experience' => $validated['max_experience'] ?? null,
+            'education_required' => $validated['education_required'] ?? null,
+            'location_type' => $validated['location_type'],
+            'city' => $validated['city'] ?? null,
+            'country' => $validated['country'] ?? null,
+            'employment_type' => $validated['employment_type'],
+            'salary_min' => $validated['salary_min'] ?? null,
+            'salary_max' => $validated['salary_max'] ?? null,
+            'salary_currency' => $validated['salary_currency'] ?? 'USD',
+            'salary_period' => $validated['salary_period'] ?? 'monthly',
+            'application_deadline' => $validated['application_deadline'] ?? null,
+            'external_url' => $validated['external_url'] ?? null,
+            'is_internal_application' => $request->has('is_internal_application'),
+            'vacancies_count' => $validated['vacancies_count'],
+        ]);
+
+        // Sync skills
+        OpportunitySkill::where('opportunity_id', $opportunity->id)->delete();
+        if (!empty($validated['skills'])) {
+            $skillNames = array_map('trim', explode(',', $validated['skills']));
+            foreach ($skillNames as $name) {
+                if (!empty($name)) {
+                    OpportunitySkill::create([
+                        'opportunity_id' => $opportunity->id,
+                        'skill_name' => $name,
+                        'is_required' => true,
+                        'weight' => 1,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('opportunities.show', $opportunity->slug)->with('success', 'Job posting updated successfully.');
+    }
+
+    /**
+     * Delete existing opportunity.
+     */
+    public function destroy(Opportunity $opportunity)
+    {
+        $user = Auth::user();
+        $isOwner = $user->id === $opportunity->posted_by_user_id || 
+                   ($opportunity->company && $opportunity->company->user_id === $user->id) || 
+                   $user->isAdmin();
+
+        if (!$isOwner) {
+            abort(403, 'Unauthorized to delete this job posting.');
+        }
+
+        $opportunity->delete();
+
+        return redirect()->route('opportunities.index')->with('success', 'Job posting deleted successfully.');
+    }
 }

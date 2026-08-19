@@ -65,13 +65,37 @@
                 </div>
                 @endif
 
-                <div class="pt-3 border-top d-flex justify-content-between align-items-center mt-auto">
-                    @if($candidate->professionalPreference)
-                        <span class="badge bg-success-subtle text-success border border-success">{{ ucfirst(str_replace('_', ' ', $candidate->professionalPreference->availability)) }}</span>
-                    @else
-                        <span class="badge bg-light text-muted border">Portfolio Public</span>
-                    @endif
+                <div class="pt-3 border-top d-flex justify-content-between align-items-center mt-auto flex-wrap gap-2">
                     <a href="{{ route('portfolio.show', $candidate->username) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3">View Portfolio</a>
+                    <div class="d-flex gap-1">
+                        @auth
+                            @if(Auth::id() !== $candidate->id)
+                                @php
+                                    $conn = \App\Models\Connection::where(function($q) use ($candidate) {
+                                        $q->where('sender_id', Auth::id())->where('receiver_id', $candidate->id);
+                                    })->orWhere(function($q) use ($candidate) {
+                                        $q->where('sender_id', $candidate->id)->where('receiver_id', Auth::id());
+                                    })->first();
+                                @endphp
+                                @if($conn && $conn->status === 'accepted')
+                                    <span class="badge bg-success-subtle text-success border px-2 py-2 me-1" style="font-size: 0.72rem;"><i class="fa-solid fa-check me-1"></i> Connected</span>
+                                    <a href="{{ route('messages.index', ['user_id' => $candidate->id]) }}" class="btn btn-sm btn-primary rounded-pill px-2" title="Message"><i class="fa-solid fa-comments me-1"></i> Message</a>
+                                @elseif($conn && $conn->status === 'pending')
+                                    <span class="badge bg-secondary-subtle text-secondary border px-2 py-2 me-1" style="font-size: 0.72rem;">Pending</span>
+                                    <a href="{{ route('messages.index', ['user_id' => $candidate->id]) }}" class="btn btn-sm btn-outline-primary rounded-pill px-2" title="Message"><i class="fa-solid fa-comments me-1"></i> Message</a>
+                                @else
+                                    <form action="{{ route('connections.request', $candidate->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-2" title="Connect"><i class="fa-solid fa-user-plus me-1"></i> Connect</button>
+                                    </form>
+                                    <a href="{{ route('messages.index', ['user_id' => $candidate->id]) }}" class="btn btn-sm btn-outline-primary rounded-pill px-2" title="Message"><i class="fa-solid fa-comments me-1"></i> Message</a>
+                                @endif
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-sm btn-outline-success rounded-pill px-2" title="Connect"><i class="fa-solid fa-user-plus me-1"></i> Connect</a>
+                            <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary rounded-pill px-2" title="Message"><i class="fa-solid fa-comments me-1"></i> Message</a>
+                        @endauth
+                    </div>
                 </div>
             </div>
         </div>

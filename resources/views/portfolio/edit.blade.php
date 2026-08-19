@@ -1750,7 +1750,7 @@
                         @forelse($acceptedConnections as $other)
                             <div class="col-12 col-sm-6 col-md-4">
                                 <div class="p-3 border rounded-3 bg-white d-flex align-items-center justify-content-between gap-2 shadow-sm position-relative">
-                                    <div class="d-flex align-items-center gap-3 min-w-0 flex-grow-1">
+                                    <div class="d-flex align-items-center gap-3 flex-grow-1 overflow-hidden" style="min-width: 0;">
                                         @if($other->portfolio && $other->portfolio->profile_image)
                                             <img src="{{ Storage::url($other->portfolio->profile_image) }}" class="rounded-circle border flex-shrink-0" style="width: 44px; height: 44px; object-fit: cover;">
                                         @else
@@ -1758,9 +1758,9 @@
                                                 {{ strtoupper(substr($other->name, 0, 1)) }}
                                             </div>
                                         @endif
-                                        <div class="min-w-0 flex-grow-1">
-                                            <strong class="d-block text-dark small text-truncate">{{ $other->name }}</strong>
-                                            <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">{{ $other->portfolio->position ?? 'Connected Professional' }}</small>
+                                        <div class="flex-grow-1 overflow-hidden" style="min-width: 0;">
+                                            <strong class="d-block text-dark small text-truncate" title="{{ $other->name }}">{{ $other->name }}</strong>
+                                            <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;" title="{{ $other->portfolio->position ?? 'Connected Professional' }}">{{ $other->portfolio->position ?? 'Connected Professional' }}</small>
                                             <a href="{{ route('portfolio.show', $other->username) }}" target="_blank" class="text-primary small text-decoration-none fw-semibold" style="font-size: 0.75rem;">View Profile &rarr;</a>
                                         </div>
                                     </div>
