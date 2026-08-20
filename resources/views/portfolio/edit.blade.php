@@ -1,6 +1,8 @@
 <x-app-layout>
     @push('styles')
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
         <style>
             :root {
                 --workspace-sidebar-width: 270px;
@@ -698,6 +700,7 @@
 
                     <form action="{{ route('portfolio.update') }}" method="POST" enctype="multipart/form-data" class="bg-white p-3 p-md-4 rounded-3 border shadow-sm mb-4">
                         @csrf
+                        <input type="hidden" name="active_tab" value="settingsPane">
                         
                         <!-- Profile Picture Upload & Primary Identity -->
                         <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="fa-solid fa-image text-primary me-2"></i> Profile Photo & Core Info</h6>
@@ -934,6 +937,7 @@
                                     
                                     <form action="{{ route('portfolio.update') }}" method="POST">
                                         @csrf
+                                        <input type="hidden" name="active_tab" value="themesPane">
                                         <input type="hidden" name="theme" value="{{ $tKey }}">
                                         @if($isCurrentActive)
                                             <button type="button" class="btn btn-outline-primary btn-sm w-100 rounded-pill" disabled>Currently Selected</button>
@@ -1079,20 +1083,41 @@
                                         @endif
                                         <div class="modal-body p-4">
                                             @if($key === 'skills')
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Skill Name <span class="text-danger">*</span></label>
-                                                    <input type="text" name="name" class="form-control" placeholder="e.g. PHP / Laravel, React, Financial Analysis" required>
-                                                </div>
-                                                <div class="row g-3">
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-bold">Proficiency Percentage (0-100) <span class="text-danger">*</span></label>
-                                                        <input type="number" name="percentage" class="form-control" min="0" max="100" value="85" required>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-bold">Category</label>
-                                                        <input type="text" name="category" class="form-control" placeholder="e.g. Backend, Frontend, Leadership">
-                                                    </div>
-                                                </div>
+                                                 <!-- 1. Category Selection -->
+                                                 <div class="mb-3">
+                                                     <label class="form-label fw-bold"><i class="fa-solid fa-layer-group text-primary me-1"></i> 1. Select Skill Category <span class="text-danger">*</span></label>
+                                                     <select name="category" id="skillCategorySelect" class="form-select select2-category" style="width: 100%;" required>
+                                                         <option value="" selected disabled>-- Search & Select Skill Domain Category --</option>
+                                                         <option value="Software Development & Engineering">Software Development & Engineering</option>
+                                                         <option value="Data Science, AI & Analytics">Data Science, AI & Analytics</option>
+                                                         <option value="Cloud, DevOps & IT Infrastructure">Cloud, DevOps & IT Infrastructure</option>
+                                                         <option value="UI/UX & Graphic Design">UI/UX & Graphic Design</option>
+                                                         <option value="Product & Project Management">Product & Project Management</option>
+                                                         <option value="Digital Marketing & Growth">Digital Marketing & Growth</option>
+                                                         <option value="Finance, Accounting & Business">Finance, Accounting & Business</option>
+                                                         <option value="Operations & Human Resources">Operations & Human Resources</option>
+                                                         <option value="Other / General Skills">Other / General Skills</option>
+                                                     </select>
+                                                     <small class="text-muted d-block mt-1">Select a category first to display skills available for that domain.</small>
+                                                 </div>
+
+                                                 <!-- 2. Multi-Select Skills Dropdown -->
+                                                 <div class="mb-3">
+                                                     <label class="form-label fw-bold"><i class="fa-solid fa-list-check text-primary me-1"></i> 2. Select Skills (Multi-Select Enabled) <span class="text-danger">*</span></label>
+                                                     <select name="skills[]" id="skillNameSelect" class="form-select select2-skills" multiple="multiple" style="width: 100%;" data-placeholder="Choose category first above..." disabled required>
+                                                     </select>
+                                                     <small class="text-muted d-block mt-1">Select multiple skills from the dropdown or type custom skills to add them.</small>
+                                                 </div>
+
+                                                 <!-- 3. Proficiency Percentage -->
+                                                 <div class="mb-2">
+                                                     <label class="form-label fw-bold"><i class="fa-solid fa-gauge-high text-primary me-1"></i> 3. Proficiency Level (0 - 100%) <span class="text-danger">*</span></label>
+                                                     <div class="input-group">
+                                                         <input type="number" name="percentage" class="form-control" min="0" max="100" value="85" required>
+                                                         <span class="input-group-text bg-light fw-bold">%</span>
+                                                     </div>
+                                                     <small class="text-muted d-block mt-1">Applied as the proficiency score for the selected skill batch (e.g., 85% = Advanced).</small>
+                                                 </div>
                                             @elseif($key === 'projects')
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Project Title <span class="text-danger">*</span></label>
@@ -1138,26 +1163,68 @@
                                                     <textarea name="description" class="form-control" rows="3" placeholder="Described key impacts and duties..."></textarea>
                                                 </div>
                                             @elseif($key === 'education')
-                                                <div class="row g-3 mb-3">
-                                                    <div class="col-12 col-md-6">
-                                                        <label class="form-label fw-bold">Degree / Program <span class="text-danger">*</span></label>
-                                                        <input type="text" name="degree" class="form-control" placeholder="e.g. B.S. Computer Science" required>
-                                                    </div>
-                                                    <div class="col-12 col-md-6">
-                                                        <label class="form-label fw-bold">Institution / University <span class="text-danger">*</span></label>
-                                                        <input type="text" name="institution" class="form-control" placeholder="e.g. Stanford University" required>
-                                                    </div>
-                                                </div>
-                                                <div class="row g-3">
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-bold">Start Date <span class="text-danger">*</span></label>
-                                                        <input type="date" name="start_date" class="form-control" required>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-bold">End Date <span class="text-danger">*</span></label>
-                                                        <input type="date" name="end_date" class="form-control" required>
-                                                    </div>
-                                                </div>
+                                                 <div class="row g-3 mb-3">
+                                                     <div class="col-12 col-md-6">
+                                                         <label class="form-label fw-bold"><i class="fa-solid fa-graduation-cap text-primary me-1"></i> Degree / Program <span class="text-danger">*</span></label>
+                                                         <select name="degree" id="eduDegreeSelect" class="form-select select2-edu-degree" style="width: 100%;" required>
+                                                             <option value="" selected disabled>-- Search, Select or Type Degree --</option>
+                                                             <option value="B.S. Computer Science">B.S. Computer Science</option>
+                                                             <option value="B.S. Software Engineering">B.S. Software Engineering</option>
+                                                             <option value="B.S. Information Technology">B.S. Information Technology</option>
+                                                             <option value="B.S. Data Science / AI">B.S. Data Science / AI</option>
+                                                             <option value="Master of Business Administration (MBA)">Master of Business Administration (MBA)</option>
+                                                             <option value="B.B.A. Business Administration">B.B.A. Business Administration</option>
+                                                             <option value="M.S. Computer Science">M.S. Computer Science</option>
+                                                             <option value="M.S. Software Engineering">M.S. Software Engineering</option>
+                                                             <option value="B.E. Electrical Engineering">B.E. Electrical Engineering</option>
+                                                             <option value="Ph.D. Computer Science / Engineering">Ph.D. Computer Science / Engineering</option>
+                                                             <option value="Associate Degree / Higher Diploma">Associate Degree / Higher Diploma</option>
+                                                             <option value="Higher Secondary School Certificate (HSSC / F.Sc)">Higher Secondary School Certificate (HSSC / F.Sc)</option>
+                                                             <option value="Secondary School Certificate (Matriculation / O-Levels)">Secondary School Certificate (Matriculation / O-Levels)</option>
+                                                             <option value="Professional Certification / License">Professional Certification / License</option>
+                                                             @if(isset($existingEducationDegrees) && count($existingEducationDegrees) > 0)
+                                                                 @foreach($existingEducationDegrees as $dbDegree)
+                                                                     <option value="{{ $dbDegree }}">{{ $dbDegree }}</option>
+                                                                 @endforeach
+                                                             @endif
+                                                         </select>
+                                                         <small class="text-muted d-block mt-1">Select an existing degree program or type your custom degree in the box.</small>
+                                                     </div>
+                                                     <div class="col-12 col-md-6">
+                                                         <label class="form-label fw-bold"><i class="fa-solid fa-university text-primary me-1"></i> Institution / University <span class="text-danger">*</span></label>
+                                                         <select name="institution" id="eduInstitutionSelect" class="form-select select2-edu-institution" style="width: 100%;" required>
+                                                             <option value="" selected disabled>-- Search, Select or Type Institution --</option>
+                                                             <option value="National University of Sciences and Technology (NUST)">National University of Sciences and Technology (NUST)</option>
+                                                             <option value="FAST National University of Computer and Emerging Sciences">FAST National University of Computer and Emerging Sciences</option>
+                                                             <option value="Lahore University of Management Sciences (LUMS)">Lahore University of Management Sciences (LUMS)</option>
+                                                             <option value="COMSATS University Islamabad">COMSATS University Islamabad</option>
+                                                             <option value="University of the Punjab">University of the Punjab</option>
+                                                             <option value="University of Engineering & Technology (UET)">University of Engineering & Technology (UET)</option>
+                                                             <option value="Institute of Business Administration (IBA Karachi)">Institute of Business Administration (IBA Karachi)</option>
+                                                             <option value="Stanford University">Stanford University</option>
+                                                             <option value="Harvard University">Harvard University</option>
+                                                             <option value="Massachusetts Institute of Technology (MIT)">Massachusetts Institute of Technology (MIT)</option>
+                                                             <option value="University of Oxford">University of Oxford</option>
+                                                             <option value="Coursera / Online Platform">Coursera / Online Platform</option>
+                                                             @if(isset($existingEducationInstitutions) && count($existingEducationInstitutions) > 0)
+                                                                 @foreach($existingEducationInstitutions as $dbInst)
+                                                                     <option value="{{ $dbInst }}">{{ $dbInst }}</option>
+                                                                 @endforeach
+                                                             @endif
+                                                         </select>
+                                                         <small class="text-muted d-block mt-1">Select your university/institution or type a custom institution name.</small>
+                                                     </div>
+                                                 </div>
+                                                 <div class="row g-3">
+                                                     <div class="col-6">
+                                                         <label class="form-label fw-bold">Start Date <span class="text-danger">*</span></label>
+                                                         <input type="date" name="start_date" class="form-control" required>
+                                                     </div>
+                                                     <div class="col-6">
+                                                         <label class="form-label fw-bold">End Date <span class="text-danger">*</span></label>
+                                                         <input type="date" name="end_date" class="form-control" required>
+                                                     </div>
+                                                 </div>
                                             @elseif($key === 'services')
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Service Title <span class="text-danger">*</span></label>
@@ -1296,13 +1363,119 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body p-4">
-                                        @php
-                                            $rel = $key === 'experience' ? 'experiences' : ($key === 'resume' ? 'sections' : $key);
-                                            $rawItems = $portfolio->$rel ?? collect();
-                                            $items = $key === 'resume' ? $rawItems->where('type', 'resume') : $rawItems;
-                                        @endphp
+                                        @if($key === 'skills')
+                                            @php
+                                                $groupedSkills = $portfolio->skills->groupBy(function($item) {
+                                                    return $item->category ?: 'General Skills';
+                                                });
+                                            @endphp
 
-                                        @forelse($items as $item)
+                                            @forelse($groupedSkills as $catName => $catItems)
+                                                @php
+                                                    $catIdSlug = Str::slug($catName ?: 'general') . '_' . substr(md5($catName), 0, 6);
+                                                    $skillNamesArr = $catItems->pluck('name')->toArray();
+                                                    $avgPercentage = round($catItems->avg('percentage'));
+                                                @endphp
+                                                <div class="card border-0 bg-white p-3 mb-3 rounded-3 border shadow-sm">
+                                                    <div class="d-flex justify-content-between align-items-center gap-2">
+                                                        <div class="min-w-0 flex-grow-1">
+                                                            <div class="d-flex align-items-center gap-2 mb-1">
+                                                                <h6 class="fw-bold text-dark mb-0"><i class="fa-solid fa-layer-group text-primary me-1"></i> {{ $catName }}</h6>
+                                                                <span class="badge bg-primary-subtle text-primary border border-primary rounded-pill" style="font-size: 0.72rem;">{{ $catItems->count() }} {{ Str::plural('Skill', $catItems->count()) }}</span>
+                                                                <span class="badge bg-light text-secondary border rounded-pill" style="font-size: 0.72rem;">Avg {{ $avgPercentage }}%</span>
+                                                            </div>
+
+                                                            <!-- Skill Chips Badges -->
+                                                            <div class="d-flex flex-wrap gap-1 mt-2">
+                                                                @foreach($catItems as $skItem)
+                                                                    <span class="badge bg-light text-dark border px-2.5 py-1.5 rounded-pill d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                                                                        <span>{{ $skItem->name }}</span>
+                                                                        <small class="text-primary fw-bold">({{ $skItem->percentage }}%)</small>
+                                                                        <form action="{{ route('modules.skills.destroy', $skItem->id) }}" method="POST" class="d-inline ms-1" onsubmit="return confirm('Remove skill {{ addslashes($skItem->name) }}?');">
+                                                                            @csrf
+                                                                            @method('DELETE')
+                                                                            <button type="submit" class="btn-close btn-close-xs text-danger p-0" style="font-size: 0.6rem;" title="Remove {{ $skItem->name }}"></button>
+                                                                        </form>
+                                                                    </span>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                                            <button class="btn btn-outline-primary btn-sm rounded-pill py-1 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#editCatCollapse_{{ $catIdSlug }}">
+                                                                <i class="fa-solid fa-pen-to-square me-1"></i> Edit Category
+                                                            </button>
+
+                                                            <form action="{{ route('modules.skills.category-destroy') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete the entire category \'{{ addslashes($catName) }}\' and all its skills?');">
+                                                                @csrf
+                                                                <input type="hidden" name="category" value="{{ $catName }}">
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Delete Entire Category">
+                                                                    <i class="fa-solid fa-trash-can"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Edit Category Collapse Form -->
+                                                    <div class="collapse mt-3 pt-3 border-top" id="editCatCollapse_{{ $catIdSlug }}">
+                                                        <form action="{{ route('modules.skills.category-update') }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="old_category" value="{{ $catName }}">
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-bold small text-dark">Skill Category Name <span class="text-danger">*</span></label>
+                                                                <select name="category" class="form-select form-select-sm edit-cat-select" style="width: 100%;" required>
+                                                                    <option value="{{ $catName }}" selected>{{ $catName }}</option>
+                                                                    <option value="Software Development & Engineering">Software Development & Engineering</option>
+                                                                    <option value="Data Science, AI & Analytics">Data Science, AI & Analytics</option>
+                                                                    <option value="Cloud, DevOps & IT Infrastructure">Cloud, DevOps & IT Infrastructure</option>
+                                                                    <option value="UI/UX & Graphic Design">UI/UX & Graphic Design</option>
+                                                                    <option value="Product & Project Management">Product & Project Management</option>
+                                                                    <option value="Digital Marketing & Growth">Digital Marketing & Growth</option>
+                                                                    <option value="Finance, Accounting & Business">Finance, Accounting & Business</option>
+                                                                    <option value="Operations & Human Resources">Operations & Human Resources</option>
+                                                                    <option value="Other / General Skills">Other / General Skills</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label fw-bold small text-dark">Category Skills (Multi-Select / Tagging) <span class="text-danger">*</span></label>
+                                                                <select name="skills[]" class="form-select form-select-sm edit-skills-select" multiple="multiple" style="width: 100%;" required>
+                                                                    @foreach($skillNamesArr as $existingSkillName)
+                                                                        <option value="{{ $existingSkillName }}" selected>{{ $existingSkillName }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                <small class="text-muted d-block mt-1" style="font-size: 0.72rem;">Add or remove skills for this category. You can also type custom skills to add them.</small>
+                                                            </div>
+
+                                                            <div class="row g-2 mb-3">
+                                                                <div class="col-6">
+                                                                    <label class="form-label fw-bold small text-dark">Proficiency Percentage (0-100%) <span class="text-danger">*</span></label>
+                                                                    <input type="number" name="percentage" class="form-control form-control-sm" value="{{ $avgPercentage }}" min="0" max="100" required>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="d-flex justify-content-end gap-2">
+                                                                <button type="button" class="btn btn-light btn-sm rounded-pill" data-bs-toggle="collapse" data-bs-target="#editCatCollapse_{{ $catIdSlug }}">Cancel</button>
+                                                                <button type="submit" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold">Update Category Skills</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            @empty
+                                                <div class="text-center py-4 text-muted">
+                                                    <i class="fa-solid fa-code fa-2xl mb-2 text-secondary opacity-50"></i>
+                                                    <p class="mb-0">No skill categories added yet. Click "+ Add" to create your first skill category.</p>
+                                                </div>
+                                            @endforelse
+                                        @else
+                                            @php
+                                                $rel = $key === 'experience' ? 'experiences' : ($key === 'resume' ? 'sections' : $key);
+                                                $rawItems = $portfolio->$rel ?? collect();
+                                                $items = $key === 'resume' ? $rawItems->where('type', 'resume') : $rawItems;
+                                            @endphp
+
+                                            @forelse($items as $item)
                                             <div class="card border-0 bg-light p-3 mb-3 rounded-3 border shadow-sm">
                                                 <div class="d-flex justify-content-between align-items-center gap-2">
                                                     <div class="min-w-0 flex-grow-1">
@@ -1413,11 +1586,41 @@
                                                                 <div class="row g-2 mb-3">
                                                                     <div class="col-6">
                                                                         <label class="form-label fw-bold small text-dark">Degree / Program <span class="text-danger">*</span></label>
-                                                                        <input type="text" name="degree" class="form-control form-control-sm" value="{{ $item->degree }}" required>
+                                                                        <select name="degree" class="form-select form-select-sm edit-edu-degree-select" style="width: 100%;" required>
+                                                                             <option value="{{ $item->degree }}" selected>{{ $item->degree }}</option>
+                                                                             <option value="B.S. Computer Science">B.S. Computer Science</option>
+                                                                             <option value="B.S. Software Engineering">B.S. Software Engineering</option>
+                                                                             <option value="B.S. Information Technology">B.S. Information Technology</option>
+                                                                             <option value="B.S. Data Science / AI">B.S. Data Science / AI</option>
+                                                                             <option value="Master of Business Administration (MBA)">Master of Business Administration (MBA)</option>
+                                                                             <option value="B.B.A. Business Administration">B.B.A. Business Administration</option>
+                                                                             <option value="M.S. Computer Science">M.S. Computer Science</option>
+                                                                             <option value="M.S. Software Engineering">M.S. Software Engineering</option>
+                                                                             <option value="B.E. Electrical Engineering">B.E. Electrical Engineering</option>
+                                                                             <option value="Ph.D. Computer Science / Engineering">Ph.D. Computer Science / Engineering</option>
+                                                                             <option value="Associate Degree / Higher Diploma">Associate Degree / Higher Diploma</option>
+                                                                             <option value="Higher Secondary School Certificate (HSSC / F.Sc)">Higher Secondary School Certificate (HSSC / F.Sc)</option>
+                                                                             <option value="Secondary School Certificate (Matriculation / O-Levels)">Secondary School Certificate (Matriculation / O-Levels)</option>
+                                                                             <option value="Professional Certification / License">Professional Certification / License</option>
+                                                                         </select>
                                                                     </div>
                                                                     <div class="col-6">
-                                                                        <label class="form-label fw-bold small text-dark">Institution / University <span class="text-danger">*</span></label>
-                                                                        <input type="text" name="institution" class="form-control form-control-sm" value="{{ $item->institution }}" required>
+                                                                        <label class="form-label fw-bold small text-dark"><i class="fa-solid fa-university text-primary me-1"></i> Institution / University <span class="text-danger">*</span></label>
+                                                                        <select name="institution" class="form-select form-select-sm edit-edu-institution-select" style="width: 100%;" required>
+                                                                            <option value="{{ $item->institution }}" selected>{{ $item->institution }}</option>
+                                                                            <option value="National University of Sciences and Technology (NUST)">National University of Sciences and Technology (NUST)</option>
+                                                                            <option value="FAST National University of Computer and Emerging Sciences">FAST National University of Computer and Emerging Sciences</option>
+                                                                            <option value="Lahore University of Management Sciences (LUMS)">Lahore University of Management Sciences (LUMS)</option>
+                                                                            <option value="COMSATS University Islamabad">COMSATS University Islamabad</option>
+                                                                            <option value="University of the Punjab">University of the Punjab</option>
+                                                                            <option value="University of Engineering & Technology (UET)">University of Engineering & Technology (UET)</option>
+                                                                            <option value="Institute of Business Administration (IBA Karachi)">Institute of Business Administration (IBA Karachi)</option>
+                                                                            <option value="Stanford University">Stanford University</option>
+                                                                            <option value="Harvard University">Harvard University</option>
+                                                                            <option value="Massachusetts Institute of Technology (MIT)">Massachusetts Institute of Technology (MIT)</option>
+                                                                            <option value="University of Oxford">University of Oxford</option>
+                                                                            <option value="Coursera / Online Platform">Coursera / Online Platform</option>
+                                                                        </select>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row g-2 mb-3">
@@ -1567,6 +1770,7 @@
                                                 <p class="small text-muted mb-0">Click the "Add" button to add your first item.</p>
                                             </div>
                                         @endforelse
+                                    @endif
                                     </div>
                                 </div>
                             </div>
@@ -1971,32 +2175,56 @@
 
                 initSummernote();
 
-                // Re-init on Bootstrap tab switch if needed
-                document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(function(tabBtn) {
-                    tabBtn.addEventListener('shown.bs.tab', function () {
+                // Save active tab on user tab switch & re-init Summernote
+                document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function(tabBtn) {
+                    tabBtn.addEventListener('shown.bs.tab', function (e) {
                         setTimeout(initSummernote, 50);
+                        var targetPane = e.target.getAttribute('data-bs-target');
+                        if (targetPane) {
+                            try { localStorage.setItem('myresume_active_tab', targetPane); } catch(err){}
+                            if (history.replaceState) {
+                                history.replaceState(null, null, targetPane);
+                            }
+                        }
                     });
                 });
 
-                // Auto switch tab based on session active_tab or URL hash (e.g. #cmsPane)
+                // Auto switch tab based on session active_tab, URL hash, or localStorage
                 var sessionActiveTab = "{{ session('active_tab') }}";
-                function checkHashTab() {
-                    var hash = window.location.hash;
-                    if (sessionActiveTab) {
-                        var targetPane = sessionActiveTab.startsWith('#') ? sessionActiveTab : '#' + sessionActiveTab;
-                        var targetBtn = document.querySelector('[data-bs-target="' + targetPane + '"]');
-                        if (targetBtn) {
-                            var tabInstance = bootstrap.Tab.getOrCreateInstance(targetBtn);
-                            tabInstance.show();
-                            return;
-                        }
+                
+                function activateTab(paneId) {
+                    if (!paneId) return false;
+                    var targetPane = paneId.startsWith('#') ? paneId : '#' + paneId;
+                    var targetBtn = document.querySelector('[data-bs-target="' + targetPane + '"]');
+                    if (targetBtn) {
+                        var tabInstance = bootstrap.Tab.getOrCreateInstance(targetBtn);
+                        tabInstance.show();
+                        
+                        document.querySelectorAll('#careerWorkspaceTabs [data-bs-toggle="tab"]').forEach(function(b) {
+                            if (b.getAttribute('data-bs-target') === targetPane) {
+                                b.classList.add('active');
+                            } else {
+                                b.classList.remove('active');
+                            }
+                        });
+                        return true;
                     }
-                    if (hash) {
-                        var targetBtn = document.querySelector('[data-bs-target="' + hash + '"]');
-                        if (targetBtn) {
-                            var tabInstance = bootstrap.Tab.getOrCreateInstance(targetBtn);
-                            tabInstance.show();
-                        }
+                    return false;
+                }
+
+                function checkHashTab() {
+                    if (sessionActiveTab && activateTab(sessionActiveTab)) {
+                        try { localStorage.setItem('myresume_active_tab', sessionActiveTab); } catch(e){}
+                        return;
+                    }
+                    var hash = window.location.hash;
+                    if (hash && activateTab(hash)) {
+                        try { localStorage.setItem('myresume_active_tab', hash); } catch(e){}
+                        return;
+                    }
+                    var storedTab = localStorage.getItem('myresume_active_tab');
+                    if (storedTab && activateTab(storedTab)) {
+                        return;
                     }
                 }
                 checkHashTab();
@@ -2006,13 +2234,201 @@
                 document.querySelectorAll('#mobileSidebarDrawer [data-bs-toggle="tab"]').forEach(function(btn) {
                     btn.addEventListener('click', function() {
                         var targetId = this.getAttribute('data-bs-target');
-                        var desktopBtn = document.querySelector('#careerWorkspaceTabs [data-bs-target="' + targetId + '"]');
-                        if (desktopBtn) {
-                            var tab = bootstrap.Tab.getOrCreateInstance(desktopBtn);
-                            tab.show();
-                        }
+                        activateTab(targetId);
                     });
                 });
+            });
+        </script>
+        
+        <!-- jQuery & Select2 JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                if (typeof $ !== 'undefined') {
+                    const dbSkillsGrouped = @json($existingSkillsGrouped ?? []);
+
+                    const skillsDictionary = {
+                        'Software Development & Engineering': [
+                            'PHP', 'Laravel', 'JavaScript', 'TypeScript', 'Node.js', 'Python', 'Django',
+                            'React.js', 'Vue.js', 'Angular', 'HTML5 / CSS3', 'Bootstrap 5', 'Tailwind CSS',
+                            'MySQL', 'PostgreSQL', 'MongoDB', 'REST APIs', 'GraphQL', 'Docker',
+                            'Git & GitHub', 'Java', 'C# / .NET', 'C++', 'Ruby on Rails', 'Swift (iOS)',
+                            'Kotlin (Android)', 'Flutter', 'React Native', 'Microservices', 'Unit Testing / Pest'
+                        ],
+                        'Data Science, AI & Analytics': [
+                            'Python Data Analysis', 'Pandas & NumPy', 'Machine Learning', 'Deep Learning',
+                            'TensorFlow / PyTorch', 'SQL & Data Warehousing', 'Power BI', 'Tableau',
+                            'Data Engineering', 'Big Data & Spark', 'Scikit-Learn', 'NLP (Natural Language Processing)',
+                            'Computer Vision', 'Business Intelligence', 'Data Mining', 'Statistical Analysis'
+                        ],
+                        'Cloud, DevOps & IT Infrastructure': [
+                            'Amazon Web Services (AWS)', 'Microsoft Azure', 'Google Cloud Platform (GCP)',
+                            'Linux / Unix Administration', 'Kubernetes', 'CI/CD Pipelines', 'Terraform',
+                            'Cybersecurity & Pen Testing', 'Network Engineering', 'Nginx / Apache',
+                            'Shell Scripting (Bash)', 'Ansible', 'System Architecture'
+                        ],
+                        'UI/UX & Graphic Design': [
+                            'Figma', 'Adobe XD', 'UI/UX Research', 'Wireframing & Prototyping',
+                            'Design Systems', 'Adobe Photoshop', 'Adobe Illustrator', 'User Journey Mapping',
+                            'Product Design', 'Interaction Design', 'Usability Testing', 'Responsive Web Design'
+                        ],
+                        'Product & Project Management': [
+                            'Agile & Scrum', 'Jira & Confluence', 'Product Roadmap Creation',
+                            'Stakeholder Management', 'Sprint Planning', 'Risk Management', 'Kanban',
+                            'Asana / Trello', 'PRD Documentation', 'Scrum Master', 'PMP Standards'
+                        ],
+                        'Digital Marketing & Growth': [
+                            'Search Engine Optimization (SEO)', 'Google Analytics 4', 'Social Media Marketing',
+                            'Content Strategy', 'Pay-Per-Click (PPC)', 'Email Marketing', 'Copywriting',
+                            'Brand Strategy', 'Conversion Rate Optimization (CRO)', 'Affiliate Marketing'
+                        ],
+                        'Finance, Accounting & Business': [
+                            'Financial Modeling', 'Accounting & Bookkeeping', 'QuickBooks / Xero',
+                            'Financial Analysis', 'Taxation & Compliance', 'Auditing', 'Budgeting & Forecasting',
+                            'Business Valuation', 'Excel & Advanced Formulas', 'Corporate Finance'
+                        ],
+                        'Operations & Human Resources': [
+                            'Talent Acquisition & ATS', 'HR Management', 'Performance Management',
+                            'Operations Management', 'Supply Chain & Logistics', 'Customer Relationship Management (CRM)',
+                            'Salesforce', 'Business Development', 'Vendor Management', 'Public Speaking'
+                        ],
+                        'Other / General Skills': [
+                            'Communication Skills', 'Leadership & Team Management', 'Critical Thinking',
+                            'Problem Solving', 'Time Management', 'Negotiation', 'Technical Writing'
+                        ]
+                    };
+
+                    // Merge dynamic database categories & skills into skillsDictionary
+                    if (dbSkillsGrouped && typeof dbSkillsGrouped === 'object') {
+                        for (const [cat, skills] of Object.entries(dbSkillsGrouped)) {
+                            if (cat) {
+                                if (!skillsDictionary[cat]) {
+                                    skillsDictionary[cat] = [];
+                                }
+                                if (Array.isArray(skills)) {
+                                    skills.forEach(function(s) {
+                                        if (s && !skillsDictionary[cat].includes(s)) {
+                                            skillsDictionary[cat].push(s);
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+
+                    function initSelect2Skills() {
+                        var $catSelect = $('#skillCategorySelect');
+                        var $skillSelect = $('#skillNameSelect');
+
+                        if ($catSelect.length && typeof $.fn.select2 !== 'undefined') {
+                            // Populate any missing categories dynamically into the dropdown options
+                            for (const catName of Object.keys(skillsDictionary)) {
+                                if ($catSelect.find("option[value='" + catName.replace(/'/g, "\\'") + "']").length === 0) {
+                                    $catSelect.append(new Option(catName, catName, false, false));
+                                }
+                            }
+
+                            $catSelect.select2({
+                                theme: 'bootstrap-5',
+                                dropdownParent: $('#addModal_skills'),
+                                placeholder: '-- Search, Select or Type Custom Category --',
+                                tags: true,
+                                allowClear: true
+                            });
+
+                            $skillSelect.select2({
+                                theme: 'bootstrap-5',
+                                dropdownParent: $('#addModal_skills'),
+                                placeholder: 'Choose or type category first above...',
+                                tags: true,
+                                allowClear: true
+                            });
+
+                            $catSelect.on('change', function() {
+                                var selectedCategory = $(this).val();
+                                $skillSelect.empty();
+
+                                if (selectedCategory) {
+                                    if (!skillsDictionary[selectedCategory]) {
+                                        skillsDictionary[selectedCategory] = [];
+                                    }
+                                    var availableSkills = skillsDictionary[selectedCategory];
+                                    $.each(availableSkills, function(index, skillName) {
+                                        $skillSelect.append(new Option(skillName, skillName, false, false));
+                                    });
+                                    $skillSelect.prop('disabled', false).trigger('change');
+                                } else {
+                                    $skillSelect.prop('disabled', true).trigger('change');
+                                }
+                            });
+                        }
+                    }
+
+                    $('#addModal_skills').on('shown.bs.modal', function () {
+                        initSelect2Skills();
+                    });
+
+                    $('#manageModal_skills').on('shown.bs.modal', function () {
+                        if (typeof $.fn.select2 !== 'undefined') {
+                            $('.edit-cat-select').select2({
+                                theme: 'bootstrap-5',
+                                dropdownParent: $('#manageModal_skills'),
+                                tags: true
+                            });
+                            $('.edit-skills-select').select2({
+                                theme: 'bootstrap-5',
+                                dropdownParent: $('#manageModal_skills'),
+                                tags: true
+                            });
+                        }
+                    });
+
+                    function initSelect2Education() {
+                        var $degSelect = $('#eduDegreeSelect');
+                        var $instSelect = $('#eduInstitutionSelect');
+
+                        if (typeof $.fn.select2 !== 'undefined') {
+                            if ($degSelect.length) {
+                                $degSelect.select2({
+                                    theme: 'bootstrap-5',
+                                    dropdownParent: $('#addModal_education'),
+                                    placeholder: '-- Search, Select or Type Degree --',
+                                    tags: true,
+                                    allowClear: true
+                                });
+                            }
+                            if ($instSelect.length) {
+                                $instSelect.select2({
+                                    theme: 'bootstrap-5',
+                                    dropdownParent: $('#addModal_education'),
+                                    placeholder: '-- Search, Select or Type Institution --',
+                                    tags: true,
+                                    allowClear: true
+                                });
+                            }
+                        }
+                    }
+
+                    $('#addModal_education').on('shown.bs.modal', function () {
+                        initSelect2Education();
+                    });
+
+                    $('#manageModal_education').on('shown.bs.modal', function () {
+                        if (typeof $.fn.select2 !== 'undefined') {
+                            $('.edit-edu-degree-select').select2({
+                                theme: 'bootstrap-5',
+                                dropdownParent: $('#manageModal_education'),
+                                tags: true
+                            });
+                            $('.edit-edu-institution-select').select2({
+                                theme: 'bootstrap-5',
+                                dropdownParent: $('#manageModal_education'),
+                                tags: true
+                            });
+                        }
+                    });
+                }
             });
         </script>
     @endpush

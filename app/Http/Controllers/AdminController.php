@@ -540,18 +540,23 @@ class AdminController extends Controller
         $subject = $request->subject;
         $messageContent = $request->message;
 
-        if ($request->recipient === 'all') {
-            $users = User::all();
-            foreach ($users as $user) {
-                Mail::to($user->email)->send(new AdminUserEmail($subject, $messageContent));
+        try {
+            if ($request->recipient === 'all') {
+                $users = User::all();
+                foreach ($users as $user) {
+                    Mail::to($user->email)->send(new AdminUserEmail($subject, $messageContent, $user->name));
+                }
+                AuditLogService::log("email.broadcast", null, ['subject' => $subject]);
+                return back()->with('status', 'broadcast-email-sent');
+            } else {
+                $user = User::findOrFail($request->recipient);
+                Mail::to($user->email)->send(new AdminUserEmail($subject, $messageContent, $user->name));
+                AuditLogService::log("email.direct", $user, ['subject' => $subject]);
+                return back()->with('status', 'direct-email-sent')->with('notified_user', $user->name);
             }
-            AuditLogService::log("email.broadcast", null, ['subject' => $subject]);
-            return back()->with('status', 'broadcast-email-sent');
-        } else {
-            $user = User::findOrFail($request->recipient);
-            Mail::to($user->email)->send(new AdminUserEmail($subject, $messageContent));
-            AuditLogService::log("email.direct", $user, ['subject' => $subject]);
-            return back()->with('status', 'direct-email-sent')->with('notified_user', $user->name);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Admin sendEmail failed: " . $e->getMessage());
+            return back()->with('error', 'Email delivery failed: ' . $e->getMessage());
         }
     }
 

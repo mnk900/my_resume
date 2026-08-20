@@ -93,7 +93,15 @@
                         @if($opp->is_featured)
                             <span class="badge bg-warning text-dark me-2"><i class="fa-solid fa-star me-1"></i> Featured</span>
                         @endif
-                        <h5 class="fw-bold mb-1"><a href="{{ route('opportunities.show', $opp->slug) }}" class="text-decoration-none text-dark hover-primary">{{ $opp->title }}</a></h5>
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="fw-bold mb-1"><a href="{{ route('opportunities.show', $opp->slug) }}" class="text-decoration-none text-dark hover-primary">{{ $opp->title }}</a></h5>
+                            @if($opp->application_deadline)
+                                @php $badge = $opp->deadline_badge; @endphp
+                                <span class="badge {{ $badge['class'] }} rounded-pill ms-2 flex-shrink-0" style="font-size: 0.68rem;" title="{{ $badge['label'] }}">
+                                    <i class="{{ $badge['icon'] }} me-1"></i> {{ $badge['short_label'] }}
+                                </span>
+                            @endif
+                        </div>
                         <p class="text-muted small mb-0">{{ $opp->company->name ?? 'Organization' }} &bull; {{ ucfirst($opp->location_type) }}</p>
                     </div>
                 </div>
@@ -117,6 +125,9 @@
                     <span class="fw-bold text-dark small">{{ $opp->salary_min ? $oppSymbol . number_format($opp->salary_min) . ' / ' . $opp->salary_period : 'Competitive' }}</span>
                     <div class="d-flex gap-1 align-items-center">
                         @auth
+                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-2.5" data-bs-toggle="modal" data-bs-target="#shareModal-{{ $opp->id }}" title="Share to Social Feed">
+                                <i class="fa-solid fa-share-nodes me-1"></i> Share
+                            </button>
                             @if(Auth::id() === $opp->posted_by_user_id || ($opp->company && $opp->company->user_id === Auth::id()) || Auth::user()->isAdmin())
                                 <a href="{{ route('opportunities.edit', $opp->id) }}" class="btn btn-sm btn-outline-secondary rounded-circle p-1 px-2" title="Edit Job"><i class="fa-solid fa-pen-to-square"></i></a>
                             @endif
@@ -126,6 +137,53 @@
                 </div>
             </div>
         </div>
+
+        @auth
+        <!-- Share Modal for {{ $opp->title }} -->
+        <div class="modal fade" id="shareModal-{{ $opp->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg rounded-4 text-start">
+                    <div class="modal-header border-bottom py-3">
+                        <h5 class="modal-title fw-bold text-dark"><i class="fa-solid fa-share-nodes text-success me-2"></i> Share Job on Professional Feed</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('posts.share-opportunity', $opp->id) }}" method="POST">
+                        @csrf
+                        <div class="modal-body p-4">
+                            @if(Auth::user()->companies->isNotEmpty())
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Share As</label>
+                                    <select name="company_id" class="form-select">
+                                        <option value="">👤 Yourself ({{ Auth::user()->name }})</option>
+                                        @foreach(Auth::user()->companies as $myComp)
+                                            <option value="{{ $myComp->id }}">🏢 {{ $myComp->name }} (Company)</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Add Your Commentary / Thoughts</label>
+                                <textarea name="content" class="form-control" rows="3" placeholder="Share why this position is great or tag relevant skills..."></textarea>
+                            </div>
+
+                            <div class="card border border-primary-subtle rounded-3 p-3 bg-light">
+                                <span class="badge bg-primary me-auto mb-1">JOB OPPORTUNITY</span>
+                                <h6 class="fw-bold text-dark mb-0">{{ $opp->title }}</h6>
+                                <small class="text-muted">{{ $opp->company->name ?? 'Platform Opportunity' }} &bull; {{ ucfirst($opp->location_type) }}</small>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-top py-3">
+                            <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success px-4 fw-bold rounded-pill shadow-sm">
+                                <i class="fa-solid fa-paper-plane me-1"></i> Post to Feed
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @endauth
         @empty
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded-4 text-center py-5">

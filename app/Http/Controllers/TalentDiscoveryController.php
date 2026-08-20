@@ -15,6 +15,7 @@ class TalentDiscoveryController extends Controller
     public function index(Request $request)
     {
         $query = User::where('role', 'user')
+            ->where('account_status', '!=', 'suspended')
             ->whereHas('portfolio', function($q) {
                 $q->where('is_active', true);
             })

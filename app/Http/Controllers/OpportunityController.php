@@ -25,7 +25,11 @@ class OpportunityController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Opportunity::where('status', 'published')->with(['company', 'skills']);
+        $query = Opportunity::where('status', 'published')
+            ->whereHas('postedBy', function($q) {
+                $q->where('account_status', '!=', 'suspended');
+            })
+            ->with(['company', 'skills']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');

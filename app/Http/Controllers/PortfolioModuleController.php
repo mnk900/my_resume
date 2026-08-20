@@ -40,14 +40,117 @@ class PortfolioModuleController extends Controller
     public function storeSkill(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'percentage' => 'required|integer|min:0|max:100',
             'category' => 'nullable|string|max:255',
-            'icon' => 'nullable|string|max:100'
+            'percentage' => 'nullable|integer|min:0|max:100',
+            'icon' => 'nullable|string|max:100',
+            'name' => 'nullable',
+            'skills' => 'nullable',
         ]);
-        Auth::user()->portfolio->skills()->create($request->only(['name', 'percentage', 'category', 'icon']));
+
+        $portfolio = Auth::user()->portfolio;
+        $category = $request->input('category') ?: 'Technical Skills';
+        $percentage = $request->input('percentage') !== null ? (int)$request->input('percentage') : 85;
+        $icon = $request->input('icon') ?: 'code';
+
+        $skillNames = [];
+        if ($request->has('skills')) {
+            $raw = $request->input('skills');
+            if (is_array($raw)) {
+                $skillNames = $raw;
+            } elseif (is_string($raw)) {
+                $skillNames = array_map('trim', explode(',', $raw));
+            }
+        }
+        
+        if (empty($skillNames) && $request->has('name')) {
+            $raw = $request->input('name');
+            if (is_array($raw)) {
+                $skillNames = $raw;
+            } elseif (is_string($raw)) {
+                $skillNames = array_map('trim', explode(',', $raw));
+            }
+        }
+
+        $skillNames = array_values(array_filter(array_unique(array_map('trim', $skillNames))));
+
+        if (empty($skillNames)) {
+            return back()->withErrors(['skills' => 'Please select or enter at least one skill.'])->with('active_tab', 'cmsPane');
+        }
+
+        foreach ($skillNames as $skillName) {
+            if (!empty($skillName)) {
+                $portfolio->skills()->firstOrCreate([
+                    'name' => $skillName,
+                ], [
+                    'category' => $category,
+                    'percentage' => $percentage,
+                    'icon' => $icon,
+                ]);
+            }
+        }
+
         $this->bustCache();
-        return back()->with('status', 'skill-added')->with('active_tab', 'cmsPane');
+        return back()->with('status', 'skills-added')->with('active_tab', 'cmsPane');
+    }
+
+    public function updateCategorySkills(Request $request)
+    {
+        $request->validate([
+            'old_category' => 'required|string',
+            'category' => 'required|string|max:255',
+            'percentage' => 'nullable|integer|min:0|max:100',
+            'skills' => 'nullable|array',
+        ]);
+
+        $portfolio = Auth::user()->portfolio;
+        $oldCategory = $request->input('old_category');
+        $newCategory = $request->input('category');
+        $percentage = $request->input('percentage') !== null ? (int)$request->input('percentage') : 85;
+        $selectedSkills = array_values(array_filter(array_unique(array_map('trim', $request->input('skills', [])))));
+
+        // Get existing skills under old category
+        $existingSkills = $portfolio->skills()->where('category', $oldCategory)->get();
+        $existingNames = $existingSkills->pluck('name')->toArray();
+
+        // Delete unselected skills
+        $toDelete = array_diff($existingNames, $selectedSkills);
+        if (!empty($toDelete)) {
+            $portfolio->skills()
+                ->where('category', $oldCategory)
+                ->whereIn('name', $toDelete)
+                ->delete();
+        }
+
+        // Add or update selected skills
+        foreach ($selectedSkills as $skillName) {
+            if (!empty($skillName)) {
+                $portfolio->skills()->updateOrCreate(
+                    ['name' => $skillName],
+                    ['category' => $newCategory, 'percentage' => $percentage, 'icon' => 'code']
+                );
+            }
+        }
+
+        // Update remaining old category records if category changed
+        if ($oldCategory !== $newCategory) {
+            $portfolio->skills()->where('category', $oldCategory)->update(['category' => $newCategory]);
+        }
+
+        $this->bustCache();
+        return back()->with('status', 'category-updated')->with('active_tab', 'cmsPane');
+    }
+
+    public function destroyCategorySkills(Request $request)
+    {
+        $request->validate([
+            'category' => 'required|string',
+        ]);
+
+        $portfolio = Auth::user()->portfolio;
+        $portfolio->skills()->where('category', $request->input('category'))->delete();
+
+        $this->bustCache();
+        return back()->with('status', 'category-deleted')->with('active_tab', 'cmsPane');
     }
 
     public function storeProject(Request $request)

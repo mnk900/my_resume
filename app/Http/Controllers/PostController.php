@@ -27,6 +27,9 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::where('status', 'published')
+            ->whereHas('user', function($q) {
+                $q->where('account_status', '!=', 'suspended');
+            })
             ->with([
                 'user.portfolio',
                 'company',
@@ -188,17 +191,32 @@ class PostController extends Controller
     {
         $request->validate([
             'content' => 'nullable|string|max:1000',
+            'company_id' => 'nullable|exists:companies,id',
         ]);
+
+        $companyId = null;
+        if ($request->filled('company_id')) {
+            $comp = Auth::user()->companies()->where('id', $request->input('company_id'))->first();
+            if ($comp) {
+                $companyId = $comp->id;
+            }
+        }
+
+        $userContent = trim($request->input('content', ''));
+        if (empty($userContent)) {
+            $userContent = "I wanted to share this opportunity with my network: {$opportunity->title}";
+        }
 
         Post::create([
             'user_id' => Auth::id(),
+            'company_id' => $companyId,
             'opportunity_id' => $opportunity->id,
-            'content' => $request->input('content') ?? "Shared an opportunity: {$opportunity->title}",
+            'content' => $userContent,
             'post_type' => 'job_share',
             'status' => 'published',
         ]);
 
-        return back()->with('success', 'Opportunity shared to your professional feed!');
+        return redirect()->route('feed.index')->with('success', 'Job opportunity successfully shared to your professional feed!');
     }
 
     /**

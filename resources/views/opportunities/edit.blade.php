@@ -96,13 +96,18 @@
                         </div>
 
                         <div class="row g-3 mb-3">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label class="form-label fw-semibold">City</label>
                                 <input type="text" name="city" class="form-control" value="{{ old('city', $opportunity->city) }}" placeholder="e.g. Gilgit">
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label class="form-label fw-semibold">Vacancies Count</label>
                                 <input type="number" name="vacancies_count" class="form-control" value="{{ old('vacancies_count', $opportunity->vacancies_count) }}" min="1" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Application Deadline / Expiry Date</label>
+                                <input type="date" name="application_deadline" class="form-control @error('application_deadline') is-invalid @enderror" value="{{ old('application_deadline', $opportunity->application_deadline ? $opportunity->application_deadline->format('Y-m-d') : '') }}">
+                                @error('application_deadline')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
 

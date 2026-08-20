@@ -16,6 +16,14 @@ class CheckBlockedClient
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
+
+        if ($user && ($user->account_status === 'suspended' || $user->isSuspended())) {
+            auth()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('login')->withErrors(['email' => 'Your account has been suspended by an administrator. Please contact support.']);
+        }
+
         if ($user && $user->email_verified_at === null && $user->portfolio && !$user->portfolio->is_active) {
             auth()->logout();
             $request->session()->invalidate();

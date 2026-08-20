@@ -101,9 +101,98 @@ class Opportunity extends Model
         if ($this->expires_at && $this->expires_at->isPast()) {
             return true;
         }
-        if ($this->application_deadline && $this->application_deadline->isPast()) {
+        if ($this->application_deadline && $this->application_deadline->startOfDay()->isPast() && !$this->application_deadline->isToday()) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Get the number of days remaining until the application deadline.
+     * Returns null if no deadline is set.
+     * Returns negative number if expired.
+     */
+    public function getDaysRemainingAttribute(): ?int
+    {
+        if (!$this->application_deadline) {
+            return null;
+        }
+
+        $now = \Carbon\Carbon::now()->startOfDay();
+        $deadline = \Carbon\Carbon::parse($this->application_deadline)->startOfDay();
+
+        return (int) $now->diffInDays($deadline, false);
+    }
+
+    /**
+     * Get human-readable status badge info for deadline.
+     */
+    public function getDeadlineBadgeAttribute(): array
+    {
+        if (!$this->application_deadline) {
+            return [
+                'status' => 'open',
+                'label' => 'Open (No Specific Deadline)',
+                'short_label' => 'Open',
+                'class' => 'bg-secondary-subtle text-secondary border',
+                'icon' => 'fa-regular fa-clock',
+                'days' => null,
+            ];
+        }
+
+        $days = $this->days_remaining;
+
+        if ($days < 0) {
+            return [
+                'status' => 'expired',
+                'label' => 'Closed (Deadline Passed on ' . $this->application_deadline->format('M d, Y') . ')',
+                'short_label' => 'Deadline Ended',
+                'class' => 'bg-danger-subtle text-danger border border-danger',
+                'icon' => 'fa-solid fa-circle-xmark',
+                'days' => $days,
+            ];
+        }
+
+        if ($days === 0) {
+            return [
+                'status' => 'urgent',
+                'label' => 'Closes Today (' . $this->application_deadline->format('M d, Y') . ')',
+                'short_label' => 'Ends Today!',
+                'class' => 'bg-danger text-white border border-danger fw-bold',
+                'icon' => 'fa-solid fa-fire',
+                'days' => 0,
+            ];
+        }
+
+        if ($days === 1) {
+            return [
+                'status' => 'urgent',
+                'label' => '1 Day Left (Closes Tomorrow, ' . $this->application_deadline->format('M d') . ')',
+                'short_label' => '1 Day Left',
+                'class' => 'bg-warning text-dark border border-warning fw-bold',
+                'icon' => 'fa-solid fa-hourglass-start',
+                'days' => 1,
+            ];
+        }
+
+        if ($days <= 5) {
+            return [
+                'status' => 'closing_soon',
+                'label' => $days . ' Days Left to Apply (Deadline: ' . $this->application_deadline->format('M d, Y') . ')',
+                'short_label' => $days . ' Days Left',
+                'class' => 'bg-warning-subtle text-dark border border-warning fw-bold',
+                'icon' => 'fa-solid fa-hourglass-half',
+                'days' => $days,
+            ];
+        }
+
+        return [
+            'status' => 'active',
+            'label' => $days . ' Days Left to Apply (Deadline: ' . $this->application_deadline->format('M d, Y') . ')',
+            'short_label' => $days . ' Days Left',
+            'class' => 'bg-primary-subtle text-primary border border-primary',
+            'icon' => 'fa-solid fa-calendar-day',
+            'days' => $days,
+        ];
     }
 }

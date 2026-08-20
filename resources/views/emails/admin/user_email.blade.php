@@ -1,6 +1,14 @@
 <x-mail::message>
-{!! $messageContent !!}
+@if(!empty($recipientName))
+Dear {{ $recipientName }},
+@else
+Hello,
+@endif
 
-Thanks,<br>
-My Resume Dot Cloud Team
+{!! nl2br(e($messageContent)) !!}
+
+Best regards,<br>
+**My Resume Cloud Team**<br>
+info@myresume.cloud
 </x-mail::message>
+

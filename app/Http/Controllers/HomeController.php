@@ -91,6 +91,7 @@ class HomeController extends Controller
                 $q->where('is_active', true);
             })
             ->where('role', '!=', 'admin')
+            ->where('account_status', '!=', 'suspended')
             ->with('portfolio', 'professionalPreference')
             ->latest()
             ->take(6)

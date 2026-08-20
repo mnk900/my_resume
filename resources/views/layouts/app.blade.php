@@ -433,6 +433,7 @@
             }
         });
     </script>
+    @include('partials.loader')
     @stack('scripts')
 </body>
 </html>

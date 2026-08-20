@@ -170,11 +170,34 @@
 
                         <!-- Attached Opportunity Card if Job Share -->
                         @if($post->opportunity)
-                        <div class="card border border-primary-subtle rounded-3 bg-light p-3 mb-3">
-                            <span class="badge bg-primary me-auto mb-1">JOB OPPORTUNITY</span>
-                            <h6 class="fw-bold mb-1"><a href="{{ route('opportunities.show', $post->opportunity->slug) }}" class="text-decoration-none text-dark">{{ $post->opportunity->title }}</a></h6>
-                            <p class="text-muted small mb-2">{{ $post->opportunity->company->name ?? 'Organization' }} &bull; {{ ucfirst($post->opportunity->location_type) }}</p>
-                            <a href="{{ route('opportunities.show', $post->opportunity->slug) }}" class="btn btn-sm btn-outline-primary rounded-pill w-auto align-self-start">View Opportunity Details</a>
+                        <div class="card border border-primary-subtle rounded-3 bg-white p-3 mb-3 shadow-xs">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary mb-1" style="font-size: 0.68rem;"><i class="fa-solid fa-briefcase me-1"></i> Shared Opportunity</span>
+                                    <h6 class="fw-bold mb-0">
+                                        <a href="{{ route('opportunities.show', $post->opportunity->slug) }}" class="text-decoration-none text-dark hover-primary">{{ $post->opportunity->title }}</a>
+                                    </h6>
+                                    <span class="text-muted small">
+                                        {{ $post->opportunity->company->name ?? 'Platform Opportunity' }} &bull; <i class="fa-solid fa-location-dot text-danger"></i> {{ ucfirst($post->opportunity->location_type) }} ({{ $post->opportunity->city ?? 'Global' }})
+                                    </span>
+                                </div>
+                                @if($post->opportunity->application_deadline)
+                                    @php $b = $post->opportunity->deadline_badge; @endphp
+                                    <span class="badge {{ $b['class'] }} rounded-pill ms-2 flex-shrink-0" style="font-size: 0.68rem;">
+                                        <i class="{{ $b['icon'] }} me-1"></i> {{ $b['short_label'] }}
+                                    </span>
+                                @endif
+                            </div>
+                            <p class="text-secondary small mb-3">{{ Str::limit(strip_tags($post->opportunity->description), 130) }}</p>
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                                @php
+                                    $oppSym = ($post->opportunity->salary_currency === 'PKR' || $post->opportunity->salary_currency === 'Rs') ? 'PKR ' : '$';
+                                @endphp
+                                <span class="fw-bold text-dark small">{{ $post->opportunity->salary_min ? $oppSym . number_format($post->opportunity->salary_min) . ' / ' . $post->opportunity->salary_period : 'Competitive Salary' }}</span>
+                                <a href="{{ route('opportunities.show', $post->opportunity->slug) }}" class="btn btn-sm btn-primary rounded-pill px-3 fw-semibold shadow-xs">
+                                    <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> View & Apply
+                                </a>
+                            </div>
                         </div>
                         @endif
 

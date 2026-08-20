@@ -15,17 +15,20 @@ class AdminUserEmail extends Mailable
 
     public $subjectLine;
     public $messageContent;
+    public $recipientName;
 
     /**
      * Create a new message instance.
      *
      * @param string $subjectLine
      * @param string $messageContent
+     * @param string|null $recipientName
      */
-    public function __construct($subjectLine, $messageContent)
+    public function __construct($subjectLine, $messageContent, $recipientName = null)
     {
         $this->subjectLine = $subjectLine;
         $this->messageContent = $messageContent;
+        $this->recipientName = $recipientName;
     }
 
     /**
@@ -34,7 +37,7 @@ class AdminUserEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('info@myresume.cloud', 'My Resume Cloud'),
+            from: new Address(config('mail.from.address', 'info@myresume.cloud'), config('mail.from.name', 'My Resume Cloud')),
             subject: $this->subjectLine,
         );
     }

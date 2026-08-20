@@ -28,17 +28,20 @@ class SearchController extends Controller
         }
 
         $professionals = User::where('role', 'user')
-            ->whereHas('portfolio', function($pq) use ($q) {
-                $pq->where('is_active', true)
-                  ->where(function($sub) use ($q) {
-                      $sub->where('title', 'like', "%{$q}%")
-                          ->orWhere('position', 'like', "%{$q}%")
-                          ->orWhere('city', 'like', "%{$q}%")
-                          ->orWhere('organization', 'like', "%{$q}%")
-                          ->orWhere('description', 'like', "%{$q}%");
-                  });
+            ->where('account_status', '!=', 'suspended')
+            ->where(function($queryGroup) use ($q) {
+                $queryGroup->whereHas('portfolio', function($pq) use ($q) {
+                    $pq->where('is_active', true)
+                      ->where(function($sub) use ($q) {
+                          $sub->where('title', 'like', "%{$q}%")
+                              ->orWhere('position', 'like', "%{$q}%")
+                              ->orWhere('city', 'like', "%{$q}%")
+                              ->orWhere('organization', 'like', "%{$q}%")
+                              ->orWhere('description', 'like', "%{$q}%");
+                      });
+                })
+                ->orWhere('name', 'like', "%{$q}%");
             })
-            ->orWhere('name', 'like', "%{$q}%")
             ->with('portfolio')
             ->take(6)
             ->get();

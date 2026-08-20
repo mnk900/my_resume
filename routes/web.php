@@ -40,6 +40,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Specialized Module Routes
     Route::prefix('modules')->name('modules.')->group(function() {
         Route::post('/skills', [\App\Http\Controllers\PortfolioModuleController::class, 'storeSkill'])->name('skills.store');
+        Route::post('/skills/category-update', [\App\Http\Controllers\PortfolioModuleController::class, 'updateCategorySkills'])->name('skills.category-update');
+        Route::post('/skills/category-destroy', [\App\Http\Controllers\PortfolioModuleController::class, 'destroyCategorySkills'])->name('skills.category-destroy');
         Route::match(['put', 'patch', 'post'], '/skills/{skill}', [\App\Http\Controllers\PortfolioModuleController::class, 'updateSkill'])->name('skills.update');
         Route::delete('/skills/{skill}', [\App\Http\Controllers\PortfolioModuleController::class, 'destroySkill'])->name('skills.destroy');
         

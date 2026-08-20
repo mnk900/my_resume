@@ -7,6 +7,7 @@
         <h1 class="h3 fw-bold text-dark mt-1 mb-0">{{ $user->name }} &mdash; Professional Inspector</h1>
     </div>
     <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-success btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#sendEmailModalShow"><i class="fa-solid fa-envelope me-1"></i> Send Email</button>
         <a href="{{ route('portfolio.show', $user->username) }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill"><i class="fa-solid fa-globe me-1"></i> Public Portfolio</a>
         <form action="{{ route('admin.professionals.suspend', $user->id) }}" method="POST">
             @csrf
@@ -16,6 +17,25 @@
         </form>
     </div>
 </div>
+
+@if(session('status') === 'direct-email-sent')
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i> Direct email successfully sent to <strong>{{ session('notified_user', 'user') }}</strong>.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@elseif(session('status'))
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i> {{ session('status') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <i class="fa-solid fa-triangle-exclamation me-2"></i> {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
 
 <div class="row g-4">
     <!-- User Profile Quick Card -->
@@ -113,6 +133,40 @@
             @empty
             <p class="text-muted small mb-0">User has not submitted any job applications yet.</p>
             @endforelse
+        </div>
+    </div>
+</div>
+
+<!-- Send Direct Email Modal -->
+<div class="modal fade text-start" id="sendEmailModalShow" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-bottom py-3">
+                <h5 class="modal-title fw-bold text-dark"><i class="fa-solid fa-envelope text-primary me-2"></i> Send Direct Email to {{ $user->name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('admin.send-email') }}" method="POST">
+                @csrf
+                <input type="hidden" name="recipient" value="{{ $user->id }}">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Recipient Email</label>
+                        <input type="text" class="form-control bg-light" value="{{ $user->email }} ({{ $user->name }})" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Subject <span class="text-danger">*</span></label>
+                        <input type="text" name="subject" class="form-control" placeholder="e.g. Account Update / Important Notice" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Message Content <span class="text-danger">*</span></label>
+                        <textarea name="message" class="form-control" rows="5" placeholder="Write your email message here..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-top py-3">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm"><i class="fa-solid fa-paper-plane me-1"></i> Send Email</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

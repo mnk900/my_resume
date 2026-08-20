@@ -36,8 +36,8 @@ class PortfolioController extends Controller
 
         $user = $portfolio->user;
 
-        // Block admin profiles from being publicly visible
-        if ($user->role === 'admin') {
+        // Block admin profiles and suspended user accounts from being publicly visible
+        if ($user->role === 'admin' || $user->account_status === 'suspended' || $user->isSuspended()) {
             abort(404);
         }
 
@@ -261,13 +261,40 @@ class PortfolioController extends Controller
 
         $unreadDirectMessagesCount = $user->unreadDirectMessagesCount();
 
+        $existingSkillsGrouped = \App\Models\Skill::select('category', 'name')
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
+            ->get()
+            ->groupBy('category')
+            ->map(fn($group) => $group->pluck('name')->filter()->unique()->values()->toArray())
+            ->toArray();
+
+        $existingEducationDegrees = \App\Models\Education::select('degree')
+            ->whereNotNull('degree')
+            ->where('degree', '!=', '')
+            ->pluck('degree')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $existingEducationInstitutions = \App\Models\Education::select('institution')
+            ->whereNotNull('institution')
+            ->where('institution', '!=', '')
+            ->pluck('institution')
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
         return view('portfolio.edit', compact(
             'portfolio', 'themes', 'pendingReceived', 'pendingSent',
             'acceptedConnections', 'connectionsCount', 'searchResults',
             'completionScore', 'missingItems', 'optionalMissingItems', 'myApplications',
             'pipelineCounts', 'recommendedOpportunities', 'savedOpportunities',
             'latestMockSession', 'recentPosts', 'featuredCompanies',
-            'unreadNotificationsCount', 'userConversations', 'unreadDirectMessagesCount'
+            'unreadNotificationsCount', 'userConversations', 'unreadDirectMessagesCount',
+            'existingSkillsGrouped', 'existingEducationDegrees', 'existingEducationInstitutions'
         ));
     }
 
@@ -344,7 +371,16 @@ class PortfolioController extends Controller
 
         $this->portfolioService->updatePortfolio(Auth::user()->portfolio, $data);
 
-        return back()->with('status', 'portfolio-updated')->with('active_tab', 'cms-general');
+        $activeTab = $request->input('active_tab');
+        if (!$activeTab) {
+            if ($request->has('theme')) {
+                $activeTab = 'themesPane';
+            } else {
+                $activeTab = 'settingsPane';
+            }
+        }
+
+        return back()->with('status', 'portfolio-updated')->with('active_tab', $activeTab);
     }
 
     public function storeSection(Request $request)

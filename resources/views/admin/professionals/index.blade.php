@@ -8,6 +8,25 @@
     </div>
 </div>
 
+@if(session('status') === 'direct-email-sent')
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i> Direct email successfully sent to <strong>{{ session('notified_user', 'user') }}</strong>.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@elseif(session('status'))
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i> {{ session('status') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+        <i class="fa-solid fa-triangle-exclamation me-2"></i> {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
 <!-- Filters Bar -->
 <div class="card border-0 shadow-sm p-3 bg-white mb-4">
     <form action="{{ route('admin.professionals.index') }}" method="GET" class="row g-3 align-items-center">
@@ -91,6 +110,7 @@
                                 <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="font-size: 0.8125rem;">
                                     <li><a class="dropdown-item" href="{{ route('admin.professionals.show', $user->id) }}"><i class="fa-solid fa-user-gear me-2 text-primary"></i> Detailed Inspector</a></li>
                                     <li><a class="dropdown-item" href="{{ route('portfolio.show', $user->username) }}" target="_blank"><i class="fa-solid fa-eye me-2 text-info"></i> View Public Portfolio</a></li>
+                                    <li><button type="button" class="dropdown-item text-success" data-bs-toggle="modal" data-bs-target="#sendEmailModal-{{ $user->id }}"><i class="fa-solid fa-envelope me-2 text-success"></i> Send Email to User</button></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
                                         <form action="{{ route('admin.users.toggle-verification', $user->id) }}" method="POST">
@@ -108,6 +128,7 @@
                                     </li>
                                 </ul>
                             </div>
+
                         </td>
                     </tr>
                     @empty
@@ -123,4 +144,40 @@
         </div>
     </div>
 </div>
+
+<!-- Send Direct Email Modals (outside table context) -->
+@foreach($professionals as $user)
+<div class="modal fade text-start" id="sendEmailModal-{{ $user->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-bottom py-3">
+                <h5 class="modal-title fw-bold text-dark"><i class="fa-solid fa-envelope text-primary me-2"></i> Send Direct Email to {{ $user->name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('admin.send-email') }}" method="POST">
+                @csrf
+                <input type="hidden" name="recipient" value="{{ $user->id }}">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Recipient Email</label>
+                        <input type="text" class="form-control bg-light" value="{{ $user->email }} ({{ $user->name }})" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Subject <span class="text-danger">*</span></label>
+                        <input type="text" name="subject" class="form-control" placeholder="e.g. Account Update / Important Notice" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Message Content <span class="text-danger">*</span></label>
+                        <textarea name="message" class="form-control" rows="5" placeholder="Write your email message here..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-top py-3">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm"><i class="fa-solid fa-paper-plane me-1"></i> Send Email</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
 @endsection
