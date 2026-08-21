@@ -89,6 +89,11 @@ class JobApplicationController extends Controller
             ->latest()
             ->paginate(10);
 
+        \App\Services\SeoService::set([
+            'title' => 'My Applications | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
+
         return view('applications.candidate_index', compact('applications'));
     }
 
@@ -103,6 +108,11 @@ class JobApplicationController extends Controller
             ->with(['user.portfolio', 'user.professionalPreference'])
             ->latest()
             ->paginate(15);
+
+        \App\Services\SeoService::set([
+            'title' => 'ATS Applicants | ' . $opportunity->title . ' | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
 
         return view('applications.company_index', compact('opportunity', 'applications'));
     }
@@ -127,6 +137,11 @@ class JobApplicationController extends Controller
         $isShortlisted = CandidateShortlist::where('company_id', $application->opportunity->company_id)
             ->where('user_id', $application->user_id)
             ->exists();
+
+        \App\Services\SeoService::set([
+            'title' => 'Review Application | ' . ($application->user->name ?? 'Candidate') . ' | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
 
         return view('applications.show', compact('application', 'matchResult', 'notes', 'isShortlisted'));
     }

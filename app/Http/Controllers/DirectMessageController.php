@@ -19,6 +19,11 @@ class DirectMessageController extends Controller
     {
         $user = Auth::user();
 
+        \App\Services\SeoService::set([
+            'title' => 'Direct Messages | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
+
         // Mark all unread direct messages sent to user as read on workspace load
         DirectMessage::where('receiver_id', $user->id)
             ->where('is_read', false)

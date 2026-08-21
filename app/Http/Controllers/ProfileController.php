@@ -16,6 +16,11 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        \App\Services\SeoService::set([
+            'title' => 'Account Settings | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
+
         return view('profile.edit', [
             'user' => $request->user(),
         ]);

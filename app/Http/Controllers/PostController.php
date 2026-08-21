@@ -45,7 +45,14 @@ class PostController extends Controller
             ->latest()
             ->paginate(15);
 
-        return view('feed.index', compact('posts'));
+        $suggestedConnections = Auth::user()->suggestedConnections(4);
+
+        \App\Services\SeoService::set([
+            'title' => 'Social Feed | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
+
+        return view('feed.index', compact('posts', 'suggestedConnections'));
     }
 
     /**

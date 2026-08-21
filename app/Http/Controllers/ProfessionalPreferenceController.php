@@ -11,6 +11,12 @@ class ProfessionalPreferenceController extends Controller
     public function edit()
     {
         $preference = Auth::user()->professionalPreference ?? new ProfessionalPreference(['user_id' => Auth::id()]);
+
+        \App\Services\SeoService::set([
+            'title' => 'Career Preferences | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
+
         return view('profile.preferences', compact('preference'));
     }
 

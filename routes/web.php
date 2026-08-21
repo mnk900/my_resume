@@ -181,6 +181,15 @@ Route::get('/job/{slug}', [\App\Http\Controllers\OpportunityController::class, '
 Route::get('/talent', [\App\Http\Controllers\TalentDiscoveryController::class, 'index'])->name('talent.index');
 Route::get('/search', [\App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
 
+Route::get('/sitemap.xml', function() {
+    $portfolios = \App\Models\Portfolio::where('is_active', true)->where('is_public', true)->with('user')->get();
+    $jobs = \App\Models\Opportunity::where('status', 'published')->get();
+    $companies = \App\Models\Company::where('verification_status', '!=', 'suspended')->get();
+
+    $content = view('sitemap', compact('portfolios', 'jobs', 'companies'));
+    return response($content, 200)->header('Content-Type', 'text/xml');
+})->name('sitemap');
+
 Route::middleware(['auth', 'verified', \App\Http\Middleware\IsAdmin::class])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
@@ -245,6 +254,10 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\IsAdmin::class])->pr
 require __DIR__.'/auth.php';
 
 Route::get('/restricted', function () {
+    \App\Services\SeoService::set([
+        'title' => 'Access Restricted | MyResume.cloud',
+        'robots' => 'noindex, nofollow'
+    ]);
     return view('errors.restricted');
 })->name('restricted');
 

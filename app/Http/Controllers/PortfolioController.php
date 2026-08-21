@@ -59,9 +59,16 @@ class PortfolioController extends Controller
             }
 
             if (!$isAuthorized) {
+                \App\Services\SeoService::set([
+                    'title' => 'Private Profile | ' . ($user->name ?? 'User') . ' | MyResume.cloud',
+                    'robots' => 'noindex, nofollow'
+                ]);
                 return view('portfolio.private', compact('user', 'portfolio', 'connection'));
             }
         }
+
+        $seoParams = \App\Services\SeoService::generatePortfolioSeo($portfolio);
+        \App\Services\SeoService::set($seoParams);
 
         return view('portfolio.public', compact('user', 'portfolio'));
     }
@@ -286,6 +293,11 @@ class PortfolioController extends Controller
             ->unique()
             ->values()
             ->toArray();
+
+        \App\Services\SeoService::set([
+            'title' => 'My Portfolio CMS | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
 
         return view('portfolio.edit', compact(
             'portfolio', 'themes', 'pendingReceived', 'pendingSent',

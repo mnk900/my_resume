@@ -20,6 +20,12 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
+        \App\Services\SeoService::set([
+            'title' => 'Create Your Account | MyResume.cloud',
+            'description' => 'Build your professional portfolio, discover career opportunities, and connect with top organizations on MyResume.cloud.',
+            'robots' => 'noindex, nofollow'
+        ]);
+
         return view('auth.register');
     }
 

@@ -86,6 +86,12 @@ class OpportunityController extends Controller
             $recommendedJobs = collect(array_slice($scored, 0, 5));
         }
 
+        \App\Services\SeoService::set([
+            'title' => 'Jobs & Career Opportunities | MyResume.cloud',
+            'description' => 'Explore active job openings, career opportunities, and hiring vacancies across software engineering, business, design, and top industries on MyResume.cloud.',
+            'canonical' => url('/jobs'),
+        ]);
+
         return view('opportunities.index', compact('opportunities', 'recommendedJobs'));
     }
 
@@ -110,6 +116,8 @@ class OpportunityController extends Controller
                 ->exists();
         }
 
+        \App\Services\SeoService::set(\App\Services\SeoService::generateOpportunitySeo($opportunity));
+
         return view('opportunities.show', compact('opportunity', 'matchResult', 'userApplication', 'isSaved'));
     }
 
@@ -118,6 +126,10 @@ class OpportunityController extends Controller
      */
     public function create(Request $request)
     {
+        \App\Services\SeoService::set([
+            'title' => 'Post Opportunity | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
         $companyId = $request->query('company_id');
         $companies = Auth::user()->companies;
 

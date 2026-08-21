@@ -45,6 +45,12 @@ class CompanyController extends Controller
 
         $companies = $query->withCount('opportunities')->latest()->paginate(12);
 
+        \App\Services\SeoService::set([
+            'title' => 'Companies & Employers | Discover Opportunities | MyResume.cloud',
+            'description' => 'Discover verified companies, hiring organizations, and employers. Explore company profiles, culture, and active career opportunities.',
+            'canonical' => url('/companies'),
+        ]);
+
         return view('company.index', compact('companies'));
     }
 
@@ -53,6 +59,10 @@ class CompanyController extends Controller
      */
     public function create()
     {
+        \App\Services\SeoService::set([
+            'title' => 'Register Company | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
         return view('company.create');
     }
 
@@ -97,6 +107,8 @@ class CompanyController extends Controller
 
         $userMembership = Auth::check() ? $company->members->where('user_id', Auth::id())->first() : null;
 
+        \App\Services\SeoService::set(\App\Services\SeoService::generateCompanySeo($company));
+
         return view('company.show', compact('company', 'userMembership'));
     }
 
@@ -106,6 +118,10 @@ class CompanyController extends Controller
     public function edit(Company $company)
     {
         $this->authorizeCompanyMember($company);
+        \App\Services\SeoService::set([
+            'title' => 'Edit Company Profile | ' . $company->name . ' | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
         return view('company.edit', compact('company'));
     }
 
@@ -147,6 +163,11 @@ class CompanyController extends Controller
     public function dashboard(Company $company)
     {
         $this->authorizeCompanyMember($company);
+
+        \App\Services\SeoService::set([
+            'title' => $company->name . ' Dashboard | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
 
         $stats = [
             'total_jobs' => $company->opportunities()->where('type', 'job')->count(),

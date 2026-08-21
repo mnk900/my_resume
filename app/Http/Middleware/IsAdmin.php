@@ -18,6 +18,12 @@ class IsAdmin
         if (!auth()->check() || !auth()->user()->isAdmin() || auth()->user()->isSuspended()) {
             abort(403, 'Unauthorized administrative access.');
         }
+
+        \App\Services\SeoService::set([
+            'title' => 'Admin Control Center | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
+
         return $next($request);
     }
 }

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
-    <title>{{ config('app.name', 'MyResume.cloud') }} — Portfolio, Talent & Opportunity Network</title>
+    @include('partials.seo')
 
     <!-- Google Fonts: Outfit (Headings) & Inter (Body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

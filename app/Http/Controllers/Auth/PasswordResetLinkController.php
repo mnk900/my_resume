@@ -15,6 +15,11 @@ class PasswordResetLinkController extends Controller
      */
     public function create(): View
     {
+        \App\Services\SeoService::set([
+            'title' => 'Forgot Password | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
+
         return view('auth.forgot-password');
     }
 

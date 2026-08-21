@@ -17,6 +17,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        \App\Services\SeoService::set([
+            'title' => 'Sign In | MyResume.cloud',
+            'description' => 'Sign in to your MyResume.cloud account to manage your professional portfolio, track job applications, and connect with opportunities.',
+            'robots' => 'noindex, nofollow'
+        ]);
+
         return view('auth.login');
     }
 

@@ -97,6 +97,23 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
+        \App\Services\SeoService::set([
+            'title' => 'MyResume.cloud | Professional Portfolios, Jobs & Career Opportunities',
+            'description' => 'Create your verified professional portfolio, discover matched job opportunities, connect with top organizations, and prepare for your career with MyResume.cloud.',
+            'canonical' => url('/'),
+            'schema' => [
+                '@context' => 'https://schema.org',
+                '@type' => 'WebSite',
+                'name' => 'MyResume.cloud',
+                'url' => url('/'),
+                'potentialAction' => [
+                    '@type' => 'SearchAction',
+                    'target' => url('/search') . '?q={search_term_string}',
+                    'query-input' => 'required name=search_term_string'
+                ]
+            ]
+        ]);
+
         return view('welcome', compact(
             'portfolios',
             'stats',

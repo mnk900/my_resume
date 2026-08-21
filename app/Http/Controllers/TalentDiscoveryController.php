@@ -66,6 +66,12 @@ class TalentDiscoveryController extends Controller
 
         $candidates = $query->paginate(12);
 
+        \App\Services\SeoService::set([
+            'title' => 'Professionals | Discover Talent & Portfolios | MyResume.cloud',
+            'description' => 'Discover verified professional talent, interactive portfolios, software developers, designers, and experienced specialists on MyResume.cloud.',
+            'canonical' => url('/talent'),
+        ]);
+
         return view('talent.index', compact('candidates'));
     }
 }

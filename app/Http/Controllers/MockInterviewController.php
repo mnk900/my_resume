@@ -34,6 +34,11 @@ class MockInterviewController extends Controller
             ->latest()
             ->paginate(10);
 
+        \App\Services\SeoService::set([
+            'title' => 'AI Mock Interviews | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
+
         return view('mock_interviews.index', compact('interviews'));
     }
 

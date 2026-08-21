@@ -29,7 +29,12 @@ class NotificationController extends Controller
         $notifications = SystemNotification::where('user_id', Auth::id())
             ->with('sender')
             ->latest()
-            ->paginate(20);
+            ->paginate(15);
+
+        \App\Services\SeoService::set([
+            'title' => 'Notifications | MyResume.cloud',
+            'robots' => 'noindex, nofollow'
+        ]);
 
         return view('notifications.index', compact('notifications'));
     }

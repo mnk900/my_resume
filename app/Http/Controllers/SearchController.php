@@ -74,6 +74,20 @@ class SearchController extends Controller
             ->take(6)
             ->get();
 
+        $sanitizedQuery = \App\Services\SeoService::sanitizeText($q);
+        $title = !empty($sanitizedQuery)
+            ? 'Search Results for "' . $sanitizedQuery . '" | MyResume.cloud'
+            : 'Search Candidates & Jobs | MyResume.cloud';
+
+        \App\Services\SeoService::set([
+            'title' => $title,
+            'description' => !empty($sanitizedQuery)
+                ? 'Search results for ' . $sanitizedQuery . ' on MyResume.cloud. Discover matching professional portfolios, job vacancies, and companies.'
+                : 'Search professional portfolios, job vacancies, companies, and community posts on MyResume.cloud.',
+            'robots' => 'noindex, follow',
+            'canonical' => url('/search'),
+        ]);
+
         return view('search.index', compact('q', 'professionals', 'companies', 'opportunities', 'posts'));
     }
 }

@@ -192,6 +192,32 @@ class User extends Authenticatable implements MustVerifyEmail
         return User::whereIn('id', $userIds)->get();
     }
 
+    public function suggestedConnections(int $limit = 5)
+    {
+        $connectedIds = Connection::where('sender_id', $this->id)
+            ->orWhere('receiver_id', $this->id)
+            ->pluck('sender_id')
+            ->merge(
+                Connection::where('sender_id', $this->id)
+                    ->orWhere('receiver_id', $this->id)
+                    ->pluck('receiver_id')
+            )
+            ->push($this->id)
+            ->unique()
+            ->toArray();
+
+        return User::whereNotIn('id', $connectedIds)
+            ->where('role', '!=', 'admin')
+            ->where('account_status', '!=', 'suspended')
+            ->whereHas('portfolio', function($q) {
+                $q->where('is_active', true);
+            })
+            ->with(['portfolio', 'professionalPreference'])
+            ->inRandomOrder()
+            ->take($limit)
+            ->get();
+    }
+
     protected static function booted()
     {
         static::created(function ($user) {
