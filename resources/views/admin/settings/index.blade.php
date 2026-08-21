@@ -9,6 +9,51 @@
 </div>
 
 <div class="row g-4">
+    @if(session('ai_mock_message'))
+        <div class="col-12">
+            <div class="alert alert-success border-0 shadow-sm rounded-3 d-flex align-items-center mb-0">
+                <i class="fa-solid fa-circle-check text-success fa-xl me-3"></i>
+                <div>
+                    <h6 class="fw-bold mb-0">System Control Status Updated</h6>
+                    <small>{{ session('ai_mock_message') }}</small>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Global Module Controls: AI Mock Interview -->
+    <div class="col-12">
+        <div class="card border-0 shadow-sm bg-white p-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-warning-subtle text-warning p-3">
+                        <i class="fa-solid fa-robot fa-2xl"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">AI Mock Interview Master Control</h5>
+                        <p class="text-secondary small mb-0">
+                            Single master control toggle. Disabling hides AI Mock Interview from all navigation bars, footers, candidate portfolio workspace tabs, job detail practice cards, and blocks direct route access across the entire platform.
+                        </p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3 flex-shrink-0">
+                    @php $isAiMockEnabled = \App\Models\SystemSetting::isAiMockEnabled(); @endphp
+                    <span class="badge {{ $isAiMockEnabled ? 'bg-success' : 'bg-danger' }} px-3 py-2 fs-6 rounded-pill">
+                        <i class="fa-solid {{ $isAiMockEnabled ? 'fa-circle-check' : 'fa-eye-slash' }} me-1"></i>
+                        {{ $isAiMockEnabled ? 'FEATURE ENABLED' : 'FEATURE HIDDEN & DISABLED' }}
+                    </span>
+                    <form action="{{ route('admin.settings.toggle-ai-mock') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn {{ $isAiMockEnabled ? 'btn-outline-danger' : 'btn-success' }} px-4 fw-bold rounded-pill shadow-sm" onclick="return confirm('Are you sure you want to {{ $isAiMockEnabled ? 'DISABLE and HIDE' : 'ENABLE and SHOW' }} AI Mock Interviews globally?');">
+                            <i class="fa-solid {{ $isAiMockEnabled ? 'fa-toggle-off' : 'fa-toggle-on' }} me-1"></i>
+                            {{ $isAiMockEnabled ? 'Disable & Hide AI Mock' : 'Enable & Show AI Mock' }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Broadcast Announcement Dispatcher -->
     <div class="col-lg-7">
         <div class="card border-0 shadow-sm bg-white p-3 mb-4">

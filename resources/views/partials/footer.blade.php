@@ -28,7 +28,9 @@
                 <ul class="list-unstyled d-flex flex-column gap-1 small">
                     <li><a href="{{ route('register') }}" class="text-secondary text-decoration-none hover-primary">Create Portfolio</a></li>
                     <li><a href="{{ route('applications.candidate.index') }}" class="text-secondary text-decoration-none hover-primary">My Applications</a></li>
-                    <li><a href="{{ route('mock-interviews.index') }}" class="text-secondary text-decoration-none hover-primary">AI Mock Interviews</a></li>
+                    @if(\App\Models\SystemSetting::isAiMockEnabled())
+                        <li><a href="{{ route('mock-interviews.index') }}" class="text-secondary text-decoration-none hover-primary">AI Mock Interviews</a></li>
+                    @endif
                     <li><a href="{{ route('preferences.edit') }}" class="text-secondary text-decoration-none hover-primary">Career Preferences</a></li>
                 </ul>
             </div>

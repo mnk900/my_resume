@@ -286,7 +286,9 @@
                                 <li><a class="dropdown-item py-2 small" href="{{ route('portfolio.edit') }}"><i class="fa-solid fa-user-pen me-2 text-primary"></i> My Portfolio CMS</a></li>
                                 <li><a class="dropdown-item py-2 small" href="{{ route('portfolio.show', Auth::user()->username) }}"><i class="fa-solid fa-eye me-2 text-info"></i> View Public Profile</a></li>
                                 <li><a class="dropdown-item py-2 small" href="{{ route('applications.candidate.index') }}"><i class="fa-solid fa-paper-plane me-2 text-success"></i> My Applications</a></li>
-                                <li><a class="dropdown-item py-2 small" href="{{ route('mock-interviews.index') }}"><i class="fa-solid fa-robot me-2 text-warning"></i> AI Mock Interviews</a></li>
+                                @if(\App\Models\SystemSetting::isAiMockEnabled())
+                                    <li><a class="dropdown-item py-2 small" href="{{ route('mock-interviews.index') }}"><i class="fa-solid fa-robot me-2 text-warning"></i> AI Mock Interviews</a></li>
+                                @endif
                                 <li><a class="dropdown-item py-2 small" href="{{ route('preferences.edit') }}"><i class="fa-solid fa-sliders me-2 text-secondary"></i> Career Preferences</a></li>
                                 @if(Auth::user()->isAdmin())
                                     <li><hr class="dropdown-divider"></li>
@@ -636,6 +638,7 @@
     </section>
 
     <!-- 07. SECTION 07 — AI MOCK INTERVIEW -->
+    @if(\App\Models\SystemSetting::isAiMockEnabled())
     <section class="py-5 bg-secondary text-white">
         <div class="container py-3">
             <div class="row align-items-center g-4">
@@ -693,7 +696,7 @@
                             <div class="progress mb-2" style="height: 5px;"><div class="progress-bar" style="width: 88%; background-color: var(--brand-primary);"></div></div>
 
                             <div class="d-flex justify-content-between small mb-1"><span>Communication Clarity</span><span>79%</span></div>
-                            <div class="progress mb-2" style="height: 5px;"><div class="progress-bar bg-info" style="width: 79%"></div></div>
+                            <div class="progress mb-2" style="height: 5px;"><div class="progress-bar" style="width: 79%; background-color: var(--brand-primary);"></div></div>
                         </div>
 
                         <div class="p-2 bg-light rounded-3 small">
@@ -705,6 +708,7 @@
             </div>
         </div>
     </section>
+    @endif
 
     <!-- 08. SECTION 08 — PROFESSIONAL NETWORK -->
     <section class="py-5 bg-white border-bottom">

@@ -15,6 +15,13 @@ class MockInterviewController extends Controller
     public function __construct(MockInterviewService $interviewService)
     {
         $this->interviewService = $interviewService;
+
+        $this->middleware(function ($request, $next) {
+            if (!\App\Models\SystemSetting::isAiMockEnabled()) {
+                abort(404, 'The AI Mock Interview feature is currently disabled by system administrator.');
+            }
+            return $next($request);
+        });
     }
 
     /**

@@ -318,9 +318,11 @@
                         <span class="badge bg-secondary rounded-pill ms-auto" style="font-size: 0.65rem;">{{ $savedOpportunities->count() }}</span>
                     @endif
                 </button>
-                <button class="nav-link text-start border-0 bg-transparent" id="interview-tab" data-bs-toggle="tab" data-bs-target="#interviewPane" type="button" role="tab">
-                    <i class="fa-solid fa-robot"></i> <span>AI Mock Interview</span>
-                </button>
+                @if(\App\Models\SystemSetting::isAiMockEnabled())
+                    <button class="nav-link text-start border-0 bg-transparent" id="interview-tab" data-bs-toggle="tab" data-bs-target="#interviewPane" type="button" role="tab">
+                        <i class="fa-solid fa-robot"></i> <span>AI Mock Interview</span>
+                    </button>
+                @endif
 
                 <!-- 4. NETWORK & COMMUNITY -->
                 <div class="sidebar-group-title mt-2">Network & Community</div>
@@ -417,9 +419,11 @@
                     <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#savedPane" type="button" data-bs-dismiss="offcanvas">
                         <i class="fa-solid fa-bookmark"></i> <span>Saved Jobs</span>
                     </button>
-                    <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#interviewPane" type="button" data-bs-dismiss="offcanvas">
-                        <i class="fa-solid fa-robot"></i> <span>AI Mock Interview</span>
-                    </button>
+                    @if(\App\Models\SystemSetting::isAiMockEnabled())
+                        <button class="nav-link text-start border-0 bg-transparent" data-bs-toggle="tab" data-bs-target="#interviewPane" type="button" data-bs-dismiss="offcanvas">
+                            <i class="fa-solid fa-robot"></i> <span>AI Mock Interview</span>
+                        </button>
+                    @endif
                 </div>
             </div>
         </div>
@@ -1881,6 +1885,7 @@
                 <!-- ========================================== -->
                 <!-- 8. AI MOCK INTERVIEW PANE -->
                 <!-- ========================================== -->
+                @if(\App\Models\SystemSetting::isAiMockEnabled())
                 <div class="tab-pane fade" id="interviewPane" role="tabpanel">
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4 pb-3 border-bottom">
                         <div>
@@ -1902,6 +1907,7 @@
                         </form>
                     </div>
                 </div>
+                @endif
 
                 <!-- ========================================== -->
                 <!-- 9. CONNECTIONS & NETWORK PANE -->

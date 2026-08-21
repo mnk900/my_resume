@@ -223,6 +223,7 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\IsAdmin::class])->pr
     // System Settings & Broadcasts
     Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings.index');
     Route::post('/settings', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
+    Route::post('/settings/toggle-ai-mock', [AdminController::class, 'toggleAiMock'])->name('admin.settings.toggle-ai-mock');
 
     // Legacy Action Compatibility
     Route::post('/portfolio/{portfolio}/toggle', [AdminController::class, 'togglePortfolioStatus'])->name('admin.portfolio.toggle');

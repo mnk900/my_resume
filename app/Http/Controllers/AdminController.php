@@ -494,6 +494,32 @@ class AdminController extends Controller
         return back()->with('status', 'settings-updated');
     }
 
+    /**
+     * Single Administrator Control: Toggle Global AI Mock Interview Visibility & Access
+     */
+    public function toggleAiMock(Request $request)
+    {
+        $currentStatus = \App\Models\SystemSetting::isAiMockEnabled();
+        $newStatus = $currentStatus ? '0' : '1';
+
+        \App\Models\SystemSetting::set(
+            'ai_mock_interview_enabled',
+            $newStatus,
+            'Controls global visibility and access to AI Mock Interview navigation and sections'
+        );
+
+        AuditLogService::log("system.toggle_ai_mock", null, [
+            'enabled' => $newStatus === '1',
+            'updated_by' => auth()->user()->name,
+        ]);
+
+        $statusMessage = $newStatus === '1'
+            ? 'AI Mock Interview feature has been ENABLED across the platform.'
+            : 'AI Mock Interview feature has been DISABLED and hidden across all sections and navigation.';
+
+        return back()->with('status', 'ai-mock-toggled')->with('ai_mock_message', $statusMessage);
+    }
+
     // Backward Compatibility Action Helpers
     public function togglePortfolioStatus(Portfolio $portfolio)
     {

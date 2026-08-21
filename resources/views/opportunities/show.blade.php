@@ -178,6 +178,7 @@
             @endif
 
             <!-- AI Mock Interview Card -->
+            @if(\App\Models\SystemSetting::isAiMockEnabled())
             <div class="card border-0 shadow-sm rounded-4 mb-4 bg-gradient bg-dark text-white p-4">
                 <div class="d-flex align-items-center mb-3">
                     <div class="rounded-circle bg-warning text-dark p-3 me-3"><i class="fa-solid fa-robot fa-xl"></i></div>
@@ -197,6 +198,7 @@
                 <button type="button" class="btn btn-warning w-100 fw-bold rounded-pill" data-bs-toggle="modal" data-bs-target="#guestApplyModal">Sign In to Take Interview</button>
                 @endauth
             </div>
+            @endif
 
             <!-- Apply Card -->
             <div class="card border-0 shadow-sm rounded-4 p-4 text-center">

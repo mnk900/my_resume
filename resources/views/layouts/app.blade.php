@@ -291,7 +291,9 @@
                             <li><a class="dropdown-item py-2 small" href="{{ route('portfolio.edit') }}"><i class="fa-solid fa-user-pen me-2 text-primary"></i> My Portfolio CMS</a></li>
                             <li><a class="dropdown-item py-2 small" href="{{ route('portfolio.show', Auth::user()->username) }}"><i class="fa-solid fa-eye me-2 text-info"></i> View Public Profile</a></li>
                             <li><a class="dropdown-item py-2 small" href="{{ route('applications.candidate.index') }}"><i class="fa-solid fa-paper-plane me-2 text-success"></i> My Applications</a></li>
-                            <li><a class="dropdown-item py-2 small" href="{{ route('mock-interviews.index') }}"><i class="fa-solid fa-robot me-2 text-warning"></i> AI Mock Interviews</a></li>
+                            @if(\App\Models\SystemSetting::isAiMockEnabled())
+                                <li><a class="dropdown-item py-2 small" href="{{ route('mock-interviews.index') }}"><i class="fa-solid fa-robot me-2 text-warning"></i> AI Mock Interviews</a></li>
+                            @endif
                             <li><a class="dropdown-item py-2 small" href="{{ route('preferences.edit') }}"><i class="fa-solid fa-sliders me-2 text-secondary"></i> Career Preferences</a></li>
                             <li><hr class="dropdown-divider"></li>
                             @if(Auth::user()->companies->isNotEmpty())
@@ -348,7 +350,9 @@
             <ul class="nav flex-column gap-2">
                 <li class="nav-item"><a class="nav-link text-dark" href="{{ route('portfolio.edit') }}"><i class="fa-solid fa-user-pen me-2 text-primary"></i> My Portfolio CMS</a></li>
                 <li class="nav-item"><a class="nav-link text-dark" href="{{ route('applications.candidate.index') }}"><i class="fa-solid fa-paper-plane me-2 text-success"></i> My Applications</a></li>
-                <li class="nav-item"><a class="nav-link text-dark" href="{{ route('mock-interviews.index') }}"><i class="fa-solid fa-robot me-2 text-warning"></i> AI Mock Interviews</a></li>
+                @if(\App\Models\SystemSetting::isAiMockEnabled())
+                    <li class="nav-item"><a class="nav-link text-dark" href="{{ route('mock-interviews.index') }}"><i class="fa-solid fa-robot me-2 text-warning"></i> AI Mock Interviews</a></li>
+                @endif
                 <li class="nav-item">
                     <a class="nav-link text-dark d-flex align-items-center justify-content-between" href="{{ route('messages.index') }}">
                         <span><i class="fa-solid fa-comments me-2 text-primary"></i> Direct Messages</span>
