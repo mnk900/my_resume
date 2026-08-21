@@ -3,13 +3,22 @@
 @section('content')
 <div class="container py-4">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
-        <div>
-            <h1 class="h3 fw-bold text-dark mb-1"><i class="fa-solid fa-gauge me-2 text-primary"></i> {{ $company->name }} Dashboard</h1>
-            <p class="text-secondary small mb-0">Recruitment management, applicant tracking, and talent acquisition center.</p>
+        <div class="d-flex align-items-center gap-3">
+            @if($company->logo_path)
+                <img src="{{ asset('storage/' . $company->logo_path) }}" alt="{{ $company->name }}" class="rounded-3 shadow-sm bg-white p-1 border flex-shrink-0" style="width: 52px; height: 52px; object-fit: contain;">
+            @else
+                <div class="rounded-3 shadow-sm bg-primary bg-gradient text-white d-flex align-items-center justify-content-center fw-bold fs-4 flex-shrink-0" style="width: 52px; height: 52px;">
+                    {{ strtoupper(substr($company->name, 0, 1)) }}
+                </div>
+            @endif
+            <div>
+                <h1 class="h3 fw-bold text-dark mb-0">{{ $company->name }} Dashboard</h1>
+                <p class="text-secondary small mb-0">Recruitment management, applicant tracking, and talent acquisition center.</p>
+            </div>
         </div>
         <div class="d-flex gap-2 mt-3 mt-md-0">
-            <a href="{{ route('opportunities.create', ['company_id' => $company->id]) }}" class="btn btn-primary shadow-sm btn-sm"><i class="fa-solid fa-plus me-1"></i> Post Opportunity</a>
-            <a href="{{ route('companies.show', $company->slug) }}" class="btn btn-outline-secondary btn-sm">Public Profile</a>
+            <a href="{{ route('opportunities.create', ['company_id' => $company->id]) }}" class="btn btn-primary shadow-sm rounded-pill px-3 py-1.5 fw-bold"><i class="fa-solid fa-plus me-1"></i> Post Opportunity</a>
+            <a href="{{ route('companies.show', $company->slug) }}" class="btn btn-outline-secondary rounded-pill px-3 py-1.5 fw-bold"><i class="fa-solid fa-eye me-1"></i> Public Profile</a>
         </div>
     </div>
 
