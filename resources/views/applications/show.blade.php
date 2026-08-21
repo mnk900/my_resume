@@ -142,12 +142,17 @@
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold text-dark mb-0">Automated Match Score</h6>
-                        <span class="badge bg-success rounded-pill px-3 py-2 fs-5 fw-bold">{{ $matchResult['overall_score'] }}%</span>
+                        @php
+                            $scoreVal = $matchResult['overall_score'];
+                            $badgeClass = $scoreVal >= 75 ? 'bg-success text-white' : ($scoreVal >= 50 ? 'bg-warning text-dark' : 'bg-danger text-white');
+                        @endphp
+                        <span class="badge {{ $badgeClass }} rounded-pill px-3 py-2 fs-5 fw-bold">{{ $scoreVal }}%</span>
                     </div>
 
                     <div class="small">
+                        <div class="d-flex justify-content-between mb-1"><span>Role Fit:</span> <strong>{{ $matchResult['breakdown']['role'] ?? 0 }}%</strong></div>
                         <div class="d-flex justify-content-between mb-1"><span>Skills:</span> <strong>{{ $matchResult['breakdown']['skills'] }}%</strong></div>
-                        <div class="d-flex justify-content-between mb-1"><span>Experience:</span> <strong>{{ $matchResult['breakdown']['experience'] }}%</strong></div>
+                        <div class="d-flex justify-content-between mb-1"><span>Relevant Exp:</span> <strong>{{ $matchResult['breakdown']['experience'] }}%</strong></div>
                         <div class="d-flex justify-content-between mb-1"><span>Location:</span> <strong>{{ $matchResult['breakdown']['location'] }}%</strong></div>
                         <div class="d-flex justify-content-between mb-1"><span>Education:</span> <strong>{{ $matchResult['breakdown']['education'] }}%</strong></div>
                     </div>

@@ -62,7 +62,7 @@
                         <div><span class="text-muted d-block small">Posted Date</span> <strong class="text-dark">{{ $opportunity->published_at ? $opportunity->published_at->format('M d, Y') : 'Recently' }}</strong></div>
                         <div>
                             <span class="text-muted d-block small">Deadline Status</span>
-                            <span class="badge {{ $deadlineBadge['class'] }} px-2.5 py-1.5 fs-6 mt-1">
+                            <span class="badge {{ $deadlineBadge['class'] }} px-2.5 py-1.5 fs-6 mt-1 text-wrap" style="white-space: normal;">
                                 <i class="{{ $deadlineBadge['icon'] }} me-1"></i> {{ $deadlineBadge['short_label'] }}
                             </span>
                         </div>
@@ -127,7 +127,7 @@
                                 <span class="display-5 fw-bold text-primary mb-0">{{ max(0, $opportunity->days_remaining) }}</span>
                                 <span class="fw-bold text-dark fs-5">{{ Str::plural('Day', max(0, $opportunity->days_remaining)) }} Left</span>
                             </div>
-                            <div class="badge {{ $deadlineBadge['class'] }} mt-2 px-3 py-1.5 fs-6">
+                            <div class="badge {{ $deadlineBadge['class'] }} mt-2 px-3 py-2 fs-6 text-wrap w-100 lh-base" style="white-space: normal;">
                                 <i class="{{ $deadlineBadge['icon'] }} me-1"></i> {{ $deadlineBadge['label'] }}
                             </div>
                         </div>
@@ -146,20 +146,27 @@
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-chart-pie text-primary me-2"></i> Portfolio Match Score</h5>
-                        <span class="badge bg-success rounded-pill px-3 py-2 fs-5 fw-bold">{{ $matchResult['overall_score'] }}%</span>
+                        @php
+                            $scoreVal = $matchResult['overall_score'];
+                            $badgeClass = $scoreVal >= 75 ? 'bg-success text-white' : ($scoreVal >= 50 ? 'bg-warning text-dark' : 'bg-danger text-white');
+                        @endphp
+                        <span class="badge {{ $badgeClass }} rounded-pill px-3 py-2 fs-5 fw-bold">{{ $scoreVal }}%</span>
                     </div>
 
-                    <p class="text-muted small mb-3">Matching evaluation based on your portfolio skills, experience, education, and career preferences.</p>
+                    <p class="text-muted small mb-3">Matching evaluation based on domain relevance, relevant experience years, required skills, and preferences.</p>
 
                     <!-- Score Breakdown Progress Bars -->
                     <div class="mb-3">
-                        <div class="d-flex justify-content-between small mb-1"><span class="fw-semibold">Skills Match</span><span>{{ $matchResult['breakdown']['skills'] }}%</span></div>
+                        <div class="d-flex justify-content-between small mb-1"><span class="fw-semibold">Role & Title Alignment</span><span>{{ $matchResult['breakdown']['role'] ?? 0 }}%</span></div>
+                        <div class="progress mb-2" style="height: 6px;"><div class="progress-bar bg-warning" style="width: {{ $matchResult['breakdown']['role'] ?? 0 }}%"></div></div>
+
+                        <div class="d-flex justify-content-between small mb-1"><span class="fw-semibold">Relevant Skills Match</span><span>{{ $matchResult['breakdown']['skills'] }}%</span></div>
                         <div class="progress mb-2" style="height: 6px;"><div class="progress-bar bg-primary" style="width: {{ $matchResult['breakdown']['skills'] }}%"></div></div>
 
-                        <div class="d-flex justify-content-between small mb-1"><span class="fw-semibold">Experience Match</span><span>{{ $matchResult['breakdown']['experience'] }}%</span></div>
+                        <div class="d-flex justify-content-between small mb-1"><span class="fw-semibold">Relevant Experience Match</span><span>{{ $matchResult['breakdown']['experience'] }}%</span></div>
                         <div class="progress mb-2" style="height: 6px;"><div class="progress-bar bg-info" style="width: {{ $matchResult['breakdown']['experience'] }}%"></div></div>
 
-                        <div class="d-flex justify-content-between small mb-1"><span class="fw-semibold">Location Match</span><span>{{ $matchResult['breakdown']['location'] }}%</span></div>
+                        <div class="d-flex justify-content-between small mb-1"><span class="fw-semibold">Location & Preference</span><span>{{ $matchResult['breakdown']['location'] }}%</span></div>
                         <div class="progress mb-2" style="height: 6px;"><div class="progress-bar bg-success" style="width: {{ $matchResult['breakdown']['location'] }}%"></div></div>
                     </div>
 
