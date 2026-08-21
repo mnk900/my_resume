@@ -5,21 +5,21 @@
     <!-- Header Banner & Profile Card -->
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
         <!-- Cover Banner Container -->
-        <div class="position-relative" style="height: 220px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #2563eb 100%);">
+        <div class="position-relative" style="height: 190px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #2563eb 100%);">
             @if($company->cover_path)
                 <img src="{{ asset('storage/' . $company->cover_path) }}" alt="{{ $company->name }} Cover" class="w-100 h-100 object-fit-cover">
-                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4));"></div>
+                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3));"></div>
             @endif
         </div>
 
-        <!-- Profile Info Bar -->
+        <!-- Profile Header Body -->
         <div class="card-body p-4 pt-0">
-            <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end justify-content-between gap-4" style="margin-top: -60px; position: relative; z-index: 5;">
+            <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end justify-content-between gap-3">
                 
-                <!-- Logo & Title Block -->
-                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end gap-3 text-center text-md-start">
-                    <!-- Logo Box (100% visible, no clipping or overlapping overflow) -->
-                    <div class="flex-shrink-0 bg-white rounded-4 shadow p-2 border border-2 border-white" style="width: 120px; height: 120px; box-shadow: 0 10px 25px rgba(0,0,0,0.12)!important;">
+                <!-- Logo & Company Title Block -->
+                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end gap-3 text-center text-md-start w-100 w-md-auto">
+                    <!-- Logo Avatar Frame (Only logo box overlaps cover image by 55px) -->
+                    <div class="flex-shrink-0 bg-white rounded-4 shadow-sm p-2 border border-2 border-white" style="width: 110px; height: 110px; margin-top: -55px; position: relative; z-index: 5; box-shadow: 0 8px 24px rgba(0,0,0,0.12)!important;">
                         @if($company->logo_path)
                             <img src="{{ asset('storage/' . $company->logo_path) }}" alt="{{ $company->name }}" class="w-100 h-100 rounded-3" style="object-fit: contain;">
                         @else
@@ -29,44 +29,36 @@
                         @endif
                     </div>
 
-                    <!-- Company Title & Info -->
-                    <div class="mb-1">
+                    <!-- Company Name & Details (Clean White Card Background - 100% Visible & High Contrast) -->
+                    <div class="pt-2 pt-md-0">
                         <h1 class="h2 fw-bold text-dark mb-1 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
                             {{ $company->name }}
                             @if($company->isVerified())
                                 <i class="fa-solid fa-circle-check text-primary fs-5" title="Verified Organization"></i>
                             @endif
                         </h1>
-                        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-start gap-2 text-secondary small">
-                            <span class="badge bg-light text-dark border px-3 py-1.5 rounded-pill">
-                                <i class="fa-solid fa-industry text-primary me-1"></i> {{ $company->industry ?? 'Organization' }}
-                            </span>
-                            @if($company->city || $company->country)
-                            <span class="badge bg-light text-dark border px-3 py-1.5 rounded-pill">
-                                <i class="fa-solid fa-location-dot text-danger me-1"></i> {{ implode(', ', array_filter([$company->city, $company->country])) }}
-                            </span>
-                            @endif
+                        <p class="text-secondary mb-0 fw-medium">
+                            <i class="fa-solid fa-industry text-primary me-1"></i> {{ $company->industry ?? 'Organization' }}
+                            &bull; <i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ implode(', ', array_filter([$company->city, $company->country])) ?: 'Global' }}
                             @if($company->org_type)
-                            <span class="badge bg-light text-dark border px-3 py-1.5 rounded-pill">
-                                <i class="fa-solid fa-building text-info me-1"></i> {{ $company->org_type }}
-                            </span>
+                                &bull; <span class="badge bg-light text-dark border ms-1">{{ $company->org_type }}</span>
                             @endif
-                        </div>
+                        </p>
                     </div>
                 </div>
 
                 <!-- Action Buttons Block -->
-                <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-end w-100 w-md-auto mb-1">
+                <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-end w-100 w-md-auto mt-2 mt-md-0">
                     @if($userMembership || (Auth::check() && Auth::user()->isAdmin()))
-                        <a href="{{ route('companies.dashboard', $company->id) }}" class="btn btn-outline-primary fw-bold rounded-pill px-3 py-2">
+                        <a href="{{ route('companies.dashboard', $company->id) }}" class="btn btn-outline-primary fw-bold rounded-pill px-3 py-1.5">
                             <i class="fa-solid fa-gauge me-1"></i> Dashboard
                         </a>
-                        <a href="{{ route('companies.edit', $company->id) }}" class="btn btn-primary fw-bold rounded-pill px-3 py-2 shadow-sm">
+                        <a href="{{ route('companies.edit', $company->id) }}" class="btn btn-primary fw-bold rounded-pill px-3 py-1.5 shadow-sm">
                             <i class="fa-solid fa-pen-to-square me-1"></i> Edit Profile
                         </a>
                     @endif
                     @if($company->website)
-                        <a href="{{ $company->website }}" target="_blank" rel="noopener noreferrer" class="btn btn-light border fw-bold rounded-pill px-3 py-2 hover-primary">
+                        <a href="{{ $company->website }}" target="_blank" rel="noopener noreferrer" class="btn btn-light border fw-bold rounded-pill px-3 py-1.5 hover-primary">
                             <i class="fa-solid fa-globe me-1 text-primary"></i> Visit Website
                         </a>
                     @endif
