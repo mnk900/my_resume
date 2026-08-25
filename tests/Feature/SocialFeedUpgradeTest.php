@@ -129,4 +129,44 @@ class SocialFeedUpgradeTest extends TestCase
 
         $this->assertCount(1, $post->fresh()->histories);
     }
+
+    public function test_user_can_share_job_opportunity_from_company_profile()
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        Portfolio::create(['user_id' => $user->id, 'title' => 'User Portfolio', 'is_public' => true]);
+
+        $company = \App\Models\Company::create([
+            'name' => 'Acme Corp',
+            'slug' => 'acme-corp',
+            'email' => 'contact@acme.test',
+            'description' => 'A technology company',
+        ]);
+        $company->users()->attach($user->id, ['role' => 'owner']);
+
+        $opportunity = \App\Models\Opportunity::create([
+            'company_id' => $company->id,
+            'posted_by_user_id' => $user->id,
+            'type' => 'job',
+            'title' => 'Lead Software Engineer',
+            'description' => 'Building scalable systems',
+            'status' => 'published',
+        ]);
+
+        $response = $this->actingAs($user)->post(route('posts.share-opportunity', $opportunity->id), [
+            'content' => 'Check out our job opening!',
+            'company_id' => $company->id,
+        ]);
+
+        $response->assertRedirect(route('feed.index'));
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('posts', [
+            'user_id' => $user->id,
+            'company_id' => $company->id,
+            'opportunity_id' => $opportunity->id,
+            'content' => 'Check out our job opening!',
+            'post_type' => 'job_share',
+            'status' => 'published',
+        ]);
+    }
 }

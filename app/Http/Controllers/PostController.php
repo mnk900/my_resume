@@ -201,11 +201,11 @@ class PostController extends Controller
             'company_id' => 'nullable|exists:companies,id',
         ]);
 
-        $companyId = null;
-        if ($request->filled('company_id')) {
-            $comp = Auth::user()->companies()->where('id', $request->input('company_id'))->first();
-            if ($comp) {
-                $companyId = $comp->id;
+        $companyId = $request->input('company_id');
+        if ($companyId) {
+            $userCompany = Auth::user()->companies()->where('companies.id', $companyId)->first();
+            if (!$userCompany && !Auth::user()->isAdmin()) {
+                return back()->with('error', 'You are not authorized to post on behalf of this company.');
             }
         }
 
