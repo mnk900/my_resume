@@ -32,7 +32,7 @@
                         </div>
                         <span class="badge bg-success rounded-pill px-3 py-2 fw-bold fs-6">{{ $rec['match']['overall_score'] }}% Match</span>
                     </div>
-                    <p class="text-muted small mb-2">{{ Str::limit(strip_tags($rec['job']->description), 90) }}</p>
+                    <p class="text-muted small mb-2">{{ Str::limit(strip_tags(html_entity_decode($rec['job']->description)), 90) }}</p>
                     <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
                         <span class="text-primary fw-semibold small">{{ $rec['job']->salary_min ? '$' . number_format($rec['job']->salary_min) : 'Competitive Salary' }}</span>
                         <a href="{{ route('opportunities.show', $rec['job']->slug) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">View Job</a>
@@ -107,7 +107,7 @@
                 </div>
 
                 <p class="text-secondary small mb-3 flex-grow-1">
-                    {{ Str::limit(strip_tags($opp->description), 120) }}
+                    {{ Str::limit(strip_tags(html_entity_decode($opp->description)), 120) }}
                 </p>
 
                 @if($opp->skills->isNotEmpty())

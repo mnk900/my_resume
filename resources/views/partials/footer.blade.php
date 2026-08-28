@@ -52,7 +52,7 @@
             </div>
         </div>
         <div class="pt-3 mt-3 border-top d-flex flex-column flex-md-row justify-content-between align-items-center text-muted small" style="font-size: 0.78rem;">
-            <p class="mb-0">&copy; {{ date('Y') }} MyResume.cloud. All rights reserved.</p>
+            <p class="mb-0">&copy; {{ date('Y') }} MyResume.cloud. All rights reserved <span class="mx-1">&bull;</span> Powered by <a href="https://itechgb.com/" target="_blank" class="text-dark text-decoration-underline fw-semibold">Innovative Technologies GB</a></p>
             <p class="mb-0">Designed for Professionals & Organizations Globally.</p>
         </div>
     </div>

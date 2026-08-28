@@ -963,7 +963,7 @@
                                 </div>
 
                                 <p class="text-light-slate fs-7 line-clamp-2 mb-3">
-                                    {{ Str::limit($job->description, 110) }}
+                                    {{ Str::limit(strip_tags(html_entity_decode($job->description)), 110) }}
                                 </p>
                             </div>
 
@@ -1428,7 +1428,7 @@
 
             <div class="pt-4 border-top border-slate-subtle d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 text-muted-slate fs-7">
                 <div>
-                    &copy; {{ date('Y') }} MyResume.cloud. All rights reserved. Registered multi-tenant career network.
+                    &copy; {{ date('Y') }} MyResume.cloud. All rights reserved <span class="mx-1">&bull;</span> Powered by <a href="https://itechgb.com/" target="_blank" class="text-slate-200 text-decoration-underline fw-medium">Innovative Technologies GB</a>
                 </div>
                 <div class="d-flex gap-3">
                     <span><i class="fa-solid fa-globe me-1"></i> Global Edition</span>

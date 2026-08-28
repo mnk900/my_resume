@@ -606,17 +606,52 @@
         </div>
     </section>
 
-    <footer>
+    <footer style="background: rgba(10, 15, 29, 0.96); border-top: 1px solid rgba(255, 255, 255, 0.08); padding: 4.5rem 0 2.5rem; position: relative; z-index: 10;">
         <div class="premium-container">
-            <div class="footer-nav">
-                <a href="#hero">Home</a>
-                <a href="#about">About</a>
-                <a href="#skills">Skills</a>
-                <a href="#experience">Experience</a>
-                <a href="#projects">Projects</a>
-                <a href="#contact">Contact</a>
+            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 850px; margin: 0 auto;">
+                <!-- Profile Avatar Image -->
+                <div style="margin-bottom: 1.25rem;">
+                    @if($portfolio->profile_image)
+                        <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $user->name }}" style="width: 84px; height: 84px; object-fit: cover; border-radius: 50%; border: 3px solid var(--accent-color); box-shadow: 0 0 25px rgba(56, 189, 248, 0.35);">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=160&background=0D8ABC&color=fff" alt="{{ $user->name }}" style="width: 84px; height: 84px; object-fit: cover; border-radius: 50%; border: 3px solid var(--accent-color); box-shadow: 0 0 25px rgba(56, 189, 248, 0.35);">
+                    @endif
+                </div>
+
+                <!-- Profile User Name -->
+                <h3 style="color: #ffffff; font-weight: 700; margin-bottom: 0.25rem; font-size: 1.6rem; letter-spacing: -0.02em;">{{ $user->name }}</h3>
+                
+                <!-- Tagline / Title -->
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 2rem; font-weight: 500;">
+                    {{ $portfolio->title ?? $profile['short_title'] }}
+                </p>
+
+                <!-- Complete Header-Style Portfolio Navigation Links -->
+                <div class="footer-nav" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 1.75rem; margin-bottom: 2.25rem;">
+                    <a href="#hero" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Home</a>
+                    <a href="#about" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">About</a>
+                    @if($portfolio->show_skills)<a href="#skills" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Skills</a>@endif
+                    @if($portfolio->show_experience)<a href="#experience" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Experience</a>@endif
+                    @if($portfolio->show_projects)<a href="#projects" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Projects</a>@endif
+                    @if($portfolio->show_education)<a href="#skills-extra" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Education</a>@endif
+                    @if($portfolio->show_achievements)<a href="#skills-extra" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Achievements</a>@endif
+                    @if($portfolio->show_contributions)<a href="#contributions" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Contributions</a>@endif
+                    @if($portfolio->show_publications && $portfolio->publications->isNotEmpty())<a href="#publications" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Publications</a>@endif
+                    @if($portfolio->show_services)<a href="#services" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Services</a>@endif
+                    @if($portfolio->show_certifications)<a href="#trainings" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Certifications</a>@endif
+                    @if($portfolio->show_trainings)<a href="#trainings" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Trainings</a>@endif
+                    @if($portfolio->show_testimonials)<a href="#testimonials" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Testimonials</a>@endif
+                    @if($portfolio->show_media && $portfolio->media->isNotEmpty())<a href="#media" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Media</a>@endif
+                    <a href="#contact" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;">Contact</a>
+                </div>
+
+                <div style="width: 100%; height: 1px; background: rgba(255,255,255,0.08); margin-bottom: 1.75rem;"></div>
+
+                <!-- Professional Copyright & Branding -->
+                <p style="color: #94a3b8; font-size: 0.88rem; margin-bottom: 0; line-height: 1.6;">
+                    &copy; {{ now()->year }} <strong style="color: #ffffff;">{{ $user->name }}</strong>. All rights reserved <span style="margin: 0 6px; opacity: 0.5;">&bull;</span> Powered by <a href="https://itechgb.com/" target="_blank" style="color: #e2e8f0; text-decoration: underline; text-underline-offset: 3px; font-weight: 500; transition: color 0.2s ease;">Innovative Technologies GB</a>
+                </p>
             </div>
-            <p class="mb-0">&copy; {{ now()->year }} A product of <a href="https://itechgb.com" target="_blank">I-Tech GB</a>. All rights reserved.</p>
         </div>
     </footer>
 
@@ -1168,14 +1203,47 @@
 
     <!-- Footer -->
     <footer class="py-5 bg-white border-top">
-        <div class="container text-center">
-            <div class="d-flex justify-content-center gap-3 mb-4">
-                <a href="#hero" class="text-secondary text-decoration-none hover-dark small">Home</a>
-                <a href="#about" class="text-secondary text-decoration-none hover-dark small">About</a>
-                <a href="#projects" class="text-secondary text-decoration-none hover-dark small">Projects</a>
-                <a href="#contact" class="text-secondary text-decoration-none hover-dark small">Contact</a>
+        <div class="container">
+            <div class="d-flex flex-column align-items-center text-center" style="max-width: 850px; margin: 0 auto;">
+                <!-- Profile Avatar Image -->
+                <div class="mb-3 position-relative">
+                    @if($portfolio->profile_image)
+                        <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $user->name }}" class="rounded-circle border border-2 border-primary p-1 shadow-sm" style="width: 84px; height: 84px; object-fit: cover;">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=160&background=0D8ABC&color=fff" alt="{{ $user->name }}" class="rounded-circle border border-2 border-primary p-1 shadow-sm" style="width: 84px; height: 84px; object-fit: cover;">
+                    @endif
+                </div>
+
+                <!-- Profile User Name -->
+                <h3 class="fw-bold text-dark mb-1 fs-4">{{ $user->name }}</h3>
+
+                <!-- Tagline / Title -->
+                <p class="text-secondary fw-medium small mb-4">{{ $portfolio->title ?? $profile['short_title'] }}</p>
+
+                <!-- Complete Header-Style Portfolio Navigation Links -->
+                <div class="d-flex flex-wrap justify-content-center gap-2 gap-md-3 mb-4">
+                    <a href="#hero" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Home</a>
+                    <a href="#about" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">About</a>
+                    @if($portfolio->show_skills)<a href="#skills" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Skills</a>@endif
+                    @if($portfolio->show_experience)<a href="#experience" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Experience</a>@endif
+                    @if($portfolio->show_projects)<a href="#projects" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Projects</a>@endif
+                    @if($portfolio->show_education)<a href="#skills-extra" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Education</a>@endif
+                    @if($portfolio->show_achievements)<a href="#skills-extra" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Achievements</a>@endif
+                    @if($portfolio->show_contributions)<a href="#contributions" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Contributions</a>@endif
+                    @if($portfolio->show_publications && $portfolio->publications->isNotEmpty())<a href="#publications" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Publications</a>@endif
+                    @if($portfolio->show_services)<a href="#services" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Services</a>@endif
+                    @if($portfolio->show_certifications)<a href="#trainings" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Certifications</a>@endif
+                    @if($portfolio->show_trainings)<a href="#trainings" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Trainings</a>@endif
+                    @if($portfolio->show_testimonials)<a href="#testimonials" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Testimonials</a>@endif
+                    @if($portfolio->show_media && $portfolio->media->isNotEmpty())<a href="#media" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Media</a>@endif
+                    <a href="#contact" class="text-secondary text-decoration-none hover-dark fw-medium small px-2">Contact</a>
+                </div>
+
+                <hr class="w-100 text-muted my-3 opacity-25">
+
+                <!-- Professional Copyright & Branding -->
+                <p class="text-secondary mb-0 small">&copy; {{ now()->year }} <strong class="text-dark">{{ $user->name }}</strong>. All rights reserved <span class="mx-1 text-muted">&bull;</span> Powered by <a href="https://itechgb.com/" target="_blank" class="text-dark text-decoration-underline fw-semibold">Innovative Technologies GB</a></p>
             </div>
-            <p class="text-secondary mb-0 small">&copy; {{ now()->year }} A product of <a href="https://itechgb.com" target="_blank" class="text-secondary text-decoration-none fw-semibold">I-Tech GB</a>. All rights reserved.</p>
         </div>
     </footer>
 
@@ -1866,10 +1934,50 @@
     </section>
 
     <!-- Footer -->
-    <footer class="elegant-footer">
-        <div class="elegant-container text-center">
-            <p class="mb-2">&copy; {{ now()->year }} {{ $user->name }}. All rights reserved.</p>
-            <p class="mb-0 small text-muted">A product of <a href="https://itechgb.com" target="_blank" style="color: var(--accent-indigo);">I-Tech GB</a>.</p>
+    <footer class="elegant-footer" style="background: #0f172a; color: #f8fafc; padding: 4.5rem 0 2.5rem; border-top: 1px solid rgba(99, 102, 241, 0.2);">
+        <div class="elegant-container">
+            <div class="d-flex flex-column align-items-center text-center" style="max-width: 850px; margin: 0 auto;">
+                <!-- Profile Avatar Image -->
+                <div style="margin-bottom: 1.25rem;">
+                    @if($portfolio->profile_image)
+                        <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $user->name }}" style="width: 84px; height: 84px; object-fit: cover; border-radius: 50%; border: 2px solid #8b5cf6; padding: 3px; box-shadow: 0 4px 20px rgba(139, 92, 246, 0.25);">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=160&background=6366f1&color=fff" alt="{{ $user->name }}" style="width: 84px; height: 84px; object-fit: cover; border-radius: 50%; border: 2px solid #8b5cf6; padding: 3px; box-shadow: 0 4px 20px rgba(139, 92, 246, 0.25);">
+                    @endif
+                </div>
+
+                <!-- Profile User Name -->
+                <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 1.85rem; font-weight: 700; color: #ffffff; margin-bottom: 0.25rem;">{{ $user->name }}</h3>
+
+                <!-- Tagline / Title -->
+                <p style="color: #94a3b8; font-size: 0.95rem; font-weight: 500; margin-bottom: 2rem; letter-spacing: 0.5px;">{{ $portfolio->title ?? $profile['short_title'] }}</p>
+
+                <!-- Complete Header-Style Portfolio Navigation Links -->
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem 1.75rem; margin-bottom: 2.25rem;">
+                    <a href="#hero" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Home</a>
+                    <a href="#about" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">About</a>
+                    @if($portfolio->show_skills)<a href="#skills" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Skills</a>@endif
+                    @if($portfolio->show_experience)<a href="#experience" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Experience</a>@endif
+                    @if($portfolio->show_projects)<a href="#projects" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Projects</a>@endif
+                    @if($portfolio->show_education)<a href="#skills-extra" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Education</a>@endif
+                    @if($portfolio->show_achievements)<a href="#skills-extra" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Achievements</a>@endif
+                    @if($portfolio->show_contributions)<a href="#contributions" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Contributions</a>@endif
+                    @if($portfolio->show_publications && $portfolio->publications->isNotEmpty())<a href="#publications" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Publications</a>@endif
+                    @if($portfolio->show_services)<a href="#services" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Services</a>@endif
+                    @if($portfolio->show_certifications)<a href="#trainings" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Certifications</a>@endif
+                    @if($portfolio->show_trainings)<a href="#trainings" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Trainings</a>@endif
+                    @if($portfolio->show_testimonials)<a href="#testimonials" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Testimonials</a>@endif
+                    @if($portfolio->show_media && $portfolio->media->isNotEmpty())<a href="#media" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Media</a>@endif
+                    <a href="#contact" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;">Contact</a>
+                </div>
+
+                <div style="width: 100%; height: 1px; background: rgba(255,255,255,0.08); margin-bottom: 1.75rem;"></div>
+
+                <!-- Professional Copyright & Branding -->
+                <p style="color: #94a3b8; font-size: 0.88rem; margin-bottom: 0; line-height: 1.6;">
+                    &copy; {{ now()->year }} <strong style="color: #ffffff;">{{ $user->name }}</strong>. All rights reserved <span style="margin: 0 6px; opacity: 0.5;">&bull;</span> Powered by <a href="https://itechgb.com/" target="_blank" style="color: #e2e8f0; text-decoration: underline; text-underline-offset: 3px; font-weight: 500;">Innovative Technologies GB</a>
+                </p>
+            </div>
         </div>
     </footer>
 
