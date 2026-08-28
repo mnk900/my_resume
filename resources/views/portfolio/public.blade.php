@@ -1,6 +1,8 @@
 @php
     $rawTheme = strtolower(trim($portfolio->theme ?? 'classic'));
-    if (str_contains($rawTheme, 'premium')) {
+    if (str_contains($rawTheme, 'executive')) {
+        $theme = 'executive';
+    } elseif (str_contains($rawTheme, 'premium')) {
         $theme = 'premium';
     } elseif (str_contains($rawTheme, 'elegant')) {
         $theme = 'elegant';
@@ -53,12 +55,1169 @@
             ];
         })->toArray()
     ];
+
+    $skills = $portfolio->skills;
+    $projects = $portfolio->projects;
+    $experiences = $portfolio->experiences;
+    $education = $portfolio->education;
+    $certifications = $portfolio->certifications;
+    $trainings = $portfolio->trainings;
+    $achievements = $portfolio->achievements;
+    $contributions = $portfolio->contributions;
+    $publications = $portfolio->publications;
+    $testimonials = $portfolio->testimonials;
+    $services = $portfolio->services;
+    $media = $portfolio->media;
 @endphp
 
 @extends('portfolio.themes.' . $theme)
 
 @section('content')
-    @if($theme == 'premium')
+    @if($theme == 'executive')
+    <!-- EXECUTIVE THEME (MASTER EDITORIAL 2-COLUMN COMPOSITION) -->
+    <div class="relative bg-[#0B0F17] text-slate-100 font-sans antialiased overflow-x-hidden min-h-screen">
+        <!-- Ambient Background Orbs -->
+        <div class="fixed top-0 left-1/4 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[150px] pointer-events-none z-0"></div>
+        <div class="fixed bottom-1/4 right-10 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
+
+        @php
+            $allNavModules = collect([
+                ['id' => 'about', 'label' => 'ABOUT', 'show' => $portfolio->show_about ?? true],
+                ['id' => 'services', 'label' => 'SERVICES OFFERED', 'show' => $portfolio->show_services ?? true],
+                ['id' => 'experience', 'label' => 'WORK EXPERIENCE', 'show' => $portfolio->show_experience ?? true],
+                ['id' => 'skills', 'label' => 'SKILLS', 'show' => $portfolio->show_skills ?? true],
+                ['id' => 'projects', 'label' => 'PROJECTS', 'show' => $portfolio->show_projects ?? true],
+                ['id' => 'education', 'label' => 'EDUCATION', 'show' => $portfolio->show_education ?? true],
+                ['id' => 'certifications', 'label' => 'CERTIFICATIONS', 'show' => $portfolio->show_certifications ?? true],
+                ['id' => 'trainings', 'label' => 'TRAININGS', 'show' => $portfolio->show_trainings ?? true],
+                ['id' => 'achievements', 'label' => 'ACHIEVEMENTS', 'show' => $portfolio->show_achievements ?? true],
+                ['id' => 'contributions', 'label' => 'CONTRIBUTIONS', 'show' => $portfolio->show_contributions ?? true],
+                ['id' => 'testimonials', 'label' => 'TESTIMONIALS', 'show' => $portfolio->show_testimonials ?? true],
+                ['id' => 'publications', 'label' => 'PUBLICATIONS', 'show' => $portfolio->show_publications ?? true],
+                ['id' => 'media', 'label' => 'MEDIA APPEARANCES', 'show' => $portfolio->show_media ?? true],
+                ['id' => 'contact', 'label' => 'CONTACT', 'show' => true],
+            ])->filter(function($m) {
+                return $m['show'] !== false && $m['show'] !== 0 && $m['show'] !== '0';
+            })->values()->all();
+        @endphp
+
+        <!-- MAIN EDITORIAL PORTFOLIO CONTAINER -->
+        <main class="max-w-7xl mx-auto px-6 lg:px-12 pt-12 pb-20 relative z-10 space-y-6">
+            
+            <!-- ================================================== -->
+            <!-- FIRST SECTION: HERO IDENTITY CONTENT & PROFILE IMAGE -->
+            <!-- ================================================== -->
+            <section id="hero" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center relative" data-aos="fade-up">
+                
+                <!-- LEFT: IDENTITY CONTENT (7 COLUMNS) -->
+                <div class="lg:col-span-7 space-y-6" data-aos="fade-right" data-aos-duration="900">
+                    <div>
+                        <!-- 1. PROFESSIONAL POSITION FIRST -->
+                        <span class="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-indigo-400 block mb-2 break-words">
+                            // {{ strtoupper($portfolio->position ?? 'Software Architect & Executive Lead') }}
+                        </span>
+
+                        <!-- 2. FULL NAME SECOND (RESPONSIVE FONT SIZE & BREAK WORDS) -->
+                        <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-extrabold text-white tracking-tighter uppercase leading-[1.08] text-left break-words mb-3">
+                            {{ $user->name }}
+                        </h1>
+                    </div>
+
+                    <!-- 3. SHORT PITCH HOOK / SUMMARY THIRD -->
+                    <div class="space-y-3">
+                        <p class="text-sm sm:text-base md:text-lg font-display font-light text-slate-300 tracking-wide leading-relaxed max-w-xl break-words">
+                            {{ $portfolio->summary ?? $portfolio->description ?? $portfolio->detailed_bio ?? 'High-impact software architect and systems lead engineering scalable multi-tenant SaaS platforms, cloud infrastructure, and enterprise data solutions.' }}
+                        </p>
+                    </div>
+
+                    <!-- 4. BUTTONS OF VIEW WORK AND CONTACT ME FOURTH (RESPONSIVE FLEX & SIZES) -->
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
+                        <a href="#projects" data-target="projects" class="exec-nav-tab cursor-pointer px-6 py-3.5 w-full sm:w-auto min-w-0 sm:min-w-[180px] h-12 whitespace-nowrap rounded-full bg-white/10 border border-white/20 text-white font-bold text-xs uppercase tracking-widest hover:bg-white hover:text-slate-950 transition-all inline-flex items-center justify-center gap-2 shrink-0">
+                            View Work <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                        <a href="#contact" data-target="contact" class="exec-nav-tab cursor-pointer px-6 py-3.5 w-full sm:w-auto min-w-0 sm:min-w-[180px] h-12 whitespace-nowrap rounded-full bg-white/10 border border-white/20 text-white font-bold text-xs uppercase tracking-widest hover:bg-white hover:text-slate-950 transition-all inline-flex items-center justify-center gap-2 shrink-0">
+                            Contact Me
+                        </a>
+                    </div>
+
+                    <!-- MONOCHROME SOCIAL LINKS BAR -->
+                    <div class="flex items-center gap-5 text-slate-400 text-xl pt-2">
+                        @if($portfolio->github_url)
+                            <a href="{{ $portfolio->github_url }}" target="_blank" class="hover:text-indigo-400 hover:scale-110 transition-all duration-300" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                        @endif
+                        @if($portfolio->twitter_url)
+                            <a href="{{ $portfolio->twitter_url }}" target="_blank" class="hover:text-indigo-400 hover:scale-110 transition-all duration-300" title="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- RIGHT: PROFILE IMAGE & POSITION OVERLAY WITH BUTTONS (5 COLUMNS) -->
+                <div class="lg:col-span-5" data-aos="zoom-in" data-aos-duration="1000">
+                    <div class="hero-img-animated editorial-img-wrapper rounded-3xl aspect-[3/4] max-h-[500px] sm:max-h-[600px] w-full max-w-md mx-auto lg:max-w-none border border-white/10 shadow-2xl shadow-indigo-500/20 relative group overflow-hidden">
+                        @if($portfolio->profile_image)
+                            <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $user->name }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        @else
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=800&q=80" alt="{{ $user->name }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        @endif
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0B0F17] via-transparent to-transparent opacity-90"></div>
+                        
+                        <!-- POSITION OVERLAY FOLLOWED BY EXPLORE PROJECTS & VIEW SKILLS BUTTONS -->
+                        <div class="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 p-4 sm:p-5 rounded-2xl bg-slate-950/75 backdrop-blur-md border border-white/15 space-y-2.5">
+                            <div>
+                                <span class="text-[10px] font-mono font-bold text-indigo-400 uppercase tracking-widest block mb-0.5">Position / Role</span>
+                                <h3 class="text-sm sm:text-base font-display font-extrabold text-white uppercase tracking-tight truncate">
+                                    {{ $portfolio->position ?? $portfolio->organization ?? 'Executive Professional' }}
+                                </h3>
+                            </div>
+                            
+                            <div class="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 pt-2 border-t border-white/10">
+                                <a href="#projects" data-target="projects" class="exec-nav-tab cursor-pointer px-3.5 py-2.5 flex-1 w-full xs:w-auto h-9 sm:h-10 whitespace-nowrap rounded-xl bg-white/20 hover:bg-white hover:text-slate-950 border border-white/30 text-white font-bold text-[10px] sm:text-[11px] uppercase tracking-wider transition-all inline-flex items-center justify-center shrink-0">
+                                    Explore Projects
+                                </a>
+                                <a href="#skills" data-target="skills" class="exec-nav-tab cursor-pointer px-3.5 py-2.5 flex-1 w-full xs:w-auto h-9 sm:h-10 whitespace-nowrap rounded-xl bg-white/10 hover:bg-white hover:text-slate-950 border border-white/20 text-white font-bold text-[10px] sm:text-[11px] uppercase tracking-wider transition-all inline-flex items-center justify-center shrink-0">
+                                    View Skills
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ================================================== -->
+            <!-- STICKY HORIZONTAL DIRECTORY NAVIGATION BAR WITH SCROLL ARROWS -->
+            <!-- ================================================== -->
+            <div class="sticky top-0 z-40 bg-[#0B0F17]/95 backdrop-blur-xl py-3 my-6">
+                <div class="flex items-center gap-3">
+                    <!-- LEFT SCROLL ARROW BUTTON -->
+                    <button type="button" id="execNavScrollLeft" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/5 border border-white/15 text-slate-300 hover:text-white hover:bg-white/15 hover:border-indigo-400/50 transition-all flex items-center justify-center shrink-0 shadow-lg cursor-pointer" title="Scroll Left">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+
+                    <!-- HORIZONTAL SCROLLING MODULE TABS CONTAINER (HIDDEN NATIVE SCROLLBAR) -->
+                    <div id="execNavTabsContainer" class="flex-grow overflow-x-auto flex items-center gap-2 sm:gap-3 font-display font-bold text-xs sm:text-sm tracking-tight text-slate-400 py-1" style="scrollbar-width: none; -ms-overflow-style: none;">
+                        @foreach($allNavModules as $index => $item)
+                            <a href="#{{ $item['id'] }}" data-target="{{ $item['id'] }}" class="exec-nav-tab cursor-pointer whitespace-nowrap hover:text-white transition-all flex items-center gap-2 py-2 px-4 rounded-full border border-white/10 hover:border-indigo-400/50 hover:bg-white/5 group shrink-0">
+                                <span class="text-[10px] font-mono text-indigo-400">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                <span>{{ $item['label'] }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+
+                    <!-- RIGHT SCROLL ARROW BUTTON -->
+                    <button type="button" id="execNavScrollRight" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/5 border border-white/15 text-slate-300 hover:text-white hover:bg-white/15 hover:border-indigo-400/50 transition-all flex items-center justify-center shrink-0 shadow-lg cursor-pointer" title="Scroll Right">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
+
+                    <!-- EXTRA CONTROLS -->
+                    <div class="shrink-0 hidden lg:flex items-center gap-3 pl-2 border-l border-white/10">
+                        <a href="/" class="hover:text-white transition-colors flex items-center gap-1.5 text-xs font-mono text-slate-400"><i class="fa-solid fa-arrow-left text-[10px]"></i> Main Site</a>
+                        @if($portfolio->resume_file)
+                            <a href="{{ Storage::url($portfolio->resume_file) }}" download class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/20 border border-indigo-400/30 text-indigo-300 text-xs font-bold uppercase tracking-wider hover:bg-indigo-600 hover:text-white transition-all">
+                                <i class="fa-solid fa-download text-xs"></i> Download Resume
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- FULL-WIDTH INTERACTIVE SECTION PANELS CONTAINER -->
+            <div class="w-full space-y-12 z-20 pt-2" id="execRightColumn">
+                    
+                    <!-- 1. ABOUT SECTION (INITIALLY VISIBLE) -->
+                    <section id="about" class="exec-section-panel block py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// ABOUT ME</span>
+                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">
+                                Strategic Vision & Expertise
+                            </h2>
+                            <p class="text-slate-200 text-base sm:text-lg font-light leading-relaxed">
+                                {{ $portfolio->detailed_bio ?? $portfolio->description ?? 'Senior technologist and executive architect leading multi-department governance platforms, enterprise SaaS architectures, and high-scale systems.' }}
+                            </p>
+
+                            <!-- Information Metadata Grid -->
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-white/10">
+                                <div>
+                                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-1">Location</span>
+                                    <span class="text-xs font-bold text-white block">{{ trim(($portfolio->city ?? '') . ', ' . ($portfolio->country ?? 'Global')) ?: 'Global / Remote' }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-1">Profession</span>
+                                    <span class="text-xs font-bold text-white block">{{ $portfolio->position ?? 'Software Architect' }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-1">Experience</span>
+                                    <span class="text-xs font-bold text-white block">{{ !empty($experiences) && count($experiences) > 0 ? count($experiences) . '+ Roles' : '10+ Years' }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-1">Status</span>
+                                    <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Available</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 2. SERVICES OFFERED SECTION -->
+                    <section id="services" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// EXPERTISE & ADVISORY</span>
+                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Services Offered</h2>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                @if($portfolio->services && $portfolio->services->isNotEmpty())
+                                    @foreach($portfolio->services as $service)
+                                        <div class="p-6 rounded-3xl bg-[#121826]/70 border border-white/10 hover:border-indigo-400/50 transition-all backdrop-blur-md space-y-3 group">
+                                            <i class="fa-solid {{ $service->icon ?? 'fa-compass-drafting' }} text-xl text-indigo-400 group-hover:scale-110 transition-transform"></i>
+                                            <h3 class="text-lg font-display font-bold text-white group-hover:text-indigo-300 transition-colors">{{ $service->title }}</h3>
+                                            <p class="text-slate-300 text-xs font-light leading-relaxed">{{ $service->description }}</p>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-compass-drafting"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No services records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 3. WORK EXPERIENCE SECTION -->
+                    <section id="experience" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// CAREER TRAJECTORY</span>
+                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Work Experience</h2>
+
+                            <div class="space-y-0 pt-2">
+                                @if(!empty($experiences) && count($experiences) > 0)
+                                    @foreach($experiences as $index => $exp)
+                                        <div class="editorial-row py-6 px-4 border-b border-white/5" data-aos="fade-up" data-aos-delay="{{ ($index % 5) * 80 }}">
+                                            <div class="space-y-3">
+                                                <div class="flex flex-wrap justify-between items-center gap-2">
+                                                    <span class="text-xs font-mono font-semibold text-indigo-400 uppercase tracking-wider">
+                                                        {{ $exp->period ?? (($exp->start_date ? (is_string($exp->start_date) ? $exp->start_date : $exp->start_date->format('M Y')) : '') . ' — ' . ($exp->is_current ? 'PRESENT' : ($exp->end_date ? (is_string($exp->end_date) ? $exp->end_date : $exp->end_date->format('M Y')) : ''))) }}
+                                                    </span>
+                                                    <span class="text-xs font-mono text-slate-400">{{ $exp->company ?? $portfolio->organization ?? 'Enterprise Organization' }}</span>
+                                                </div>
+                                                <h3 class="text-xl font-display font-bold text-white">
+                                                    {{ $exp->position ?? $exp->title ?? 'Executive Consultant' }}
+                                                </h3>
+                                                <p class="text-slate-300 text-sm font-light leading-relaxed">
+                                                    {{ $exp->description ?? 'Directed digital transformation, scalable database infrastructures, and enterprise application roadmaps.' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-briefcase"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No work experience records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 4. SKILLS SECTION -->
+                    <section id="skills" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// TECHNICAL MATRIX</span>
+                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Skills & Competencies</h2>
+
+                            <div class="space-y-8 pt-2">
+                                @if(!empty($skills) && count($skills) > 0)
+                                    @php
+                                        $skillsGrouped = $skills->groupBy(function($s) {
+                                            return !empty($s->category) ? $s->category : 'Core Competencies';
+                                        });
+                                    @endphp
+                                    @foreach($skillsGrouped as $categoryName => $catSkills)
+                                        <div>
+                                            <h3 class="text-xs font-mono font-bold uppercase tracking-widest text-slate-400 mb-3 flex items-center gap-3">
+                                                <span>// {{ $categoryName }}</span>
+                                                <span class="flex-grow h-px bg-white/10"></span>
+                                            </h3>
+                                            <div class="flex flex-wrap gap-2.5">
+                                                @foreach($catSkills as $skill)
+                                                    <div class="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:border-indigo-400/50 hover:bg-white/10 transition-all flex items-center gap-2.5 group">
+                                                        <span class="font-display font-semibold text-xs text-white group-hover:text-indigo-300 transition-colors">{{ $skill->name }}</span>
+                                                        @if(!empty($skill->level))
+                                                            <span class="text-[10px] font-mono text-slate-400 group-hover:text-indigo-400 transition-colors">{{ $skill->level }}%</span>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-code"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No skill records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 5. PROJECTS SECTION (4 COLUMNS GRID DISPLAY) -->
+                    <section id="projects" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                                <div>
+                                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block mb-1">// CASE STUDIES</span>
+                                    <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Projects & Initiatives</h2>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
+                                @if(!empty($projects) && count($projects) > 0)
+                                    @foreach($projects as $index => $project)
+                                        <div class="group relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-[#121826] aspect-[4/5] flex flex-col justify-end transition-all duration-500 hover:border-indigo-400/50 hover:shadow-indigo-500/20" data-aos="fade-up" data-aos-delay="{{ ($index % 4) * 100 }}">
+                                            <!-- PROJECT IMAGE BACKGROUND -->
+                                            @if($project->image_path)
+                                                <img src="{{ Storage::url($project->image_path) }}" alt="{{ $project->title }}" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
+                                            @else
+                                                <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 flex flex-col items-center justify-center p-6 text-center">
+                                                    <i class="fa-solid fa-layer-group text-4xl text-indigo-400/40 mb-2 group-hover:scale-110 transition-transform"></i>
+                                                </div>
+                                            @endif
+
+                                            <!-- GRADIENT OVERLAY FOR READABILITY -->
+                                            <div class="absolute inset-0 bg-gradient-to-t from-[#0B0F17] via-[#0B0F17]/70 to-transparent opacity-90 group-hover:opacity-95 transition-opacity"></div>
+
+                                            <!-- OVERLAY CONTENT ON PROJECT IMAGE -->
+                                            <div class="relative z-10 p-5 space-y-3">
+                                                <!-- SINGLE LINE TITLE WITH ELLIPSIS IF LONG -->
+                                                <h3 class="text-base font-display font-extrabold text-white truncate tracking-tight" title="{{ $project->title }}">
+                                                    {{ $project->title }}
+                                                </h3>
+
+                                                <!-- READ MORE BUTTON ON PROJECT IMAGE (TRIGGERS MODAL POPUP) -->
+                                                <button type="button" class="exec-project-modal-btn inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-indigo-600 hover:text-white border border-white/20 hover:border-indigo-400 text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 backdrop-blur-md cursor-pointer shrink-0"
+                                                    data-title="{{ $project->title }}"
+                                                    data-description="{{ $project->description }}"
+                                                    data-image="{{ $project->image_path ? Storage::url($project->image_path) : '' }}"
+                                                    data-url="{{ $project->project_url ?? '' }}">
+                                                    Read More <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-layer-group"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No project records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 6. EDUCATION SECTION -->
+                    <section id="education" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// ACADEMIC HISTORY</span>
+                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Education</h2>
+
+                            <div class="space-y-4 pt-2">
+                                @if(!empty($education) && count($education) > 0)
+                                    @foreach($education as $index => $edu)
+                                        @php
+                                            $sDate = $edu->start_date ? (is_string($edu->start_date) ? \Carbon\Carbon::parse($edu->start_date) : $edu->start_date) : null;
+                                            $eDate = $edu->end_date ? (is_string($edu->end_date) ? \Carbon\Carbon::parse($edu->end_date) : $edu->end_date) : null;
+                                            
+                                            $startFormatted = $sDate ? $sDate->format('M Y') : ($edu->start_year ?? '2014');
+                                            $endFormatted = $eDate ? $eDate->format('M Y') : ($edu->end_year ?? 'PRESENT');
+                                            
+                                            $sYear = $sDate ? (int)$sDate->format('Y') : (int)($edu->start_year ?? 2014);
+                                            $eYear = $eDate ? (int)$eDate->format('Y') : ($endFormatted === 'PRESENT' ? (int)date('Y') : (int)($edu->end_year ?? 2018));
+                                            
+                                            $diffYears = ($eYear >= $sYear) ? ($eYear - $sYear) : 0;
+                                            if ($diffYears <= 1) {
+                                                $countYearsText = '1 Year Duration';
+                                            } else {
+                                                $countYearsText = $diffYears . ' Years Duration';
+                                            }
+                                        @endphp
+                                        <div class="editorial-row py-5 px-5 rounded-2xl bg-[#121826]/60 border border-white/10 hover:border-indigo-400/50 transition-all space-y-2" data-aos="fade-up">
+                                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                                <span class="text-xs font-mono font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-2">
+                                                    <i class="fa-regular fa-calendar-check text-[11px]"></i>
+                                                    {{ $startFormatted }} — {{ $endFormatted }}
+                                                </span>
+                                                <span class="text-[11px] font-mono font-semibold text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                                                    {{ $countYearsText }}
+                                                </span>
+                                            </div>
+                                            <h3 class="text-lg font-display font-bold text-white">{{ $edu->degree }}</h3>
+                                            <p class="text-slate-300 text-xs font-light">{{ $edu->institution }}</p>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-graduation-cap"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No education records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 7. CERTIFICATIONS SECTION -->
+                    <section id="certifications" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// CREDENTIALS</span>
+                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Certifications</h2>
+
+                            <div class="space-y-4 pt-2">
+                                @if(!empty($certifications) && count($certifications) > 0)
+                                    @foreach($certifications as $cert)
+                                        <div class="p-5 rounded-2xl bg-[#121826]/70 border border-white/10 backdrop-blur-md flex justify-between items-center">
+                                            <div>
+                                                <h4 class="text-base font-display font-bold text-white">{{ $cert->name }}</h4>
+                                                <span class="text-xs text-slate-400 block">{{ $cert->issuing_organization }}</span>
+                                            </div>
+                                            @if(!empty($cert->credential_url))
+                                                <a href="{{ $cert->credential_url }}" target="_blank" class="text-xs font-mono text-indigo-400 hover:text-white">Verify →</a>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-certificate"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No certification records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 8. TRAININGS SECTION -->
+                    <section id="trainings" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// SPECIALIZED COURSES</span>
+                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Trainings & Workshops</h2>
+
+                            <div class="space-y-4 pt-2">
+                                @if(!empty($trainings) && count($trainings) > 0)
+                                    @foreach($trainings as $tr)
+                                        <div class="p-5 rounded-2xl bg-[#121826]/70 border border-white/10 backdrop-blur-md">
+                                            <h4 class="text-base font-display font-bold text-white">{{ $tr->title }}</h4>
+                                            <span class="text-xs text-slate-400 block">{{ $tr->institution }}</span>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-chalkboard-user"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No training records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 9. ACHIEVEMENTS SECTION -->
+                    <section id="achievements" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// RECOGNITION & HONORS</span>
+                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Key Achievements</h2>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                @if($portfolio->achievements && $portfolio->achievements->isNotEmpty())
+                                    @foreach($portfolio->achievements as $ach)
+                                        <div class="p-6 rounded-3xl bg-[#121826]/70 border border-white/10 backdrop-blur-md space-y-2">
+                                            <span class="text-[10px] font-mono text-indigo-400 uppercase tracking-wider block">{{ $ach->date ?? 'HONOR' }}</span>
+                                            <h3 class="text-base font-display font-bold text-white">{{ $ach->title }}</h3>
+                                            <p class="text-slate-300 text-xs font-light leading-relaxed">{{ $ach->description }}</p>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-trophy"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No achievement records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 10. CONTRIBUTIONS SECTION -->
+                    <section id="contributions" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// COMMUNITY & OPEN CODE</span>
+                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Technical Contributions</h2>
+
+                            <div class="space-y-4 pt-2">
+                                @if($portfolio->contributions && $portfolio->contributions->isNotEmpty())
+                                    @foreach($portfolio->contributions as $cb)
+                                        <div class="p-6 rounded-3xl bg-[#121826]/70 border border-white/10 backdrop-blur-md space-y-3">
+                                            <div class="flex justify-between items-center">
+                                                <h4 class="text-base font-display font-bold text-white">{{ $cb->title }}</h4>
+                                                @if(!empty($cb->url))
+                                                    <a href="{{ $cb->url }}" target="_blank" class="text-xs font-mono text-indigo-400 hover:text-white">Repository →</a>
+                                                @endif
+                                            </div>
+                                            <p class="text-slate-300 text-xs font-light leading-relaxed">{{ $cb->description ?? '' }}</p>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-code-commit"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No contribution records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 11. TESTIMONIALS SECTION -->
+                    <section id="testimonials" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                                <div>
+                                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block mb-1">// CLIENT & LEADER ENDORSEMENTS</span>
+                                    <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Testimonials & Endorsements</h2>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                @if(!empty($testimonials) && count($testimonials) > 0)
+                                    @foreach($testimonials as $index => $tst)
+                                        @php
+                                            $name = $tst->client_name ?? $tst->author_name ?? 'Client';
+                                            $designation = $tst->designation ?? $tst->author_title ?? '';
+                                            if (!empty($tst->author_company)) {
+                                                $designation .= ($designation ? ' — ' : '') . $tst->author_company;
+                                            }
+                                            $content = $tst->content ?? $tst->quote ?? '';
+                                            $initials = '';
+                                            $parts = explode(' ', trim($name));
+                                            if (count($parts) >= 2) {
+                                                $initials = strtoupper(substr($parts[0], 0, 1) . substr($parts[1], 0, 1));
+                                            } else {
+                                                $initials = strtoupper(substr($name, 0, 2));
+                                            }
+                                        @endphp
+                                        <div class="relative p-7 sm:p-8 rounded-3xl bg-[#121826]/70 border border-white/10 hover:border-indigo-400/50 transition-all duration-500 backdrop-blur-md space-y-6 flex flex-col justify-between group hover:shadow-2xl hover:shadow-indigo-500/10 overflow-hidden" data-aos="fade-up" data-aos-delay="{{ ($index % 2) * 100 }}">
+                                            <!-- Ambient Quote Icon in Background -->
+                                            <i class="fa-solid fa-quote-right absolute top-6 right-6 text-4xl text-indigo-500/10 group-hover:text-indigo-400/20 transition-all pointer-events-none"></i>
+
+                                            <div class="space-y-4 relative z-10">
+                                                <!-- Star Rating Bar -->
+                                                <div class="flex items-center gap-1 text-amber-400 text-xs">
+                                                    <i class="fa-solid fa-star"></i>
+                                                    <i class="fa-solid fa-star"></i>
+                                                    <i class="fa-solid fa-star"></i>
+                                                    <i class="fa-solid fa-star"></i>
+                                                    <i class="fa-solid fa-star"></i>
+                                                </div>
+
+                                                <!-- Quote Content -->
+                                                <p class="text-slate-200 text-sm sm:text-base font-light italic leading-relaxed">
+                                                    "{{ $content }}"
+                                                </p>
+                                            </div>
+
+                                            <!-- Client Info Footer -->
+                                            <div class="flex items-center gap-3.5 pt-4 border-t border-white/10 relative z-10">
+                                                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-400/30 text-indigo-300 font-display font-extrabold text-sm flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                                                    {{ $initials }}
+                                                </div>
+                                                <div class="space-y-0.5">
+                                                    <h4 class="text-sm font-display font-bold text-white group-hover:text-indigo-300 transition-colors">{{ $name }}</h4>
+                                                    @if(!empty($designation))
+                                                        <span class="text-xs font-mono text-slate-400 block">{{ $designation }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-quote-left"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No testimonial records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 12. PUBLICATIONS SECTION -->
+                    <section id="publications" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                                <div>
+                                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block mb-1">// SCHOLARLY & RESEARCH PAPERS</span>
+                                    <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Publications & Reports</h2>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                @if(!empty($publications) && count($publications) > 0)
+                                    @foreach($publications as $index => $pub)
+                                        <div class="p-6 sm:p-7 rounded-3xl bg-[#121826]/70 border border-white/10 hover:border-indigo-400/50 transition-all backdrop-blur-md space-y-4 flex flex-col justify-between group" data-aos="fade-up" data-aos-delay="{{ ($index % 2) * 100 }}">
+                                            <div class="space-y-3">
+                                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-mono text-[10px] font-bold uppercase tracking-wider">
+                                                        {{ $pub->type ?? 'JOURNAL PAPER' }}
+                                                    </span>
+                                                    @if(!empty($pub->year))
+                                                        <span class="text-xs font-mono text-slate-400 font-semibold flex items-center gap-1.5">
+                                                            <i class="fa-regular fa-calendar text-[10px] text-indigo-400"></i> {{ $pub->year }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+
+                                                <h3 class="text-lg font-display font-extrabold text-white group-hover:text-indigo-300 transition-colors leading-snug">
+                                                    {{ $pub->title }}
+                                                </h3>
+
+                                                <div class="space-y-1.5 text-xs text-slate-300 font-light border-t border-white/5 pt-3">
+                                                    @if(!empty($pub->authors))
+                                                        <p class="flex items-center gap-2">
+                                                            <strong class="font-mono text-[11px] text-indigo-400 uppercase tracking-wider">Authors:</strong>
+                                                            <span class="text-slate-200">{{ $pub->authors }}</span>
+                                                        </p>
+                                                    @endif
+                                                    @if(!empty($pub->publisher))
+                                                        <p class="flex items-center gap-2">
+                                                            <strong class="font-mono text-[11px] text-indigo-400 uppercase tracking-wider">Publisher:</strong>
+                                                            <span class="text-slate-200">{{ $pub->publisher }}</span>
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <!-- ACTION BUTTONS -->
+                                            <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-white/10">
+                                                @if(!empty($pub->link))
+                                                    <a href="{{ $pub->link }}" target="_blank" class="px-4 py-2 rounded-xl bg-indigo-600/80 hover:bg-indigo-600 text-white font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-2">
+                                                        Online Link <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                                    </a>
+                                                @endif
+                                                @if(!empty($pub->report_path))
+                                                    <a href="{{ Storage::url($pub->report_path) }}" target="_blank" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white hover:text-slate-950 border border-white/20 text-white font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-2">
+                                                        Download Report <i class="fa-solid fa-download text-[10px]"></i>
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-book-open"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No publication records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 13. MEDIA APPEARANCES SECTION -->
+                    <section id="media" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-6">
+                            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                                <div>
+                                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-purple-400 block mb-1">// PRESS, KEYNOTES & BROADCASTS</span>
+                                    <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Media Appearances</h2>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                @if(!empty($media) && count($media) > 0)
+                                    @foreach($media as $index => $med)
+                                        <div class="p-6 sm:p-7 rounded-3xl bg-[#121826]/70 border border-white/10 hover:border-purple-400/50 transition-all backdrop-blur-md space-y-4 flex flex-col justify-between group" data-aos="fade-up" data-aos-delay="{{ ($index % 2) * 100 }}">
+                                            <div class="space-y-3">
+                                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                                    <span class="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono text-[10px] font-bold uppercase tracking-wider">
+                                                        {{ $med->type ?? 'MEDIA APPEARANCE' }}
+                                                    </span>
+                                                    @if(!empty($med->date))
+                                                        <span class="text-xs font-mono text-slate-400 font-semibold flex items-center gap-1.5">
+                                                            <i class="fa-regular fa-calendar-check text-[10px] text-purple-400"></i> {{ is_string($med->date) ? $med->date : $med->date->format('M Y') }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+
+                                                <h3 class="text-lg font-display font-extrabold text-white group-hover:text-purple-300 transition-colors leading-snug">
+                                                    {{ $med->title }}
+                                                </h3>
+
+                                                <div class="space-y-1.5 text-xs text-slate-300 font-light border-t border-white/5 pt-3">
+                                                    @if(!empty($med->channel_platform))
+                                                        <p class="flex items-center gap-2">
+                                                            <strong class="font-mono text-[11px] text-purple-400 uppercase tracking-wider">Channel / Platform:</strong>
+                                                            <span class="text-slate-200">{{ $med->channel_platform }}</span>
+                                                        </p>
+                                                    @endif
+                                                    @if(!empty($med->newspaper_name))
+                                                        <p class="flex items-center gap-2">
+                                                            <strong class="font-mono text-[11px] text-purple-400 uppercase tracking-wider">Press / Outlet:</strong>
+                                                            <span class="text-slate-200">{{ $med->newspaper_name }}</span>
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <!-- ACTION BUTTON -->
+                                            @if(!empty($med->link))
+                                                <div class="pt-4 border-t border-white/10">
+                                                    <a href="{{ $med->link }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-purple-600/80 hover:bg-purple-600 text-white font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center justify-center gap-2 w-full sm:w-auto">
+                                                        Watch / Read Coverage <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                            <i class="fa-solid fa-video"></i>
+                                        </div>
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
+                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No media appearance records have been added yet.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 14. CONTACT SECTION -->
+                    <section id="contact" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
+                        <div class="space-y-8">
+                            <div>
+                                <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block mb-2">// INITIATE DIALOGUE & INQUIRIES</span>
+                                <h2 class="hero-title-clamp font-display font-extrabold text-white uppercase tracking-tighter leading-none mb-3">
+                                    LET’S WORK TOGETHER.
+                                </h2>
+                                <p class="text-slate-300 text-sm font-light leading-relaxed max-w-xl">
+                                    Available for executive advisory, system architecture, and strategic technology consulting. Reach out directly or send a message below.
+                                </p>
+                            </div>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-2">
+                                <!-- LEFT COLUMN: DIRECT CONTACT DETAILS -->
+                                <div class="lg:col-span-5 space-y-4">
+                                    <div class="p-7 rounded-3xl bg-[#121826]/70 border border-white/10 backdrop-blur-md space-y-6">
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider border-b border-white/10 pb-3">Contact Details</h3>
+
+                                        <div class="space-y-4">
+                                            @if($portfolio->show_email && !empty($profile['email']))
+                                                <div class="flex items-start gap-4 group">
+                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                        <i class="fa-solid fa-envelope text-sm"></i>
+                                                    </div>
+                                                    <div class="space-y-0.5 overflow-hidden">
+                                                        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Direct Email</span>
+                                                        <a href="mailto:{{ $profile['email'] }}" class="text-xs sm:text-sm font-display font-semibold text-white hover:text-indigo-300 transition-colors truncate block">
+                                                            {{ $profile['email'] }}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            @if($portfolio->show_phone && !empty($profile['phone']))
+                                                <div class="flex items-start gap-4 group">
+                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                        <i class="fa-solid fa-phone text-sm"></i>
+                                                    </div>
+                                                    <div class="space-y-0.5 overflow-hidden">
+                                                        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Phone / Mobile</span>
+                                                        <a href="tel:{{ $profile['phone'] }}" class="text-xs sm:text-sm font-display font-semibold text-white hover:text-indigo-300 transition-colors truncate block">
+                                                            {{ $profile['phone'] }}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            @if(!empty($profile['location']))
+                                                <div class="flex items-start gap-4 group">
+                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                        <i class="fa-solid fa-location-dot text-sm"></i>
+                                                    </div>
+                                                    <div class="space-y-0.5 overflow-hidden">
+                                                        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Location</span>
+                                                        <span class="text-xs sm:text-sm font-display font-semibold text-white truncate block">
+                                                            {{ $profile['location'] }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            @if($portfolio->show_linkedin && !empty($profile['linkedin']))
+                                                <div class="flex items-start gap-4 group">
+                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                        <i class="fa-brands fa-linkedin-in text-sm"></i>
+                                                    </div>
+                                                    <div class="space-y-0.5 overflow-hidden">
+                                                        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">LinkedIn Profile</span>
+                                                        <a href="{{ $profile['linkedin'] }}" target="_blank" class="text-xs sm:text-sm font-display font-semibold text-indigo-400 hover:text-white transition-colors truncate block">
+                                                            Connect on LinkedIn →
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- RIGHT COLUMN: CONTACT FORM -->
+                                <div class="lg:col-span-7">
+                                    <div class="p-7 sm:p-8 rounded-3xl bg-[#121826]/70 border border-white/10 shadow-2xl backdrop-blur-md space-y-5">
+                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider border-b border-white/10 pb-3">Send Message</h3>
+
+                                        @if(session('status') == 'message-sent')
+                                            <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-mono flex items-center gap-3">
+                                                <i class="fa-solid fa-circle-check text-base"></i>
+                                                <span>Message sent successfully! {{ $user->name }} will respond shortly.</span>
+                                            </div>
+                                        @endif
+
+                                        @if ($errors->any())
+                                            <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-mono space-y-1">
+                                                @foreach ($errors->all() as $error)
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                                                        <span>{{ $error }}</span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+
+                                        <form action="{{ route('portfolio.contact.store', $portfolio->id) }}" method="POST" class="space-y-5">
+                                            @csrf
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                                <div>
+                                                    <label class="text-xs font-mono uppercase tracking-wider text-slate-400 block mb-2">Your Name <span class="text-rose-400">*</span></label>
+                                                    <input type="text" name="name" placeholder="Full Name" required class="w-full px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors text-sm">
+                                                </div>
+                                                <div>
+                                                    <label class="text-xs font-mono uppercase tracking-wider text-slate-400 block mb-2">Your Email <span class="text-rose-400">*</span></label>
+                                                    <input type="email" name="email" placeholder="name@domain.com" required class="w-full px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors text-sm">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="text-xs font-mono uppercase tracking-wider text-slate-400 block mb-2">Your Inquiry / Message <span class="text-rose-400">*</span></label>
+                                                <textarea name="message" rows="4" placeholder="Brief details regarding your requirement..." required class="w-full px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors text-sm"></textarea>
+                                            </div>
+                                            <button type="submit" class="w-full py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-xl shadow-indigo-600/30 flex items-center justify-center gap-2 cursor-pointer">
+                                                Send Message <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+
+        </main>
+
+        <script>
+        (function() {
+            function initExecNav() {
+                const panels = document.querySelectorAll('.exec-section-panel');
+                const tabs = document.querySelectorAll('.exec-nav-tab');
+
+                if (!panels.length) return;
+
+                function showPanel(targetId, userClicked = false) {
+                    if (!targetId) return;
+
+                    // 1. Hide all section panels
+                    panels.forEach(p => {
+                        p.style.setProperty('display', 'none', 'important');
+                        p.classList.add('hidden');
+                        p.classList.remove('block');
+                    });
+
+                    // 2. Display target section panel
+                    const target = document.getElementById(targetId);
+                    if (target) {
+                        target.style.setProperty('display', 'block', 'important');
+                        target.classList.remove('hidden');
+                        target.classList.add('block');
+
+                        if (typeof AOS !== 'undefined') {
+                            AOS.refresh();
+                        }
+
+                        // Smoothly scroll window to the VERY START of the selected section panel
+                        if (userClicked) {
+                            requestAnimationFrame(function() {
+                                const stickyNav = document.querySelector('.sticky.top-0');
+                                const stickyOffset = stickyNav ? stickyNav.offsetHeight : 65;
+                                const rect = target.getBoundingClientRect();
+                                const targetScrollY = window.pageYOffset + rect.top - stickyOffset - 15;
+
+                                window.scrollTo({
+                                    top: Math.max(0, targetScrollY),
+                                    behavior: 'smooth'
+                                });
+                            });
+                        }
+                    }
+
+                    // 3. Highlight pill tabs across horizontal directory bar with PURE WHITE text when active/clicked
+                    const tabsNavBox = document.getElementById('execNavTabsContainer');
+                    tabs.forEach(t => {
+                        const tTarget = t.getAttribute('data-target') || (t.getAttribute('href') ? t.getAttribute('href').replace('#', '') : '');
+
+                        if (tTarget === targetId) {
+                            t.classList.add('bg-indigo-600', 'text-white', 'border-indigo-400', 'font-extrabold', 'shadow-lg', 'shadow-indigo-500/30');
+                            t.classList.remove('bg-white', 'text-slate-950', 'text-slate-400', 'border-white/10');
+                            const numSpan = t.querySelector('span:first-child');
+                            if (numSpan) numSpan.classList.add('text-indigo-200');
+
+                            // Center active tab pill horizontally within directory bar only (preventing vertical window shift)
+                            if (tabsNavBox && t.closest('#execNavTabsContainer')) {
+                                try {
+                                    const tRect = t.getBoundingClientRect();
+                                    const cRect = tabsNavBox.getBoundingClientRect();
+                                    const offsetLeft = (tRect.left - cRect.left) + tabsNavBox.scrollLeft - (cRect.width / 2) + (tRect.width / 2);
+                                    tabsNavBox.scrollTo({ left: offsetLeft, behavior: 'smooth' });
+                                } catch(e) {}
+                            }
+                        } else {
+                            t.classList.remove('bg-indigo-600', 'bg-white', 'text-slate-950', 'text-white', 'border-indigo-400', 'border-white', 'font-extrabold', 'shadow-lg', 'shadow-indigo-500/30');
+                            t.classList.add('text-slate-400', 'border-white/10');
+                            const numSpan = t.querySelector('span:first-child');
+                            if (numSpan) {
+                                numSpan.classList.remove('text-indigo-200');
+                                numSpan.classList.add('text-indigo-400');
+                            }
+                        }
+                    });
+                }
+
+                // Smooth Scroll Controls for Left & Right Arrow Buttons
+                const leftArrowBtn = document.getElementById('execNavScrollLeft');
+                const rightArrowBtn = document.getElementById('execNavScrollRight');
+                const tabsContainer = document.getElementById('execNavTabsContainer');
+
+                if (leftArrowBtn && tabsContainer) {
+                    leftArrowBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        tabsContainer.scrollBy({ left: -280, behavior: 'smooth' });
+                    });
+                }
+
+                if (rightArrowBtn && tabsContainer) {
+                    rightArrowBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        tabsContainer.scrollBy({ left: 280, behavior: 'smooth' });
+                    });
+                }
+
+                // Initialize: show About by default (no auto scroll on page load)
+                showPanel('about', false);
+
+                // Project Details Modal Popup Logic
+                const projectModal = document.getElementById('execProjectModal');
+                const closeModalBtn = document.getElementById('closeExecProjectModal');
+                const closeModalActionBtn = document.getElementById('closeExecProjectModalBtn');
+                const modalTitle = document.getElementById('execModalProjectTitle');
+                const modalDesc = document.getElementById('execModalProjectDesc');
+                const modalImg = document.getElementById('execModalProjectImg');
+                const modalImgWrapper = document.getElementById('execModalImgWrapper');
+                const modalUrl = document.getElementById('execModalProjectUrl');
+
+                function openProjectModal(data) {
+                    if (!projectModal) return;
+                    if (modalTitle) modalTitle.textContent = data.title || 'Project Details';
+                    if (modalDesc) modalDesc.textContent = data.description || 'Full project architecture specifications and implementation details.';
+                    
+                    if (data.image && data.image.trim() !== '') {
+                        if (modalImg) modalImg.src = data.image;
+                        if (modalImgWrapper) modalImgWrapper.style.display = 'block';
+                    } else if (modalImgWrapper) {
+                        if (modalImg) modalImg.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?fit=crop&w=1200&q=80';
+                        if (modalImgWrapper) modalImgWrapper.style.display = 'block';
+                    }
+
+                    if (modalUrl) {
+                        if (data.url && data.url.trim() !== '' && data.url !== '#contact') {
+                            modalUrl.href = data.url;
+                            modalUrl.style.display = 'inline-flex';
+                        } else {
+                            modalUrl.style.display = 'none';
+                        }
+                    }
+
+                    projectModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        projectModal.classList.remove('opacity-0');
+                    }, 10);
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeProjectModal() {
+                    if (!projectModal) return;
+                    projectModal.classList.add('opacity-0');
+                    setTimeout(() => {
+                        projectModal.classList.add('hidden');
+                        document.body.style.overflow = '';
+                    }, 250);
+                }
+
+                // Global event listener for Read More buttons
+                document.addEventListener('click', function(e) {
+                    const modalBtn = e.target.closest('.exec-project-modal-btn');
+                    if (modalBtn) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openProjectModal({
+                            title: modalBtn.getAttribute('data-title'),
+                            description: modalBtn.getAttribute('data-description'),
+                            image: modalBtn.getAttribute('data-image'),
+                            url: modalBtn.getAttribute('data-url')
+                        });
+                        return;
+                    }
+
+                    const tab = e.target.closest('.exec-nav-tab');
+                    if (tab) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const targetId = tab.getAttribute('data-target') || (tab.getAttribute('href') ? tab.getAttribute('href').replace('#', '') : '');
+                        if (targetId) {
+                            showPanel(targetId, true);
+                        }
+                    }
+                }, true);
+
+                if (closeModalBtn) closeModalBtn.addEventListener('click', closeProjectModal);
+                if (closeModalActionBtn) closeModalActionBtn.addEventListener('click', closeProjectModal);
+                if (projectModal) {
+                    projectModal.addEventListener('click', function(e) {
+                        if (e.target === projectModal) closeProjectModal();
+                    });
+                }
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') closeProjectModal();
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initExecNav);
+            } else {
+                initExecNav();
+            }
+        })();
+        </script>
+
+        <!-- PROJECT DETAILS POPUP MODAL -->
+        <div id="execProjectModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/85 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+            <div class="relative w-full max-w-2xl bg-[#121826] border border-white/15 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] text-slate-100 transform transition-all duration-300">
+                <!-- MODAL CLOSE BUTTON -->
+                <button type="button" id="closeExecProjectModal" class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-slate-900/80 hover:bg-white hover:text-slate-950 border border-white/20 text-slate-300 font-bold flex items-center justify-center transition-all cursor-pointer">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+
+                <!-- MODAL BANNER IMAGE -->
+                <div id="execModalImgWrapper" class="relative w-full h-48 sm:h-60 bg-slate-900 overflow-hidden shrink-0">
+                    <img id="execModalProjectImg" src="" alt="Project Image" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#121826] via-transparent to-transparent"></div>
+                </div>
+
+                <!-- MODAL CONTENT BODY -->
+                <div class="p-6 sm:p-8 overflow-y-auto space-y-4">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-indigo-400 uppercase tracking-widest block mb-1">// PROJECT DETAILS</span>
+                        <h3 id="execModalProjectTitle" class="text-xl sm:text-2xl font-display font-extrabold text-white uppercase tracking-tight"></h3>
+                    </div>
+
+                    <div class="border-t border-white/10 pt-4">
+                        <p id="execModalProjectDesc" class="text-slate-300 text-sm font-light leading-relaxed whitespace-pre-line"></p>
+                    </div>
+
+                    <!-- MODAL ACTION BUTTONS -->
+                    <div class="flex flex-wrap items-center gap-4 pt-4 border-t border-white/10">
+                        <a id="execModalProjectUrl" href="#" target="_blank" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-2">
+                            Visit Live Site <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                        <button type="button" id="closeExecProjectModalBtn" class="px-6 py-3 rounded-xl bg-white/10 hover:bg-white hover:text-slate-950 border border-white/20 text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXECUTIVE THEME FOOTER -->
+        <footer class="border-t border-white/10 py-12 bg-[#070A10] text-slate-400 text-xs relative z-10">
+            <div class="max-w-7xl mx-auto px-6 space-y-8">
+                <!-- TOP ROW: CIRCULAR PROFILE IMAGE & FULL NAME ON LEFT + HORIZONTAL WHOLE NAVIGATION -->
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5">
+                    <!-- LEFT: CIRCULAR IMAGE + FULL NAME -->
+                    <div class="flex items-center gap-3 shrink-0">
+                        @if($portfolio->profile_image)
+                            <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $user->name }}" class="w-10 h-10 rounded-full object-cover border border-white/20 shadow-md">
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=120&background=1E293B&color=fff" alt="{{ $user->name }}" class="w-10 h-10 rounded-full object-cover border border-white/20 shadow-md">
+                        @endif
+                        <span class="font-display font-extrabold text-white text-sm tracking-tight">{{ strtoupper($user->name) }}</span>
+                    </div>
+
+                    <!-- RIGHT: HORIZONTAL WHOLE NAVIGATION (CENTER ALIGNED WHEN WRAPPED) -->
+                    <nav class="flex flex-wrap items-center justify-center text-center gap-x-5 gap-y-2.5 font-mono font-bold text-[11px] uppercase tracking-wider text-slate-400">
+                        @foreach($allNavModules as $footMod)
+                            <a href="#{{ $footMod['id'] }}" data-target="{{ $footMod['id'] }}" class="exec-nav-tab cursor-pointer hover:text-white transition-colors whitespace-nowrap">
+                                {{ $footMod['label'] }}
+                            </a>
+                        @endforeach
+                    </nav>
+                </div>
+
+                <!-- CENTER BOTTOM ROW: COPYRIGHT & POWERED BY MESSAGES -->
+                <div class="text-center space-y-2">
+                    <p class="text-slate-400 text-xs">
+                        &copy; {{ now()->year }} <strong class="text-white font-semibold">{{ $user->name }}</strong>. All rights reserved.
+                    </p>
+                    <p class="text-slate-500 text-[11px]">
+                        Powered by <a href="https://itechgb.com/" target="_blank" class="text-indigo-400 hover:text-white font-medium transition-colors">Innovative Technologies GB</a>
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    @elseif($theme == 'premium')
     <div class="bg-blob blob-1"></div>
     <div class="bg-blob blob-2"></div>
 

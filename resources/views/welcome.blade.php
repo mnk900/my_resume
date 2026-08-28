@@ -805,7 +805,7 @@
             </div>
 
             <!-- Theme Picker Buttons -->
-            <div class="d-flex justify-content-center gap-3 mb-4">
+            <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
                 <button class="btn btn-outline-glass px-4 py-2 rounded-pill active" id="theme-btn-premium" onclick="previewTheme('premium')">
                     <i class="fa-solid fa-moon text-info me-2"></i> Premium Dark Glass (Default)
                 </button>
@@ -813,7 +813,10 @@
                     <i class="fa-solid fa-sun text-warning me-2"></i> Classic Light (Clean)
                 </button>
                 <button class="btn btn-outline-glass px-4 py-2 rounded-pill" id="theme-btn-elegant" onclick="previewTheme('elegant')">
-                    <i class="fa-solid fa-palette text-purple me-2" style="color: #a78bfa !important;"></i> Elegant Indigo (Serif)
+                    <i class="fa-solid fa-palette me-2" style="color: #a78bfa !important;"></i> Elegant Indigo (Serif)
+                </button>
+                <button class="btn btn-outline-glass px-4 py-2 rounded-pill" id="theme-btn-executive" onclick="previewTheme('executive')">
+                    <i class="fa-solid fa-briefcase me-2" style="color: #818cf8 !important;"></i> Executive Theme (Dark)
                 </button>
             </div>
 
@@ -1452,7 +1455,7 @@
             const badge = document.getElementById('preview-badge');
 
             // Reset active button state
-            document.querySelectorAll('#theme-btn-premium, #theme-btn-classic, #theme-btn-elegant').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('#theme-btn-premium, #theme-btn-classic, #theme-btn-elegant, #theme-btn-executive').forEach(btn => btn.classList.remove('active'));
 
             if (theme === 'classic') {
                 document.getElementById('theme-btn-classic').classList.add('active');
@@ -1460,16 +1463,26 @@
                 card.style.borderColor = '#cbd5e1';
                 name.style.color = '#0f172a';
                 name.style.fontFamily = "'Inter', sans-serif";
-                title.style.color = '#2563eb';
+                title.style.color = '#475569';
                 badge.className = 'badge bg-primary text-white px-3 py-2';
                 avatar.className = 'rounded-circle border border-primary shadow-sm p-1';
+            } else if (theme === 'executive') {
+                document.getElementById('theme-btn-executive').classList.add('active');
+                card.style.background = '#0B0F17';
+                card.style.borderColor = '#6366f1';
+                name.style.color = '#ffffff';
+                name.style.fontFamily = "'Syne', sans-serif";
+                title.style.color = '#818cf8';
+                badge.className = 'badge bg-indigo text-white px-3 py-2';
+                badge.style.background = '#6366f1';
+                avatar.className = 'rounded-circle border border-indigo shadow-sm p-1';
             } else if (theme === 'elegant') {
                 document.getElementById('theme-btn-elegant').classList.add('active');
                 card.style.background = '#0f172a';
                 card.style.borderColor = '#6366f1';
                 name.style.color = '#ffffff';
                 name.style.fontFamily = "'Outfit', sans-serif";
-                title.style.color = '#8b5cf6';
+                title.style.color = '#94a3b8';
                 badge.className = 'badge bg-indigo text-white px-3 py-2';
                 badge.style.background = '#6366f1';
                 avatar.className = 'rounded-circle border border-purple shadow-sm p-1';
@@ -1480,7 +1493,7 @@
                 card.style.borderColor = 'rgba(255, 255, 255, 0.08)';
                 name.style.color = '#ffffff';
                 name.style.fontFamily = "'Outfit', sans-serif";
-                title.style.color = '#38bdf8';
+                title.style.color = '#94a3b8';
                 badge.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2';
                 avatar.className = 'rounded-circle border border-info shadow-sm p-1';
             }

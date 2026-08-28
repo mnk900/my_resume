@@ -1,0 +1,82 @@
+/* Executive Editorial Theme Stylesheet */
+:root {
+    --bg-dark: #0B0F17;
+    --bg-card: #121826;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --text-muted: #94A3B8;
+    --accent-indigo: #6366F1;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: #F8FAFC;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Editorial Typography Fluid Scale */
+.hero-title-clamp {
+    font-size: clamp(2rem, 4vw, 3.8rem);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+}
+
+.section-title-clamp {
+    font-size: clamp(1.75rem, 3.5vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+}
+
+/* Custom Image Hover, Masking & Floating Animations */
+.editorial-img-wrapper {
+    position: relative;
+    overflow: hidden;
+    background-color: #1b2436;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+}
+
+.editorial-img-wrapper img {
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+}
+
+.editorial-img-wrapper:hover img {
+    transform: scale(1.05);
+}
+
+@keyframes floatSoft {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+}
+
+.hero-img-animated {
+    animation: floatSoft 7s ease-in-out infinite;
+}
+
+/* Row-based Editorial Divider */
+.editorial-row {
+    border-top: 1px solid var(--border-subtle);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.editorial-row:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+/* Category Filter Button Active */
+.filter-pill.active {
+    background-color: #ffffff;
+    color: #0b0f17;
+    font-weight: 700;
+}
+
+/* Prefers Reduced Motion Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

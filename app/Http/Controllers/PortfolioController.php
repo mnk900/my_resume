@@ -30,8 +30,8 @@ class PortfolioController extends Controller
         $portfolio->load([
             'user', 'skills', 'projects', 'experiences',
             'education', 'certifications', 'trainings',
-            'achievements', 'contributions', 'testimonials',
-            'services', 'messages', 'sections'
+            'achievements', 'contributions', 'publications',
+            'testimonials', 'media', 'services', 'messages', 'sections'
         ]);
 
         $user = $portfolio->user;
@@ -350,7 +350,9 @@ class PortfolioController extends Controller
         if ($request->has('title')) $data['title'] = $request->input('title');
         if ($request->has('theme')) {
             $rawTheme = strtolower(trim($request->input('theme')));
-            if (str_contains($rawTheme, 'premium')) {
+            if (str_contains($rawTheme, 'executive')) {
+                $data['theme'] = 'executive';
+            } elseif (str_contains($rawTheme, 'premium')) {
                 $data['theme'] = 'premium';
             } elseif (str_contains($rawTheme, 'elegant')) {
                 $data['theme'] = 'elegant';

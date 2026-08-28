@@ -925,8 +925,10 @@
                     <div class="row g-3 g-md-4">
                         @foreach($themes as $theme)
                             @php
-                                $tKey = str_contains(strtolower($theme->name), 'premium') ? 'premium' : (str_contains(strtolower($theme->name), 'elegant') ? 'elegant' : 'classic');
-                                $currentThemeKey = str_contains(strtolower($portfolio->theme ?? 'classic'), 'premium') ? 'premium' : (str_contains(strtolower($portfolio->theme ?? 'classic'), 'elegant') ? 'elegant' : 'classic');
+                                $tSlug = strtolower(trim($theme->slug ?? $theme->name));
+                                $tKey = str_contains($tSlug, 'executive') ? 'executive' : (str_contains($tSlug, 'premium') ? 'premium' : (str_contains($tSlug, 'elegant') ? 'elegant' : 'classic'));
+                                $pTheme = strtolower(trim($portfolio->theme ?? 'classic'));
+                                $currentThemeKey = str_contains($pTheme, 'executive') ? 'executive' : (str_contains($pTheme, 'premium') ? 'premium' : (str_contains($pTheme, 'elegant') ? 'elegant' : 'classic'));
                                 $isCurrentActive = ($currentThemeKey === $tKey);
                             @endphp
                             <div class="col-12 col-md-6 col-lg-4">
@@ -1283,7 +1285,7 @@
                                                 <div class="row g-3 mb-3">
                                                     <div class="col-6">
                                                         <label class="form-label fw-bold">Type <span class="text-danger">*</span></label>
-                                                        <select name="type" class="form-select" required>
+                                                        <select name="type" class="form-select media-type-toggle" required>
                                                             <option value="tv">TV / Video Interview</option>
                                                             <option value="oped">Newspaper / Op-Ed Article</option>
                                                         </select>
@@ -1294,18 +1296,16 @@
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label fw-bold">Appearance Title <span class="text-danger">*</span></label>
+                                                    <label class="form-label fw-bold media-title-label">Appearance Title <span class="text-danger">*</span></label>
                                                     <input type="text" name="title" class="form-control" required>
                                                 </div>
-                                                <div class="row g-3 mb-3">
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-bold">TV Channel / Platform</label>
-                                                        <input type="text" name="channel_platform" class="form-control">
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="form-label fw-bold">Newspaper / Journal Name</label>
-                                                        <input type="text" name="newspaper_name" class="form-control">
-                                                    </div>
+                                                <div class="mb-3 media-channel-box">
+                                                    <label class="form-label fw-bold">TV Channel / Platform</label>
+                                                    <input type="text" name="channel_platform" class="form-control" placeholder="e.g. CNN, YouTube, Podcast">
+                                                </div>
+                                                <div class="mb-3 media-newspaper-box d-none">
+                                                    <label class="form-label fw-bold">Newspaper / Journal Name</label>
+                                                    <input type="text" name="newspaper_name" class="form-control" placeholder="e.g. The Wall Street Journal, Financial Times">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Media URL / Link <span class="text-danger">*</span></label>
@@ -1338,7 +1338,11 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Publication Link / DOI</label>
-                                                    <input type="url" name="link" class="form-control">
+                                                    <input type="url" name="link" class="form-control" placeholder="https://doi.org/...">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Attach Report / Document (PDF, DOCX, ZIP)</label>
+                                                    <input type="file" name="report" class="form-control" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip">
                                                 </div>
                                             @elseif($key === 'resume')
                                                 <div class="mb-3">
@@ -1690,10 +1694,10 @@
                                                             @elseif($key === 'media')
                                                                 <div class="row g-2 mb-3">
                                                                     <div class="col-6">
-                                                                        <label class="form-label fw-bold small text-dark">Media Type <span class="text-danger">*</span></label>
-                                                                        <select name="type" class="form-select form-select-sm" required>
-                                                                            <option value="tv" {{ $item->type === 'tv' ? 'selected' : '' }}>TV / Video Interview</option>
-                                                                            <option value="oped" {{ $item->type === 'oped' ? 'selected' : '' }}>Newspaper / Op-Ed Article</option>
+                                                                        <label class="form-label fw-bold small text-dark">Type <span class="text-danger">*</span></label>
+                                                                        <select name="type" class="form-select form-select-sm media-type-toggle" required>
+                                                                            <option value="tv" {{ ($item->type == 'tv' || $item->type == 'TV / Video Interview') ? 'selected' : '' }}>TV / Video Interview</option>
+                                                                            <option value="oped" {{ ($item->type == 'oped' || $item->type == 'Newspaper / Op-Ed Article') ? 'selected' : '' }}>Newspaper / Op-Ed Article</option>
                                                                         </select>
                                                                     </div>
                                                                     <div class="col-6">
@@ -1702,18 +1706,16 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold small text-dark">Appearance Title <span class="text-danger">*</span></label>
+                                                                    <label class="form-label fw-bold small text-dark media-title-label">{{ ($item->type == 'oped' || $item->type == 'Newspaper / Op-Ed Article') ? 'Article Title' : 'Appearance Title' }} <span class="text-danger">*</span></label>
                                                                     <input type="text" name="title" class="form-control form-control-sm" value="{{ $item->title }}" required>
                                                                 </div>
-                                                                <div class="row g-2 mb-3">
-                                                                    <div class="col-6">
-                                                                        <label class="form-label fw-bold small text-dark">TV Channel / Platform</label>
-                                                                        <input type="text" name="channel_platform" class="form-control form-control-sm" value="{{ $item->channel_platform }}">
-                                                                    </div>
-                                                                    <div class="col-6">
-                                                                        <label class="form-label fw-bold small text-dark">Newspaper / Journal Name</label>
-                                                                        <input type="text" name="newspaper_name" class="form-control form-control-sm" value="{{ $item->newspaper_name }}">
-                                                                    </div>
+                                                                <div class="mb-3 media-channel-box {{ ($item->type == 'oped' || $item->type == 'Newspaper / Op-Ed Article') ? 'd-none' : '' }}">
+                                                                    <label class="form-label fw-bold small text-dark">TV Channel / Platform</label>
+                                                                    <input type="text" name="channel_platform" class="form-control form-control-sm" value="{{ $item->channel_platform }}">
+                                                                </div>
+                                                                <div class="mb-3 media-newspaper-box {{ ($item->type == 'tv' || $item->type == 'TV / Video Interview' || empty($item->type)) ? 'd-none' : '' }}">
+                                                                    <label class="form-label fw-bold small text-dark">Newspaper / Journal Name</label>
+                                                                    <input type="text" name="newspaper_name" class="form-control form-control-sm" value="{{ $item->newspaper_name }}">
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label class="form-label fw-bold small text-dark">Media URL / Link <span class="text-danger">*</span></label>
@@ -2433,6 +2435,40 @@
                                 tags: true
                             });
                         }
+                    });
+
+                    // Dynamic Media Type Field Visibility Toggler
+                    function updateMediaFieldVisibility(selectEl) {
+                        const parent = selectEl.closest('form') || selectEl.closest('.modal-body');
+                        if (!parent) return;
+                        const channelBox = parent.querySelector('.media-channel-box');
+                        const newspaperBox = parent.querySelector('.media-newspaper-box');
+                        const titleLabel = parent.querySelector('.media-title-label');
+
+                        const val = selectEl.value;
+                        if (val === 'oped' || val === 'Newspaper / Op-Ed Article') {
+                            if (channelBox) channelBox.classList.add('d-none');
+                            if (newspaperBox) newspaperBox.classList.remove('d-none');
+                            if (titleLabel) titleLabel.innerHTML = 'Article Title <span class="text-danger">*</span>';
+                        } else {
+                            if (channelBox) channelBox.classList.remove('d-none');
+                            if (newspaperBox) newspaperBox.classList.add('d-none');
+                            if (titleLabel) titleLabel.innerHTML = 'Appearance Title <span class="text-danger">*</span>';
+                        }
+                    }
+
+                    $(document).on('change', '.media-type-toggle', function() {
+                        updateMediaFieldVisibility(this);
+                    });
+
+                    $('.media-type-toggle').each(function() {
+                        updateMediaFieldVisibility(this);
+                    });
+
+                    $('.modal').on('shown.bs.modal', function() {
+                        $(this).find('.media-type-toggle').each(function() {
+                            updateMediaFieldVisibility(this);
+                        });
                     });
                 }
             });

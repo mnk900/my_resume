@@ -1,5 +1,5 @@
 <!-- Global Loader Overlay -->
-<div id="global-app-loader" class="global-loader-overlay d-none">
+<div id="global-app-loader" class="global-loader-overlay hidden d-none">
     <div class="global-loader-card">
         <div class="global-spinner-wrapper">
             <div class="spinner-ring outer-ring"></div>
@@ -26,16 +26,18 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 999999;
-    display: flex;
+    display: none !important;
     align-items: center;
     justify-content: center;
     opacity: 0;
     transition: opacity 0.25s ease-in-out;
-    pointer-events: auto;
+    pointer-events: none !important;
 }
 
 .global-loader-overlay.active {
+    display: flex !important;
     opacity: 1;
+    pointer-events: auto !important;
 }
 
 .global-loader-card {
@@ -150,7 +152,7 @@
             loaderIcon.className = 'fa-solid fa-arrows-rotate fa-spin text-primary';
         }
 
-        loaderOverlay.classList.remove('d-none');
+        loaderOverlay.classList.remove('d-none', 'hidden');
         // Trigger opacity fade-in
         setTimeout(function() {
             loaderOverlay.classList.add('active');
@@ -170,7 +172,7 @@
         clearTimeout(safetyTimeout);
         loaderOverlay.classList.remove('active');
         setTimeout(function() {
-            loaderOverlay.classList.add('d-none');
+            loaderOverlay.classList.add('d-none', 'hidden');
         }, 250);
     };
 

@@ -16,6 +16,7 @@ class ThemeSeeder extends Seeder
             ['name' => 'Classic Clean', 'slug' => 'classic', 'is_active' => true],
             ['name' => 'Elegant Indigo', 'slug' => 'elegant', 'is_active' => true],
             ['name' => 'Premium Professional', 'slug' => 'premium', 'is_active' => true],
+            ['name' => 'Executive Theme', 'slug' => 'executive', 'is_active' => true],
         ];
 
         // Clean up deleted themes
