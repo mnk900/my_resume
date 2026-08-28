@@ -148,6 +148,7 @@ class SocialFeedUpgradeTest extends TestCase
             'posted_by_user_id' => $user->id,
             'type' => 'job',
             'title' => 'Lead Software Engineer',
+            'slug' => 'lead-software-engineer',
             'description' => 'Building scalable systems',
             'status' => 'published',
         ]);
