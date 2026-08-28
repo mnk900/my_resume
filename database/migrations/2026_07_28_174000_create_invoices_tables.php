@@ -26,9 +26,9 @@ return new class extends Migration
             $table->decimal('discount', 10, 2)->default(0);
             $table->decimal('tax', 10, 2)->default(0);
             $table->decimal('total', 10, 2)->default(0);
-            $table->string('payment_bank')->default('Faysal Bank');
+            $table->string('payment_bank')->default('Habib Bank Limited');
             $table->string('payment_account_title')->default('Muhammad Naeem Khan');
-            $table->string('payment_iban')->default('0194006900196056');
+            $table->string('payment_iban')->default('PK10HABB0050757901822803');
             $table->text('terms')->nullable();
             $table->string('status')->default('unpaid');
             $table->timestamps();

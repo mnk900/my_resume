@@ -253,9 +253,9 @@ All boolean fields are cast to boolean in `$casts`.
 Invoice format: `INV-{YEAR}-{SEQ}` (e.g., INV-2026-001)
 
 Default payment details (hardcoded in migration defaults):
-- Bank: Faysal Bank
+- Bank: Habib Bank Limited
 - Account Title: Muhammad Naeem Khan
-- IBAN: 0194006900196056
+- IBAN: PK10HABB0050757901822803
 
 ### Supporting Tables
 - `themes` -> (id, name, slug, is_active) - admin-managed

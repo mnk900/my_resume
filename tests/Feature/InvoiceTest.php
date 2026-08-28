@@ -71,9 +71,9 @@ class InvoiceTest extends TestCase
             'discount' => 0.00,
             'tax' => 0.00,
             'total' => 5000.00,
-            'payment_bank' => 'Faysal Bank',
+            'payment_bank' => 'Habib Bank Limited',
             'payment_account_title' => 'Muhammad Naeem Khan',
-            'payment_iban' => '0194006900196056',
+            'payment_iban' => 'PK10HABB0050757901822803',
             'terms' => 'Advance payment required.',
             'items' => [
                 [
@@ -112,9 +112,9 @@ class InvoiceTest extends TestCase
             'email' => $this->user->email,
             'subtotal' => 5000.00,
             'total' => 5000.00,
-            'payment_bank' => 'Faysal Bank',
+            'payment_bank' => 'Habib Bank Limited',
             'payment_account_title' => 'Muhammad Naeem Khan',
-            'payment_iban' => '0194006900196056',
+            'payment_iban' => 'PK10HABB0050757901822803',
         ]);
 
         $response = $this->actingAs($this->admin)->get(route('invoices.show', $invoice));
@@ -134,9 +134,9 @@ class InvoiceTest extends TestCase
             'email' => $this->user->email,
             'subtotal' => 5000.00,
             'total' => 5000.00,
-            'payment_bank' => 'Faysal Bank',
+            'payment_bank' => 'Habib Bank Limited',
             'payment_account_title' => 'Muhammad Naeem Khan',
-            'payment_iban' => '0194006900196056',
+            'payment_iban' => 'PK10HABB0050757901822803',
         ]);
 
         $response = $this->actingAs($this->admin)->get(route('invoices.pdf', $invoice));
@@ -155,9 +155,9 @@ class InvoiceTest extends TestCase
             'email' => $this->user->email,
             'subtotal' => 5000.00,
             'total' => 5000.00,
-            'payment_bank' => 'Faysal Bank',
+            'payment_bank' => 'Habib Bank Limited',
             'payment_account_title' => 'Muhammad Naeem Khan',
-            'payment_iban' => '0194006900196056',
+            'payment_iban' => 'PK10HABB0050757901822803',
         ]);
 
         $response = $this->actingAs($this->admin)->delete(route('invoices.destroy', $invoice));
@@ -178,9 +178,9 @@ class InvoiceTest extends TestCase
             'email' => $this->user->email,
             'subtotal' => 5000.00,
             'total' => 5000.00,
-            'payment_bank' => 'Faysal Bank',
+            'payment_bank' => 'Habib Bank Limited',
             'payment_account_title' => 'Muhammad Naeem Khan',
-            'payment_iban' => '0194006900196056',
+            'payment_iban' => 'PK10HABB0050757901822803',
         ]);
 
         $response = $this->actingAs($this->admin)->post(route('invoices.email', $invoice));
@@ -204,9 +204,9 @@ class InvoiceTest extends TestCase
             'email' => $this->user->email,
             'subtotal' => 5000.00,
             'total' => 5000.00,
-            'payment_bank' => 'Faysal Bank',
+            'payment_bank' => 'Habib Bank Limited',
             'payment_account_title' => 'Muhammad Naeem Khan',
-            'payment_iban' => '0194006900196056',
+            'payment_iban' => 'PK10HABB0050757901822803',
         ]);
 
         $response = $this->actingAs($this->user)->post(route('invoices.email', $invoice));

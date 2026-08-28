@@ -78,22 +78,26 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        // Featured verified companies
+        // Featured verified companies (prioritizing companies with logos)
         $featuredCompanies = Company::withCount(['opportunities' => function($q) {
                 $q->where('status', 'published');
             }])
+            ->orderByRaw('CASE WHEN logo_path IS NOT NULL AND logo_path != "" THEN 0 ELSE 1 END')
             ->latest()
             ->take(4)
             ->get();
 
-        // Featured candidate profiles
+        // Featured candidate profiles (prioritizing portfolios with uploaded profile pictures)
         $featuredCandidates = User::whereHas('portfolio', function($q) {
                 $q->where('is_active', true);
             })
             ->where('role', '!=', 'admin')
             ->where('account_status', '!=', 'suspended')
             ->with('portfolio', 'professionalPreference')
-            ->latest()
+            ->join('portfolios', 'users.id', '=', 'portfolios.user_id')
+            ->select('users.*')
+            ->orderByRaw('CASE WHEN portfolios.profile_image IS NOT NULL AND portfolios.profile_image != "" THEN 0 ELSE 1 END')
+            ->orderBy('users.id', 'desc')
             ->take(6)
             ->get();
 

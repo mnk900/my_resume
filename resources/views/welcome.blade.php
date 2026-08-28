@@ -508,22 +508,27 @@
                         </div>
 
                         <!-- Central Main Floating Candidate Profile Card -->
+                        @php $topCandidate = $featuredCandidates->first(); @endphp
                         <div class="glass-panel p-4 border-slate-subtle">
                             <div class="d-flex align-items-start justify-content-between mb-3">
                                 <div class="d-flex gap-3 align-items-center">
                                     <div class="position-relative">
-                                        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4 text-white" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #0284c7);">
-                                            FA
-                                        </div>
+                                        @if($topCandidate && $topCandidate->portfolio && $topCandidate->portfolio->profile_image)
+                                            <img src="{{ asset('storage/' . $topCandidate->portfolio->profile_image) }}" alt="{{ $topCandidate->name }}" class="rounded-circle border border-info p-1" style="width: 60px; height: 60px; object-fit: cover;">
+                                        @else
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4 text-white" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #0284c7);">
+                                                {{ $topCandidate ? strtoupper(substr($topCandidate->name, 0, 2)) : 'FA' }}
+                                            </div>
+                                        @endif
                                         <span class="position-absolute bottom-0 end-0 bg-info rounded-circle border border-dark p-1" title="Verified Professional" style="width: 18px; height: 18px;"></span>
                                     </div>
                                     <div>
                                         <h5 class="mb-0 text-white fw-bold d-flex align-items-center gap-2">
-                                            Fazal Ali Khan
+                                            {{ $topCandidate->name ?? 'Fazal Ali Khan' }}
                                             <i class="fa-solid fa-circle-check text-info fs-6" title="Verified Profile"></i>
                                         </h5>
-                                        <div class="text-muted-slate fs-7">Full Stack Engineer & Cloud Architect</div>
-                                        <div class="text-secondary fs-7 mt-1"><i class="fa-solid fa-location-dot me-1 text-danger opacity-75"></i> Gilgit-Baltistan, Pakistan</div>
+                                        <div class="text-muted-slate fs-7">{{ $topCandidate->portfolio->position ?? 'Full Stack Engineer & Cloud Architect' }}</div>
+                                        <div class="text-secondary fs-7 mt-1"><i class="fa-solid fa-location-dot me-1 text-danger opacity-75"></i> {{ $topCandidate->portfolio->city ?? 'Gilgit-Baltistan' }}, {{ $topCandidate->portfolio->country ?? 'Pakistan' }}</div>
                                     </div>
                                 </div>
                                 <span class="badge bg-primary-subtle text-info border border-info-subtle rounded-pill px-3 py-2">Open to Work</span>
@@ -684,9 +689,13 @@
                         <div class="glass-panel p-4 h-100 glass-panel-interactive d-flex flex-column justify-content-between">
                             <div>
                                 <div class="d-flex align-items-center gap-3 mb-3">
-                                    <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold fs-5" style="width: 48px; height: 48px; background: var(--gradient-primary);">
-                                        {{ strtoupper(substr($company->name, 0, 2)) }}
-                                    </div>
+                                    @if($company->logo_path)
+                                        <img src="{{ asset('storage/' . $company->logo_path) }}" alt="{{ $company->name }}" class="rounded-3 border border-slate-subtle bg-white p-1 shadow-sm" style="width: 48px; height: 48px; object-fit: contain;">
+                                    @else
+                                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold fs-5" style="width: 48px; height: 48px; background: var(--gradient-primary);">
+                                            {{ strtoupper(substr($company->name, 0, 2)) }}
+                                        </div>
+                                    @endif
                                     <div>
                                         <h5 class="text-white fw-bold mb-0 text-truncate" style="max-width: 150px;">{{ $company->name }}</h5>
                                         <div class="text-info fs-7">{{ $company->industry ?? 'Technology' }}</div>
@@ -812,9 +821,7 @@
             <div id="theme-preview-card" class="glass-panel p-4 p-md-5 transition-all">
                 <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom border-slate-subtle">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold fs-4" id="preview-avatar" style="width: 56px; height: 56px; background: var(--gradient-primary);">
-                            AK
-                        </div>
+                        <img src="{{ asset('images/amina_khan_avatar.jpg') }}" alt="Amina Khan" id="preview-avatar" class="rounded-circle border border-info shadow-sm p-1" style="width: 56px; height: 56px; object-fit: cover;">
                         <div>
                             <h3 class="mb-0 text-white" id="preview-name">Amina Khan</h3>
                             <div class="text-info fs-7" id="preview-title">Senior Cyber Security Analyst & Cloud Auditor</div>
@@ -877,11 +884,9 @@
                 <div class="row align-items-center">
                     <div class="col-lg-5 mb-4 mb-lg-0">
                         <div class="d-flex align-items-center gap-3 mb-3">
-                            <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold fs-4" style="width: 54px; height: 54px; background: var(--gradient-primary);">
-                                JD
-                            </div>
+                            <img src="{{ asset('images/john_doe_avatar.jpg') }}" alt="John Doe" class="rounded-circle border border-info shadow-sm p-1" style="width: 54px; height: 54px; object-fit: cover;">
                             <div>
-                                <h4 class="text-white mb-0">Jane Doe</h4>
+                                <h4 class="text-white mb-0">John Doe</h4>
                                 <div class="text-info fs-7">Senior UI/UX Designer & Product Architect</div>
                             </div>
                         </div>
@@ -1162,9 +1167,13 @@
                             <div>
                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                     <div class="d-flex align-items-center gap-3">
-                                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold fs-5" style="width: 48px; height: 48px; background: var(--gradient-primary);">
-                                            {{ strtoupper(substr($candidate->name, 0, 2)) }}
-                                        </div>
+                                        @if($candidate->portfolio && $candidate->portfolio->profile_image)
+                                            <img src="{{ asset('storage/' . $candidate->portfolio->profile_image) }}" alt="{{ $candidate->name }}" class="rounded-circle border border-info shadow-sm p-1" style="width: 50px; height: 50px; object-fit: cover;">
+                                        @else
+                                            <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold fs-5" style="width: 50px; height: 50px; background: var(--gradient-primary);">
+                                                {{ strtoupper(substr($candidate->name, 0, 2)) }}
+                                            </div>
+                                        @endif
                                         <div>
                                             <h5 class="text-white fw-bold mb-0 d-flex align-items-center gap-2">
                                                 {{ $candidate->name }}
@@ -1453,7 +1462,7 @@
                 name.style.fontFamily = "'Inter', sans-serif";
                 title.style.color = '#2563eb';
                 badge.className = 'badge bg-primary text-white px-3 py-2';
-                avatar.style.background = '#2563eb';
+                avatar.className = 'rounded-circle border border-primary shadow-sm p-1';
             } else if (theme === 'elegant') {
                 document.getElementById('theme-btn-elegant').classList.add('active');
                 card.style.background = '#0f172a';
@@ -1463,7 +1472,7 @@
                 title.style.color = '#8b5cf6';
                 badge.className = 'badge bg-indigo text-white px-3 py-2';
                 badge.style.background = '#6366f1';
-                avatar.style.background = 'linear-gradient(135deg, #6366f1, #8b5cf6)';
+                avatar.className = 'rounded-circle border border-purple shadow-sm p-1';
             } else {
                 // Premium (Default)
                 document.getElementById('theme-btn-premium').classList.add('active');
@@ -1473,7 +1482,7 @@
                 name.style.fontFamily = "'Outfit', sans-serif";
                 title.style.color = '#38bdf8';
                 badge.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2';
-                avatar.style.background = 'var(--gradient-primary)';
+                avatar.className = 'rounded-circle border border-info shadow-sm p-1';
             }
         }
 

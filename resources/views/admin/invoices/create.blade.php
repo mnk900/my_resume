@@ -169,7 +169,7 @@
                                     
                                     <div class="mb-2">
                                         <label for="payment_bank" class="form-label small fw-semibold text-muted">Account/Bank</label>
-                                        <input type="text" class="form-control form-control-sm" id="payment_bank" name="payment_bank" value="{{ old('payment_bank', 'Faysal Bank') }}" required>
+                                        <input type="text" class="form-control form-control-sm" id="payment_bank" name="payment_bank" value="{{ old('payment_bank', 'Habib Bank Limited') }}" required>
                                     </div>
                                     <div class="mb-2">
                                         <label for="payment_account_title" class="form-label small fw-semibold text-muted">Account Title</label>
@@ -177,7 +177,7 @@
                                     </div>
                                     <div class="mb-2">
                                         <label for="payment_iban" class="form-label small fw-semibold text-muted">IBAN/Account No.</label>
-                                        <input type="text" class="form-control form-control-sm" id="payment_iban" name="payment_iban" value="{{ old('payment_iban', '0194006900196056') }}" required>
+                                        <input type="text" class="form-control form-control-sm" id="payment_iban" name="payment_iban" value="{{ old('payment_iban', 'PK10HABB0050757901822803') }}" required>
                                     </div>
                                 </div>
                                 
