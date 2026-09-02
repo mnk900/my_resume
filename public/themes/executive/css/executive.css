@@ -28,6 +28,18 @@ body {
     letter-spacing: -0.03em;
 }
 
+/* Mobile Small Devices Typography Optimization */
+@media (max-width: 640px) {
+    .hero-title-clamp {
+        font-size: clamp(1.35rem, 6vw, 1.85rem) !important;
+        line-height: 1.15 !important;
+    }
+    .section-title-clamp {
+        font-size: clamp(1.15rem, 5vw, 1.5rem) !important;
+        line-height: 1.2 !important;
+    }
+}
+
 /* Custom Image Hover, Masking & Floating Animations */
 .editorial-img-wrapper {
     position: relative;

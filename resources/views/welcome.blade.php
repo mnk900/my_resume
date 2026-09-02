@@ -818,6 +818,9 @@
                 <button class="btn btn-outline-glass px-4 py-2 rounded-pill" id="theme-btn-executive" onclick="previewTheme('executive')">
                     <i class="fa-solid fa-briefcase me-2" style="color: #818cf8 !important;"></i> Executive Theme (Dark)
                 </button>
+                <button class="btn btn-outline-glass px-4 py-2 rounded-pill" id="theme-btn-business-class" onclick="previewTheme('business-class')">
+                    <i class="fa-solid fa-crown me-2" style="color: #f59e0b !important;"></i> Business Class (Orbit Luxury)
+                </button>
             </div>
 
             <!-- Live Theme Render Box -->
@@ -1455,9 +1458,19 @@
             const badge = document.getElementById('preview-badge');
 
             // Reset active button state
-            document.querySelectorAll('#theme-btn-premium, #theme-btn-classic, #theme-btn-elegant, #theme-btn-executive').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('#theme-btn-premium, #theme-btn-classic, #theme-btn-elegant, #theme-btn-executive, #theme-btn-business-class').forEach(btn => btn.classList.remove('active'));
 
-            if (theme === 'classic') {
+            if (theme === 'business-class') {
+                document.getElementById('theme-btn-business-class').classList.add('active');
+                card.style.background = '#07090E';
+                card.style.borderColor = '#d4af37';
+                name.style.color = '#f59e0b';
+                name.style.fontFamily = "'Cinzel', serif";
+                title.style.color = '#f3e5ab';
+                badge.className = 'badge text-dark px-3 py-2';
+                badge.style.background = '#d4af37';
+                avatar.className = 'rounded-circle border border-warning shadow-lg p-1';
+            } else if (theme === 'classic') {
                 document.getElementById('theme-btn-classic').classList.add('active');
                 card.style.background = '#ffffff';
                 card.style.borderColor = '#cbd5e1';

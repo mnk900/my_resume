@@ -350,7 +350,9 @@ class PortfolioController extends Controller
         if ($request->has('title')) $data['title'] = $request->input('title');
         if ($request->has('theme')) {
             $rawTheme = strtolower(trim($request->input('theme')));
-            if (str_contains($rawTheme, 'executive')) {
+            if (str_contains($rawTheme, 'business')) {
+                $data['theme'] = 'business-class';
+            } elseif (str_contains($rawTheme, 'executive')) {
                 $data['theme'] = 'executive';
             } elseif (str_contains($rawTheme, 'premium')) {
                 $data['theme'] = 'premium';

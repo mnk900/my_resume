@@ -926,30 +926,46 @@
                         @foreach($themes as $theme)
                             @php
                                 $tSlug = strtolower(trim($theme->slug ?? $theme->name));
-                                $tKey = str_contains($tSlug, 'executive') ? 'executive' : (str_contains($tSlug, 'premium') ? 'premium' : (str_contains($tSlug, 'elegant') ? 'elegant' : 'classic'));
+                                $tKey = str_contains($tSlug, 'business') ? 'business-class' : (str_contains($tSlug, 'executive') ? 'executive' : (str_contains($tSlug, 'premium') ? 'premium' : (str_contains($tSlug, 'elegant') ? 'elegant' : 'classic')));
                                 $pTheme = strtolower(trim($portfolio->theme ?? 'classic'));
-                                $currentThemeKey = str_contains($pTheme, 'executive') ? 'executive' : (str_contains($pTheme, 'premium') ? 'premium' : (str_contains($pTheme, 'elegant') ? 'elegant' : 'classic'));
+                                $currentThemeKey = str_contains($pTheme, 'business') ? 'business-class' : (str_contains($pTheme, 'executive') ? 'executive' : (str_contains($pTheme, 'premium') ? 'premium' : (str_contains($pTheme, 'elegant') ? 'elegant' : 'classic')));
                                 $isCurrentActive = ($currentThemeKey === $tKey);
+
+                                $themeDesc = [
+                                    'business-class' => 'Luxury executive theme featuring a 360° central orbital hub with 13 distinct section animation signatures and smooth hash state linking.',
+                                    'executive' => 'Editorial 2-column composition with horizontal directory navigation bar and dark glassmorphic cards.',
+                                    'premium' => 'Modern dark glassmorphism layout with vibrant neon gradients, smooth animations, and reactive cards.',
+                                    'elegant' => 'Clean serif typography and elegant indigo layout for academic and executive leaders.',
+                                    'classic' => 'Clean light minimalist design focused on crisp readability and classic corporate aesthetic.'
+                                ][$tKey] ?? 'Modern portfolio theme layout.';
                             @endphp
                             <div class="col-12 col-md-6 col-lg-4">
                                 <div class="theme-card p-4 h-100 d-flex flex-column {{ $isCurrentActive ? 'active-theme' : '' }}">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h5 class="fw-bold text-dark mb-0">{{ $theme->name }} Theme</h5>
+                                        <h5 class="fw-bold text-dark mb-0">
+                                            @if($tKey === 'business-class')
+                                                <i class="fa-solid fa-crown text-warning me-1"></i>
+                                            @endif
+                                            {{ $theme->name }}
+                                        </h5>
                                         @if($isCurrentActive)
                                             <span class="badge bg-primary rounded-pill"><i class="fa-solid fa-check me-1"></i> Active</span>
                                         @endif
                                     </div>
-                                    <p class="text-muted small mb-4 flex-grow-1">{{ $theme->description ?? 'Modern layout theme.' }}</p>
+                                    <p class="text-muted small mb-4 flex-grow-1">{{ $themeDesc }}</p>
                                     
                                     <form action="{{ route('portfolio.update') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="active_tab" value="themesPane">
                                         <input type="hidden" name="theme" value="{{ $tKey }}">
                                         @if($isCurrentActive)
-                                            <button type="button" class="btn btn-outline-primary btn-sm w-100 rounded-pill" disabled>Currently Selected</button>
+                                            <button type="button" class="btn btn-outline-primary btn-sm w-100 rounded-pill mb-2" disabled>Currently Selected</button>
                                         @else
-                                            <button type="submit" class="btn btn-primary btn-sm w-100 rounded-pill fw-bold">Apply Theme</button>
+                                            <button type="submit" class="btn btn-primary btn-sm w-100 rounded-pill fw-bold mb-2">Apply Theme</button>
                                         @endif
+                                        <a href="{{ route('portfolio.show', $portfolio->username ?? auth()->user()->username) }}?theme={{ $tKey }}" target="_blank" class="btn btn-outline-dark btn-sm w-100 rounded-pill font-monospace">
+                                            <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Preview Theme
+                                        </a>
                                     </form>
                                 </div>
                             </div>

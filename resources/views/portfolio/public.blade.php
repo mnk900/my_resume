@@ -1,6 +1,11 @@
 @php
     $rawTheme = strtolower(trim($portfolio->theme ?? 'classic'));
-    if (str_contains($rawTheme, 'executive')) {
+    if (request()->has('theme')) {
+        $rawTheme = strtolower(trim(request()->get('theme')));
+    }
+    if (str_contains($rawTheme, 'business')) {
+        $theme = 'business-class';
+    } elseif (str_contains($rawTheme, 'executive')) {
         $theme = 'executive';
     } elseif (str_contains($rawTheme, 'premium')) {
         $theme = 'premium';
@@ -21,7 +26,10 @@
         'phone' => $portfolio->contact_number,
         'linkedin' => $portfolio->linkedin_url,
         'location' => ($portfolio->city ?? 'Gilgit-Baltistan') . ', ' . ($portfolio->country ?? 'Pakistan'),
-        'technical_skills' => $portfolio->skills->groupBy('category')->map(function($items) {
+        'technical_skills' => $portfolio->skills->groupBy(function($s) {
+            $cat = trim($s->category ?? '');
+            return !empty($cat) ? $cat : 'Core Competencies';
+        })->map(function($items) {
             return [
                 'icon' => $items->first()->icon ?? 'code',
                 'items' => $items->pluck('name')->toArray()
@@ -118,7 +126,7 @@
                         </span>
 
                         <!-- 2. FULL NAME SECOND (RESPONSIVE FONT SIZE & BREAK WORDS) -->
-                        <h1 class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-extrabold text-white tracking-tighter uppercase leading-[1.08] text-left break-words mb-3">
+                        <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-extrabold text-white tracking-tighter uppercase leading-[1.08] text-left break-words mb-3">
                             {{ $user->name }}
                         </h1>
                     </div>
@@ -1217,6 +1225,842 @@
             </div>
         </footer>
     </div>
+    @elseif($theme == 'business-class')
+    <!-- ================================================== -->
+    <!-- LUXURY EXECUTIVE THEME: "BUSINESS CLASS" -->
+    <!-- ================================================== -->
+    <style>
+        /* Business Class Animation Signatures */
+        @keyframes bcBlurFadeIn {
+            0% { filter: blur(20px); opacity: 0; transform: scale(0.96); }
+            100% { filter: blur(0px); opacity: 1; transform: scale(1); }
+        }
+        .bc-anim-about { animation: bcBlurFadeIn 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bc3DCardFlip {
+            0% { transform: perspective(1200px) rotateY(-90deg); opacity: 0; }
+            100% { transform: perspective(1200px) rotateY(0deg); opacity: 1; }
+        }
+        .bc-anim-services { animation: bc3DCardFlip 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bcTimelineSlideUp {
+            0% { transform: translateY(80px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .bc-anim-experience { animation: bcTimelineSlideUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bcLineDraw {
+            0% { height: 0%; }
+            100% { height: 100%; }
+        }
+        .bc-gold-timeline-line { animation: bcLineDraw 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bcSpringScaleUp {
+            0% { transform: scale(0.7); opacity: 0; }
+            70% { transform: scale(1.04); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .bc-anim-skills { animation: bcSpringScaleUp 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+        @keyframes bcCinematicZoom {
+            0% { transform: scale(1.18); filter: contrast(135%) brightness(120%); opacity: 0; }
+            100% { transform: scale(1); filter: contrast(100%) brightness(100%); opacity: 1; }
+        }
+        .bc-anim-projects { animation: bcCinematicZoom 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bcLateralSlide {
+            0% { transform: translateX(-100px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        .bc-anim-education { animation: bcLateralSlide 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bcGoldShimmerSweep {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .bc-gold-shimmer-card {
+            background: linear-gradient(110deg, #0F131C 30%, rgba(212, 175, 55, 0.25) 50%, #0F131C 70%);
+            background-size: 200% 100%;
+            animation: bcGoldShimmerSweep 3s infinite linear;
+        }
+        .bc-anim-certifications { animation: bcSpringScaleUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bcCascadingDrop {
+            0% { transform: translateY(-90px); opacity: 0; }
+            70% { transform: translateY(12px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .bc-anim-trainings { animation: bcCascadingDrop 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bcRadialPulse {
+            0% { transform: scale(0.2); opacity: 0; filter: blur(10px); }
+            100% { transform: scale(1); opacity: 1; filter: blur(0); }
+        }
+        .bc-anim-contributions { animation: bcRadialPulse 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bcQuoteScale {
+            0% { transform: scale(0.5) rotate(-15deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .bc-anim-testimonials { animation: bcQuoteScale 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bcBookUnfold {
+            0% { transform: perspective(1000px) rotateY(-95deg); transform-origin: left center; opacity: 0; }
+            100% { transform: perspective(1000px) rotateY(0deg); opacity: 1; }
+        }
+        .bc-anim-publications { animation: bcBookUnfold 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bcIrisExpand {
+            0% { clip-path: circle(0% at 50% 50%); opacity: 0; }
+            100% { clip-path: circle(150% at 50% 50%); opacity: 1; }
+        }
+        .bc-anim-media { animation: bcIrisExpand 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes bcGlassRise {
+            0% { transform: translateY(80px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .bc-anim-contact { animation: bcGlassRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    </style>
+
+    <div class="relative bg-[#07090E] text-slate-100 font-sans antialiased overflow-x-hidden min-h-screen selection:bg-amber-500 selection:text-slate-950">
+        <!-- Ambient Gold & Deep Slate Background Glow Orbs -->
+        <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-amber-500/10 via-yellow-600/5 to-indigo-600/10 rounded-full blur-[160px] pointer-events-none z-0"></div>
+        <div class="fixed top-0 right-0 w-[500px] h-[500px] bg-amber-600/5 rounded-full blur-[140px] pointer-events-none z-0"></div>
+
+        <!-- MAIN CENTRAL ORBIT CONTAINER -->
+        <main class="relative z-10 min-h-screen flex flex-col items-center justify-start pt-6 sm:pt-10 pb-16 px-4 sm:px-6">
+
+            <!-- STACKED HEADER ABOVE AVATAR (NAME, POSITION, AND SHORT SUMMARY) -->
+            <div class="text-center space-y-2.5 max-w-3xl mx-auto mb-6 sm:mb-8">
+                <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-[11px] uppercase tracking-widest shadow-inner">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                    // {{ strtoupper($portfolio->position ?? 'Executive Leader & Systems Architect') }}
+                </span>
+                @php
+                    $nameLen = mb_strlen($user->name ?? '');
+                    $nameFontSize = $nameLen > 30 
+                        ? 'text-xs sm:text-base md:text-xl lg:text-2xl' 
+                        : ($nameLen > 20 
+                            ? 'text-sm sm:text-xl md:text-2xl lg:text-3xl' 
+                            : 'text-lg sm:text-2xl md:text-3xl lg:text-4xl');
+                @endphp
+                <div class="w-full overflow-hidden px-1 flex justify-center items-center">
+                    <h1 class="whitespace-nowrap font-serif font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-white uppercase tracking-tight leading-none text-center inline-block max-w-full {{ $nameFontSize }}">
+                        {{ $user->name }}
+                    </h1>
+                </div>
+                <p class="text-slate-300 text-xs sm:text-sm md:text-base font-light leading-relaxed max-w-xl mx-auto">
+                    {{ $portfolio->summary ?? $portfolio->description ?? $portfolio->detailed_bio ?? 'Strategic technologist and executive architect leading enterprise SaaS platforms and high-scale systems.' }}
+                </p>
+            </div>
+
+            <!-- CENTRAL ORBIT CONTAINER (DESKTOP ORBITAL RING & RESPONSIVE GRID DOCKING) -->
+            <div class="relative w-full max-w-[560px] lg:max-w-[640px] aspect-square max-h-[580px] flex items-center justify-center mx-auto my-2 sm:my-4">
+
+                <!-- CENTERPIECE AVATAR WITH CONCENTRIC GOLD RINGS -->
+                <div class="relative z-20 group cursor-pointer" id="bcCenterAvatar">
+                    <!-- Concentric Glowing Ring Pulses -->
+                    <div class="absolute -inset-4 rounded-full bg-gradient-to-r from-amber-500/30 via-yellow-500/20 to-amber-600/30 blur-xl opacity-75 group-hover:opacity-100 transition-opacity animate-pulse"></div>
+                    <div class="absolute -inset-2 rounded-full border border-amber-400/40 animate-ping opacity-25"></div>
+                    
+                    <!-- Avatar Circle -->
+                    <div class="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-full p-1.5 bg-gradient-to-b from-amber-400 via-amber-600/60 to-slate-900 shadow-[0_0_60px_rgba(212,175,55,0.3)] transition-transform duration-500 group-hover:scale-105 relative z-10 overflow-hidden">
+                        @if($portfolio->profile_image)
+                            <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $user->name }}" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        @else
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=800&q=80" alt="{{ $user->name }}" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                        @endif
+                    </div>
+
+                    <!-- Gold Ring Overlay Badge -->
+                    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full bg-[#07090E]/90 border border-amber-400/40 text-[10px] font-mono font-bold text-amber-300 uppercase tracking-widest shadow-xl whitespace-nowrap z-30">
+                        EXECUTIVE HUB
+                    </div>
+                </div>
+
+                <!-- ORBITAL NAVIGATION NODES CONTAINER (14 NODES DISTRIBUTED SYMMETRICALLY) -->
+                <div class="absolute inset-0 z-30 pointer-events-none md:pointer-events-auto flex items-center justify-center">
+                    @php
+                        $bcNavItems = [
+                            ['id' => 'about', 'label' => 'About', 'icon' => 'fa-user-tie', 'show' => $portfolio->show_about ?? true],
+                            ['id' => 'services', 'label' => 'Services Offered', 'icon' => 'fa-briefcase', 'show' => $portfolio->show_services ?? true],
+                            ['id' => 'experience', 'label' => 'Work Experience', 'icon' => 'fa-building-columns', 'show' => $portfolio->show_experience ?? true],
+                            ['id' => 'skills', 'label' => 'Skills', 'icon' => 'fa-layer-group', 'show' => $portfolio->show_skills ?? true],
+                            ['id' => 'projects', 'label' => 'Projects', 'icon' => 'fa-diagram-project', 'show' => $portfolio->show_projects ?? true],
+                            ['id' => 'education', 'label' => 'Education', 'icon' => 'fa-graduation-cap', 'show' => $portfolio->show_education ?? true],
+                            ['id' => 'certifications', 'label' => 'Certifications', 'icon' => 'fa-award', 'show' => $portfolio->show_certifications ?? true],
+                            ['id' => 'trainings', 'label' => 'Trainings', 'icon' => 'fa-chalkboard-user', 'show' => $portfolio->show_trainings ?? true],
+                            ['id' => 'contributions', 'label' => 'Contributions', 'icon' => 'fa-handshake-angle', 'show' => $portfolio->show_contributions ?? true],
+                            ['id' => 'testimonials', 'label' => 'Testimonials', 'icon' => 'fa-quote-left', 'show' => $portfolio->show_testimonials ?? true],
+                            ['id' => 'publications', 'label' => 'Publications', 'icon' => 'fa-book-bookmark', 'show' => $portfolio->show_publications ?? true],
+                            ['id' => 'media', 'label' => 'Media Appearances', 'icon' => 'fa-tv', 'show' => $portfolio->show_media ?? true],
+                            ['id' => 'contact', 'label' => 'Contact', 'icon' => 'fa-paper-plane', 'show' => true],
+                            ['id' => 'main-site', 'label' => 'Main Site', 'icon' => 'fa-compass', 'show' => true, 'external' => '/'],
+                        ];
+                    @endphp
+
+                    <!-- DESKTOP ORBIT NODES (MD & ABOVE) -->
+                    <div class="hidden md:block absolute inset-0">
+                        @foreach($bcNavItems as $index => $item)
+                            @php
+                                $angleDeg = ($index * (360 / count($bcNavItems))) - 90;
+                                $angleRad = deg2rad($angleDeg);
+                                $radiusPercent = 42; 
+                                $leftPercent = 50 + ($radiusPercent * cos($angleRad));
+                                $topPercent = 50 + ($radiusPercent * sin($angleRad));
+                            @endphp
+                            <button type="button" 
+                                    data-bc-target="{{ $item['id'] }}" 
+                                    data-external="{{ $item['external'] ?? '' }}"
+                                    style="left: {{ number_format($leftPercent, 2) }}%; top: {{ number_format($topPercent, 2) }}%;"
+                                    class="bc-orbit-node absolute -translate-x-1/2 -translate-y-1/2 group pointer-events-auto cursor-pointer focus:outline-none z-30 transition-all duration-300 hover:scale-115"
+                                    title="{{ $item['label'] }}">
+                                <div class="w-11 h-11 lg:w-13 lg:h-13 rounded-2xl bg-[#0F131C]/90 border border-amber-400/30 hover:border-amber-400 text-amber-300 hover:bg-amber-500 hover:text-slate-950 shadow-xl shadow-amber-500/10 backdrop-blur-md flex items-center justify-center transition-all duration-300">
+                                    <i class="fa-solid {{ $item['icon'] }} text-sm lg:text-base"></i>
+                                </div>
+                                <span class="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2.5 py-0.5 rounded-full bg-[#0F131C]/95 border border-amber-400/30 text-[10px] font-display font-semibold text-amber-200/90 whitespace-nowrap pointer-events-none shadow-md group-hover:border-amber-400 group-hover:text-amber-300 group-hover:bg-[#0F131C] transition-all">
+                                    {{ $item['label'] }}
+                                </span>
+                            </button>
+                        @endforeach
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- MOBILE / TABLET DOCKED RESPONSIVE GRID (SM & BELOW) -->
+            <div class="md:hidden w-full max-w-lg mx-auto grid grid-cols-2 xs:grid-cols-3 gap-3 pt-4 z-30">
+                @foreach($bcNavItems as $item)
+                    <button type="button" 
+                            data-bc-target="{{ $item['id'] }}" 
+                            data-external="{{ $item['external'] ?? '' }}"
+                            class="bc-orbit-node p-3 rounded-2xl bg-[#0F131C]/90 border border-amber-400/30 hover:border-amber-400 text-slate-200 hover:text-white flex items-center gap-2.5 shadow-lg backdrop-blur-md cursor-pointer transition-all active:scale-95">
+                        <div class="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 text-xs">
+                            <i class="fa-solid {{ $item['icon'] }}"></i>
+                        </div>
+                        <span class="text-xs font-display font-semibold truncate text-left">{{ $item['label'] }}</span>
+                    </button>
+                @endforeach
+            </div>
+
+        </main>
+
+        <!-- FLOATING RETURN TO HUB CONTROL -->
+        <div id="bcHubCloseControl" class="fixed top-6 right-6 z-50 hidden">
+            <button type="button" id="bcCloseHubBtn" class="px-5 py-2.5 rounded-full bg-[#0F131C]/90 border border-amber-400/50 hover:border-amber-400 text-amber-300 hover:bg-amber-500 hover:text-slate-950 font-mono text-xs uppercase tracking-widest font-bold shadow-2xl backdrop-blur-xl flex items-center gap-2.5 transition-all duration-300 cursor-pointer hover:scale-105">
+                <span>Return to Hub</span>
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <!-- 1. ABOUT OVERLAY -->
+        <div id="bc-overlay-about" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-4xl mx-auto pt-16 pb-20 space-y-8 bc-anim-about">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// EXECUTIVE SUMMARY</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Strategic Vision & About</h2>
+                </div>
+                <div class="p-8 sm:p-10 rounded-3xl bg-[#0F131C]/80 border border-amber-400/20 space-y-6 text-slate-200 text-base sm:text-lg font-light leading-relaxed shadow-2xl">
+                    <p>{{ $portfolio->detailed_bio ?? $portfolio->description ?? 'Executive architect and technology strategist.' }}</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-white/10 text-xs font-mono">
+                        <div>
+                            <span class="text-slate-400 block mb-1 uppercase tracking-wider">Location</span>
+                            <strong class="text-amber-300 font-semibold">{{ trim(($portfolio->city ?? '') . ', ' . ($portfolio->country ?? 'Global')) ?: 'Global / Remote' }}</strong>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block mb-1 uppercase tracking-wider">Position</span>
+                            <strong class="text-amber-300 font-semibold">{{ $portfolio->position ?? 'Executive Architect' }}</strong>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block mb-1 uppercase tracking-wider">Experience</span>
+                            <strong class="text-amber-300 font-semibold">{{ !empty($experiences) && count($experiences) > 0 ? count($experiences) . '+ Roles' : '10+ Years' }}</strong>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block mb-1 uppercase tracking-wider">Status</span>
+                            <strong class="text-emerald-400 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Available</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. SERVICES OFFERED OVERLAY -->
+        <div id="bc-overlay-services" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-services">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// CORE CAPABILITIES</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Services Offered</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @if(!empty($services) && count($services) > 0)
+                        @foreach($services as $srv)
+                            <div class="p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 hover:border-amber-400/60 transition-all space-y-4 shadow-2xl group">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl">
+                                    <i class="fa-solid {{ $srv->icon ?? 'fa-cube' }}"></i>
+                                </div>
+                                <h3 class="text-xl font-display font-bold text-white group-hover:text-amber-300 transition-colors">{{ $srv->title }}</h3>
+                                <p class="text-slate-300 text-sm font-light leading-relaxed">{!! $srv->description !!}</p>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                            <p class="text-slate-400 text-xs">No service records have been added yet.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. WORK EXPERIENCE OVERLAY -->
+        <div id="bc-overlay-experience" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-4xl mx-auto pt-16 pb-20 space-y-8 bc-anim-experience">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// CAREER TRACK</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Work Experience</h2>
+                </div>
+                <div class="relative pl-6 sm:pl-10 space-y-8">
+                    <div class="bc-gold-timeline-line absolute top-0 bottom-0 left-2.5 w-0.5 bg-gradient-to-b from-amber-400 via-amber-600/50 to-transparent"></div>
+                    @if(!empty($experiences) && count($experiences) > 0)
+                        @foreach($experiences as $exp)
+                            <div class="relative space-y-3 p-7 rounded-3xl bg-[#0F131C]/80 border border-amber-400/20 shadow-xl">
+                                <div class="absolute -left-6 sm:-left-10 top-8 w-5 h-5 rounded-full bg-[#07090E] border-2 border-amber-400 flex items-center justify-center">
+                                    <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                                </div>
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <h3 class="text-lg font-display font-bold text-white">{{ $exp->position }}</h3>
+                                    <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono text-xs">
+                                        {{ $exp->start_date->format('M Y') }} – {{ $exp->end_date ? $exp->end_date->format('M Y') : 'Present' }}
+                                    </span>
+                                </div>
+                                <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400">{{ $exp->company }}</h4>
+                                <p class="text-slate-300 text-sm font-light leading-relaxed">{!! $exp->description !!}</p>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                            <p class="text-slate-400 text-xs">No work experience records have been added yet.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. SKILLS OVERLAY -->
+        <div id="bc-overlay-skills" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-skills">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// TECHNICAL PROFICIENCY</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Skills & Competencies</h2>
+                </div>
+                <div class="space-y-8">
+                    @if(!empty($skills) && count($skills) > 0)
+                        @php
+                            $bcSkillsGrouped = collect($skills)->groupBy(function($s) {
+                                $cat = is_array($s) ? ($s['category'] ?? '') : ($s->category ?? '');
+                                return !empty(trim($cat)) ? trim($cat) : 'Core Competencies';
+                            });
+                        @endphp
+                        @foreach($bcSkillsGrouped as $parentCategory => $catSkills)
+                            <div>
+                                <h3 class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 mb-4 flex items-center gap-3">
+                                    <span>// {{ $parentCategory }}</span>
+                                    <span class="flex-grow h-px bg-amber-400/20"></span>
+                                </h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    @foreach($catSkills as $sk)
+                                        @php
+                                            $skName = is_array($sk) ? ($sk['name'] ?? '') : ($sk->name ?? '');
+                                            $skProf = is_array($sk) ? ($sk['proficiency'] ?? $sk['percentage'] ?? 90) : ($sk->proficiency ?? $sk->percentage ?? 90);
+                                        @endphp
+                                        <div class="p-4 rounded-2xl bg-[#0F131C]/90 border border-amber-400/20 hover:border-amber-400/50 space-y-2.5 shadow-xl transition-all">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-xs font-display font-bold text-white">{{ $skName }}</span>
+                                                <span class="text-[10px] font-mono text-amber-400 font-bold">{{ $skProf }}%</span>
+                                            </div>
+                                            <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                                                <div class="h-full bg-gradient-to-r from-amber-500 to-yellow-300 rounded-full" style="width: {{ $skProf }}%;"></div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                            <p class="text-slate-400 text-xs">No skill records have been added yet.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. PROJECTS OVERLAY -->
+        <div id="bc-overlay-projects" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-6xl mx-auto pt-16 pb-20 space-y-8 bc-anim-projects">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// FEATURED PORTFOLIO</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Projects & Case Studies</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    @if(!empty($projects) && count($projects) > 0)
+                        @foreach($projects as $proj)
+                            <div class="group h-full rounded-3xl bg-[#0F131C] border border-amber-400/20 hover:border-amber-400/60 overflow-hidden shadow-2xl flex flex-col justify-between transition-all duration-300">
+                                <!-- TOP IMAGE CONTAINER -->
+                                <div class="relative w-full h-44 sm:h-48 overflow-hidden shrink-0 bg-[#07090E]">
+                                    @if(!empty($proj->image_path))
+                                        <img src="{{ Storage::url($proj->image_path) }}" alt="{{ $proj->title }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
+                                    @else
+                                        <div class="w-full h-full bg-gradient-to-br from-[#0F131C] via-slate-900 to-[#07090E] flex flex-col items-center justify-center p-4 text-center">
+                                            <i class="fa-solid fa-layer-group text-3xl text-amber-400/40 mb-1 group-hover:scale-110 transition-transform"></i>
+                                            <span class="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Case Study</span>
+                                        </div>
+                                    @endif
+                                    <div class="absolute inset-0 bg-gradient-to-t from-[#0F131C] via-transparent to-transparent opacity-80"></div>
+                                </div>
+                                
+                                <!-- CARD CONTENT BODY -->
+                                <div class="p-5 flex flex-col flex-grow justify-between space-y-3 bg-[#0F131C]">
+                                    <div class="space-y-1.5">
+                                        <span class="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-widest block">// FEATURED PROJECT</span>
+                                        <h3 class="text-sm sm:text-base font-display font-extrabold text-white line-clamp-1 leading-snug" title="{{ $proj->title }}">
+                                            {{ $proj->title }}
+                                        </h3>
+                                        <p class="text-slate-300 text-xs font-light leading-relaxed line-clamp-3">
+                                            {{ strip_tags($proj->description) }}
+                                        </p>
+                                    </div>
+
+                                    <button type="button" 
+                                            data-bc-modal-title="{{ $proj->title }}" 
+                                            data-bc-modal-desc="{{ $proj->description }}" 
+                                            data-bc-modal-img="{{ !empty($proj->image_path) ? Storage::url($proj->image_path) : 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?fit=crop&w=1200&q=80' }}"
+                                            data-bc-modal-url="{{ $proj->project_url ?? '#contact' }}" 
+                                            class="bc-read-more-btn w-full py-2.5 px-4 rounded-xl bg-amber-500/10 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-400/30 hover:border-amber-400 font-mono font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 mt-2">
+                                        Read More <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                            <p class="text-slate-400 text-xs">No project records have been added yet.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. EDUCATION OVERLAY -->
+        <div id="bc-overlay-education" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-4xl mx-auto pt-16 pb-20 space-y-8 bc-anim-education">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// ACADEMIC QUALIFICATIONS</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Education</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @if(!empty($education) && count($education) > 0)
+                        @foreach($education as $edu)
+                            <div class="p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-3 shadow-xl relative overflow-hidden">
+                                <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono text-xs">
+                                    {{ $edu->start_date->format('Y') }} – {{ $edu->end_date->format('Y') }}
+                                </span>
+                                <h3 class="text-xl font-display font-bold text-white pt-2">{{ $edu->degree }}</h3>
+                                <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400">{{ $edu->institution }}</h4>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                            <p class="text-slate-400 text-xs">No education records have been added yet.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. CERTIFICATIONS OVERLAY -->
+        <div id="bc-overlay-certifications" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-certifications">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// VERIFIED CREDENTIALS</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Certifications</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    @if(!empty($certifications) && count($certifications) > 0)
+                        @foreach($certifications as $cert)
+                            <div class="bc-gold-shimmer-card p-7 rounded-3xl bg-[#0F131C]/90 border border-amber-400/30 space-y-3 shadow-xl relative overflow-hidden">
+                                <div class="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-award"></i>
+                                </div>
+                                <h3 class="text-base font-display font-bold text-white">{{ $cert->name }}</h3>
+                                <p class="text-xs font-mono text-slate-400">{{ $cert->issuing_organization ?? 'Professional Board' }}</p>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                            <p class="text-slate-400 text-xs">No certification records have been added yet.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. TRAININGS OVERLAY -->
+        <div id="bc-overlay-trainings" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-trainings">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// PROFESSIONAL DEVELOPMENT</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Trainings & Workshops</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @if(!empty($trainings) && count($trainings) > 0)
+                        @foreach($trainings as $trn)
+                            <div class="p-7 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-3 shadow-xl">
+                                <h3 class="text-lg font-display font-bold text-white">{{ $trn->title }}</h3>
+                                <p class="text-xs font-mono text-amber-400">{{ $trn->institution ?? 'Executive Institute' }}</p>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                            <p class="text-slate-400 text-xs">No training records have been added yet.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. CONTRIBUTIONS OVERLAY -->
+        <div id="bc-overlay-contributions" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-contributions">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// IMPACT & INITIATIVES</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Contributions</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @if(!empty($contributions) && count($contributions) > 0)
+                        @foreach($contributions as $cnt)
+                            <div class="p-7 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-3 shadow-xl">
+                                <h3 class="text-lg font-display font-bold text-white">{{ $cnt->title }}</h3>
+                                <div class="text-slate-300 text-sm font-light leading-relaxed">{!! $cnt->description !!}</div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                            <p class="text-slate-400 text-xs">No contribution records have been added yet.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 10. TESTIMONIALS OVERLAY -->
+        <div id="bc-overlay-testimonials" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-testimonials">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// CLIENT ENDORSEMENTS</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Testimonials</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @if(!empty($testimonials) && count($testimonials) > 0)
+                        @foreach($testimonials as $tst)
+                            @php
+                                $tName = $tst->client_name ?? $tst->author_name ?? 'Client';
+                                $tDesig = $tst->designation ?? $tst->author_title ?? '';
+                                $tContent = $tst->content ?? $tst->quote ?? '';
+                            @endphp
+                            <div class="p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-5 shadow-2xl relative overflow-hidden">
+                                <i class="fa-solid fa-quote-right absolute top-6 right-6 text-4xl text-amber-500/10"></i>
+                                <p class="text-slate-200 text-sm sm:text-base font-light italic leading-relaxed">"{{ $tContent }}"</p>
+                                <div class="border-t border-white/10 pt-4">
+                                    <h4 class="text-sm font-bold text-white">{{ $tName }}</h4>
+                                    <span class="text-xs font-mono text-amber-400 block">{{ $tDesig }}</span>
+                                </div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                            <p class="text-slate-400 text-xs">No testimonial records have been added yet.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 11. PUBLICATIONS OVERLAY -->
+        <div id="bc-overlay-publications" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-publications">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// RESEARCH & PAPERS</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Publications & Reports</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @if(!empty($publications) && count($publications) > 0)
+                        @foreach($publications as $pub)
+                            <div class="p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-4 shadow-2xl">
+                                <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono text-xs">
+                                    {{ $pub->type ?? 'JOURNAL PAPER' }} ({{ $pub->year }})
+                                </span>
+                                <h3 class="text-lg font-display font-bold text-white">{{ $pub->title }}</h3>
+                                <p class="text-xs font-mono text-slate-400">Authors: {{ $pub->authors }}</p>
+                                @if(!empty($pub->link))
+                                    <a href="{{ $pub->link }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all">
+                                        Online Link <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                    </a>
+                                @endif
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                            <p class="text-slate-400 text-xs">No publication records have been added yet.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 12. MEDIA APPEARANCES OVERLAY -->
+        <div id="bc-overlay-media" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-media">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// PRESS & BROADCASTS</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Media Appearances</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @if(!empty($media) && count($media) > 0)
+                        @foreach($media as $med)
+                            <div class="p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-4 shadow-2xl">
+                                <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono text-xs">
+                                    {{ $med->type == 'tv' ? 'TV / Video Interview' : 'Newspaper / Op-Ed Article' }}
+                                </span>
+                                <h3 class="text-lg font-display font-bold text-white">{{ $med->title }}</h3>
+                                <p class="text-xs font-mono text-slate-400">
+                                    {{ $med->channel_platform ?? $med->newspaper_name }}
+                                </p>
+                                @if(!empty($med->link))
+                                    <a href="{{ $med->link }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all">
+                                        Watch / Read <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                    </a>
+                                @endif
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                            <p class="text-slate-400 text-xs">No media appearance records have been added yet.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- 13. CONTACT OVERLAY -->
+        <div id="bc-overlay-contact" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-4xl mx-auto pt-16 pb-20 space-y-8 bc-anim-contact">
+                <div class="border-b border-amber-400/20 pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// INITIATE DIALOGUE</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Contact</h2>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-5 p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-6">
+                        <h3 class="text-lg font-bold text-white">Direct Details</h3>
+                        <div class="space-y-4 text-xs font-mono">
+                            @if($portfolio->show_email && !empty($profile['email']))
+                                <div>
+                                    <span class="text-slate-400 block mb-1">EMAIL</span>
+                                    <a href="mailto:{{ $profile['email'] }}" class="text-amber-300 font-bold hover:underline">{{ $profile['email'] }}</a>
+                                </div>
+                            @endif
+                            @if($portfolio->show_phone && !empty($profile['phone']))
+                                <div>
+                                    <span class="text-slate-400 block mb-1">PHONE</span>
+                                    <a href="tel:{{ $profile['phone'] }}" class="text-amber-300 font-bold hover:underline">{{ $profile['phone'] }}</a>
+                                </div>
+                            @endif
+                            @if(!empty($profile['location']))
+                                <div>
+                                    <span class="text-slate-400 block mb-1">LOCATION</span>
+                                    <span class="text-white font-bold">{{ $profile['location'] }}</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-5">
+                        <h3 class="text-lg font-bold text-white">Send Inquiry</h3>
+                        <form action="{{ route('portfolio.contact.store', $portfolio->id) }}" method="POST" class="space-y-4">
+                            @csrf
+                            <input type="text" name="name" placeholder="Your Name" required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-xs font-mono">
+                            <input type="email" name="email" placeholder="Your Email" required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-xs font-mono">
+                            <textarea name="message" rows="4" placeholder="Your Message..." required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-xs font-mono"></textarea>
+                            <button type="submit" class="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase font-mono tracking-widest transition-all">
+                                Send Message →
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROJECT DETAILS MODAL POPUP FOR BUSINESS CLASS -->
+        <div id="bcProjectModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/90 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+            <div class="relative w-full max-w-2xl bg-[#0F131C] border border-amber-400/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] text-slate-100">
+                <button type="button" id="closeBcProjectModal" class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-slate-900/80 hover:bg-amber-500 hover:text-slate-950 border border-white/20 text-slate-300 font-bold flex items-center justify-center transition-all cursor-pointer">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+                <div id="bcModalImgWrapper" class="relative w-full h-48 sm:h-60 bg-slate-900 overflow-hidden shrink-0">
+                    <img id="bcModalProjectImg" src="" alt="Project Image" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0F131C] via-transparent to-transparent"></div>
+                </div>
+                <div class="p-6 sm:p-8 overflow-y-auto space-y-4">
+                    <h3 id="bcModalProjectTitle" class="text-xl sm:text-2xl font-serif font-extrabold text-amber-300 uppercase tracking-tight"></h3>
+                    <p id="bcModalProjectDesc" class="text-slate-300 text-sm font-light leading-relaxed whitespace-pre-line border-t border-white/10 pt-4"></p>
+                    <div class="flex items-center gap-4 pt-4 border-t border-white/10">
+                        <a id="bcModalProjectUrl" href="#" target="_blank" class="px-6 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider">
+                            Visit Live Site <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                        <button type="button" id="closeBcProjectModalBtn" class="px-6 py-2.5 rounded-xl bg-white/10 hover:bg-white hover:text-slate-950 border border-white/20 text-white font-bold text-xs uppercase tracking-wider cursor-pointer">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BUSINESS CLASS JAVASCRIPT STATE ENGINE & ANIMATION SIGNATURES -->
+        <script>
+        (function() {
+            function initBusinessClassEngine() {
+                const nodes = document.querySelectorAll('.bc-orbit-node');
+                const overlays = document.querySelectorAll('.bc-overlay-modal');
+                const hubCloseControl = document.getElementById('bcHubCloseControl');
+                const closeHubBtn = document.getElementById('bcCloseHubBtn');
+
+                function openSectionOverlay(targetId) {
+                    if (!targetId || targetId === 'main-site') return;
+
+                    overlays.forEach(o => o.classList.add('hidden'));
+
+                    const activeOverlay = document.getElementById('bc-overlay-' + targetId);
+                    if (activeOverlay) {
+                        activeOverlay.classList.remove('hidden');
+                        if (hubCloseControl) hubCloseControl.classList.remove('hidden');
+                        
+                        if (window.location.hash !== '#' + targetId) {
+                            history.pushState(null, null, '#' + targetId);
+                        }
+                    }
+                }
+
+                function returnToHub() {
+                    overlays.forEach(o => o.classList.add('hidden'));
+                    if (hubCloseControl) hubCloseControl.classList.add('hidden');
+                    
+                    if (window.location.hash) {
+                        history.pushState(null, null, window.location.pathname + window.location.search);
+                    }
+                }
+
+                nodes.forEach(node => {
+                    node.addEventListener('click', function(e) {
+                        const ext = this.getAttribute('data-external');
+                        if (ext && ext.trim() !== '') {
+                            window.location.href = ext;
+                            return;
+                        }
+                        const targetId = this.getAttribute('data-bc-target');
+                        if (targetId) {
+                            openSectionOverlay(targetId);
+                        }
+                    });
+                });
+
+                if (closeHubBtn) {
+                    closeHubBtn.addEventListener('click', returnToHub);
+                }
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        returnToHub();
+                        closeBcProjectModal();
+                    }
+                });
+
+                const initialHash = window.location.hash.replace('#', '');
+                if (initialHash) {
+                    openSectionOverlay(initialHash);
+                }
+
+                // Project Details Modal Popup
+                const bcProjectModal = document.getElementById('bcProjectModal');
+                const closeBcModalBtn = document.getElementById('closeBcProjectModal');
+                const closeBcModalActionBtn = document.getElementById('closeBcProjectModalBtn');
+                const bcModalTitle = document.getElementById('bcModalProjectTitle');
+                const bcModalDesc = document.getElementById('bcModalProjectDesc');
+                const bcModalImg = document.getElementById('bcModalProjectImg');
+                const bcModalImgWrapper = document.getElementById('bcModalImgWrapper');
+                const bcModalUrl = document.getElementById('bcModalProjectUrl');
+
+                function openBcProjectModal(data) {
+                    if (!bcProjectModal) return;
+                    if (bcModalTitle) bcModalTitle.textContent = data.title || 'Project Details';
+                    if (bcModalDesc) bcModalDesc.textContent = data.description || 'Project details.';
+                    if (data.image && data.image.trim() !== '') {
+                        if (bcModalImg) bcModalImg.src = data.image;
+                        if (bcModalImgWrapper) bcModalImgWrapper.style.display = 'block';
+                    }
+                    if (bcModalUrl) {
+                        if (data.url && data.url.trim() !== '' && data.url !== '#contact') {
+                            bcModalUrl.href = data.url;
+                            bcModalUrl.style.display = 'inline-flex';
+                        } else {
+                            bcModalUrl.style.display = 'none';
+                        }
+                    }
+                    bcProjectModal.classList.remove('hidden');
+                    setTimeout(() => bcProjectModal.classList.remove('opacity-0'), 10);
+                }
+
+                function closeBcProjectModal() {
+                    if (!bcProjectModal) return;
+                    bcProjectModal.classList.add('opacity-0');
+                    setTimeout(() => bcProjectModal.classList.add('hidden'), 250);
+                }
+
+                document.addEventListener('click', function(e) {
+                    const readMore = e.target.closest('.bc-read-more-btn');
+                    if (readMore) {
+                        e.preventDefault();
+                        openBcProjectModal({
+                            title: readMore.getAttribute('data-bc-modal-title'),
+                            description: readMore.getAttribute('data-bc-modal-desc'),
+                            image: readMore.getAttribute('data-bc-modal-img'),
+                            url: readMore.getAttribute('data-bc-modal-url')
+                        });
+                    }
+                });
+
+                if (closeBcModalBtn) closeBcModalBtn.addEventListener('click', closeBcProjectModal);
+                if (closeBcModalActionBtn) closeBcModalActionBtn.addEventListener('click', closeBcProjectModal);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initBusinessClassEngine);
+            } else {
+                initBusinessClassEngine();
+            }
+        })();
+        </script>
+    </div>
     @elseif($theme == 'premium')
     <div class="bg-blob blob-1"></div>
     <div class="bg-blob blob-2"></div>
@@ -2113,7 +2957,7 @@
                     $displayTitle = $isLongTitle ? (substr($project['name'], 0, 30) . '...') : $project['name'];
                     $displayDesc = $isLongDesc ? (substr($plainDesc, 0, 120) . '...') : $plainDesc;
                 @endphp
-                <div class="col-md-6 col-lg-4">
+                <div class="col-12 col-md-6 col-lg-3">
                     <div class="card h-100 border rounded-3 bg-white shadow-sm overflow-hidden hover-shadow-classic transition">
                         <div class="project-img-wrapper position-relative">
                             @if($project['image'])
@@ -2797,7 +3641,7 @@
                     $displayTitle = $isLongTitle ? (substr($project['name'], 0, 30) . '...') : $project['name'];
                     $displayDesc = $isLongDesc ? (substr($plainDesc, 0, 120) . '...') : $plainDesc;
                 @endphp
-                <div class="col-md-6 col-lg-4">
+                <div class="col-12 col-md-6 col-lg-3">
                     <div class="elegant-project-card">
                         <div class="elegant-project-img-wrapper">
                             @if($project['image'])
@@ -3446,7 +4290,7 @@
             font-size: 0.9rem;
         }
 
-        .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2.5rem; width: 100%; }
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.8rem; width: 100%; }
         .project-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; overflow: hidden; transition: var(--transition); display: flex; flex-direction: column; }
         .project-card:hover {
             transform: translateY(-8px);
@@ -3890,6 +4734,12 @@
     box-shadow: 0 0 15px rgba(0, 242, 255, 0.6);
     transform: translateY(-2px);
 }
+@media (max-width: 640px) {
+    .hero-content h1 { font-size: 1.65rem !important; line-height: 1.25 !important; }
+    .hero-subtitle { font-size: 0.75rem !important; }
+    .section-title { font-size: 1.35rem !important; line-height: 1.25 !important; }
+    .hero-intro-text, p { font-size: 0.88rem !important; line-height: 1.5 !important; }
+}
     </style>
     @endif
     @if($theme == 'classic')
@@ -4064,6 +4914,14 @@
                 flex-shrink: 0;
                 margin-top: 2px; /* align icon with first line of text */
             }
+        }
+        @media (max-width: 640px) {
+            .display-1, .display-2, .display-3, .display-4, .display-5, .display-6 { font-size: 1.5rem !important; line-height: 1.25 !important; }
+            h1, .h1 { font-size: 1.4rem !important; }
+            h2, .h2, .serif-heading { font-size: 1.25rem !important; }
+            h3, .h3 { font-size: 1.1rem !important; }
+            h4, .h4 { font-size: 0.95rem !important; }
+            .lead, p { font-size: 0.88rem !important; line-height: 1.5 !important; }
         }
     </style>
     @endif
@@ -4498,6 +5356,14 @@
                 top: 10px;
                 left: 10px;
             }
+        }
+        @media (max-width: 640px) {
+            .elegant-hero-title { font-size: 1.6rem !important; line-height: 1.25 !important; }
+            .elegant-section-title { font-size: 1.3rem !important; line-height: 1.25 !important; margin-bottom: 1.5rem !important; }
+            h1, .h1, .display-1, .display-2, .display-3, .display-4 { font-size: 1.5rem !important; line-height: 1.25 !important; }
+            h2, .h2 { font-size: 1.25rem !important; }
+            h3, .h3 { font-size: 1.05rem !important; }
+            .lead, p { font-size: 0.88rem !important; line-height: 1.5 !important; }
         }
         @media (max-width: 576px) {
             .elegant-contact-sidebar, .elegant-contact-form-col {
