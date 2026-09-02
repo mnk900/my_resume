@@ -3,6 +3,9 @@
     if (request()->has('theme')) {
         $rawTheme = strtolower(trim(request()->get('theme')));
     }
+
+    $isLightMode = str_contains($rawTheme, 'light') || request()->get('mode') === 'light';
+
     if (str_contains($rawTheme, 'business')) {
         $theme = 'business-class';
     } elseif (str_contains($rawTheme, 'executive')) {
@@ -83,10 +86,10 @@
 @section('content')
     @if($theme == 'executive')
     <!-- EXECUTIVE THEME (MASTER EDITORIAL 2-COLUMN COMPOSITION) -->
-    <div class="relative bg-[#0B0F17] text-slate-100 font-sans antialiased overflow-x-hidden min-h-screen">
+    <div class="relative {{ $isLightMode ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#0B0F17] text-slate-100' }} font-sans antialiased overflow-x-hidden min-h-screen">
         <!-- Ambient Background Orbs -->
-        <div class="fixed top-0 left-1/4 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[150px] pointer-events-none z-0"></div>
-        <div class="fixed bottom-1/4 right-10 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
+        <div class="fixed top-0 left-1/4 w-[600px] h-[600px] {{ $isLightMode ? 'bg-indigo-300/25' : 'bg-indigo-600/10' }} rounded-full blur-[150px] pointer-events-none z-0"></div>
+        <div class="fixed bottom-1/4 right-10 w-[500px] h-[500px] {{ $isLightMode ? 'bg-purple-300/25' : 'bg-purple-600/10' }} rounded-full blur-[140px] pointer-events-none z-0"></div>
 
         @php
             $allNavModules = collect([
@@ -109,6 +112,21 @@
             })->values()->all();
         @endphp
 
+        @php
+            $execBg = $isLightMode ? 'bg-[#F8FAFC]' : 'bg-[#0B0F17]';
+            $execText = $isLightMode ? 'text-slate-900' : 'text-slate-100';
+            $execTitle = $isLightMode ? 'text-slate-900' : 'text-white';
+            $execMuted = $isLightMode ? 'text-slate-600' : 'text-slate-300';
+            $execSubMuted = $isLightMode ? 'text-slate-500' : 'text-slate-400';
+            $execCard = $isLightMode ? 'bg-white border border-slate-200/80 text-slate-800 shadow-lg shadow-slate-200/50' : 'bg-[#121826]/70 border border-white/10 text-slate-100';
+            $execCardMuted = $isLightMode ? 'bg-slate-50/80 border border-slate-200 text-slate-800 shadow-sm' : 'bg-[#121826]/50 border border-white/10 text-slate-100';
+            $execBorder = $isLightMode ? 'border-slate-200' : 'border-white/10';
+            $execBorderSubtle = $isLightMode ? 'border-slate-200/60' : 'border-white/5';
+            $execAccent = $isLightMode ? 'text-indigo-600' : 'text-indigo-400';
+            $execAccentBg = $isLightMode ? 'bg-indigo-50 border border-indigo-200 text-indigo-700' : 'bg-indigo-500/10 border border-indigo-500/30 text-indigo-300';
+            $execInput = $isLightMode ? 'bg-white border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:border-indigo-600 shadow-sm' : 'bg-white/5 border border-white/10 text-white placeholder:text-slate-500 focus:border-indigo-400';
+        @endphp
+
         <!-- MAIN EDITORIAL PORTFOLIO CONTAINER -->
         <main class="max-w-7xl mx-auto px-6 lg:px-12 pt-12 pb-20 relative z-10 space-y-6">
             
@@ -121,29 +139,31 @@
                 <div class="lg:col-span-7 space-y-6" data-aos="fade-right" data-aos-duration="900">
                     <div>
                         <!-- 1. PROFESSIONAL POSITION FIRST -->
-                        <span class="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-indigo-400 block mb-2 break-words">
-                            // {{ strtoupper($portfolio->position ?? 'Software Architect & Executive Lead') }}
-                        </span>
+                        <div class="flex items-center gap-3 mb-2 flex-wrap">
+                            <span class="text-xs sm:text-sm font-mono font-bold uppercase tracking-widest {{ $isLightMode ? 'text-indigo-600' : 'text-indigo-400' }} block break-words">
+                                // {{ strtoupper($portfolio->position ?? 'Software Architect & Executive Lead') }}
+                            </span>
+                        </div>
 
                         <!-- 2. FULL NAME SECOND (RESPONSIVE FONT SIZE & BREAK WORDS) -->
-                        <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-extrabold text-white tracking-tighter uppercase leading-[1.08] text-left break-words mb-3">
+                        <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-extrabold {{ $isLightMode ? 'text-slate-900' : 'text-white' }} tracking-tighter uppercase leading-[1.08] text-left break-words mb-3">
                             {{ $user->name }}
                         </h1>
                     </div>
 
                     <!-- 3. SHORT PITCH HOOK / SUMMARY THIRD -->
                     <div class="space-y-3">
-                        <p class="text-sm sm:text-base md:text-lg font-display font-light text-slate-300 tracking-wide leading-relaxed max-w-xl break-words">
+                        <p class="text-sm sm:text-base md:text-lg font-display font-light {{ $isLightMode ? 'text-slate-600' : 'text-slate-300' }} tracking-wide leading-relaxed max-w-xl break-words">
                             {{ $portfolio->summary ?? $portfolio->description ?? $portfolio->detailed_bio ?? 'High-impact software architect and systems lead engineering scalable multi-tenant SaaS platforms, cloud infrastructure, and enterprise data solutions.' }}
                         </p>
                     </div>
 
                     <!-- 4. BUTTONS OF VIEW WORK AND CONTACT ME FOURTH (RESPONSIVE FLEX & SIZES) -->
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
-                        <a href="#projects" data-target="projects" class="exec-nav-tab cursor-pointer px-6 py-3.5 w-full sm:w-auto min-w-0 sm:min-w-[180px] h-12 whitespace-nowrap rounded-full bg-white/10 border border-white/20 text-white font-bold text-xs uppercase tracking-widest hover:bg-white hover:text-slate-950 transition-all inline-flex items-center justify-center gap-2 shrink-0">
+                        <a href="#projects" data-target="projects" class="exec-nav-tab cursor-pointer px-6 py-3.5 w-full sm:w-auto min-w-0 sm:min-w-[180px] h-12 whitespace-nowrap rounded-full {{ $isLightMode ? 'bg-slate-900 text-white border border-slate-800 hover:bg-indigo-600 shadow-md' : 'bg-white/10 border border-white/20 text-white hover:bg-white hover:text-slate-950' }} font-bold text-xs uppercase tracking-widest transition-all inline-flex items-center justify-center gap-2 shrink-0">
                             View Work <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
-                        <a href="#contact" data-target="contact" class="exec-nav-tab cursor-pointer px-6 py-3.5 w-full sm:w-auto min-w-0 sm:min-w-[180px] h-12 whitespace-nowrap rounded-full bg-white/10 border border-white/20 text-white font-bold text-xs uppercase tracking-widest hover:bg-white hover:text-slate-950 transition-all inline-flex items-center justify-center gap-2 shrink-0">
+                        <a href="#contact" data-target="contact" class="exec-nav-tab cursor-pointer px-6 py-3.5 w-full sm:w-auto min-w-0 sm:min-w-[180px] h-12 whitespace-nowrap rounded-full {{ $isLightMode ? 'bg-white border border-slate-300 text-slate-800 hover:bg-indigo-600 hover:text-white shadow-sm' : 'bg-white/10 border border-white/20 text-white hover:bg-white hover:text-slate-950' }} font-bold text-xs uppercase tracking-widest transition-all inline-flex items-center justify-center gap-2 shrink-0">
                             Contact Me
                         </a>
                     </div>
@@ -195,33 +215,33 @@
             <!-- ================================================== -->
             <!-- STICKY HORIZONTAL DIRECTORY NAVIGATION BAR WITH SCROLL ARROWS -->
             <!-- ================================================== -->
-            <div class="sticky top-0 z-40 bg-[#0B0F17]/95 backdrop-blur-xl py-3 my-6">
+            <div class="sticky top-0 z-40 {{ $isLightMode ? 'bg-[#F8FAFC]/95 border-b border-slate-200/80 shadow-sm' : 'bg-[#0B0F17]/95 border-b border-white/10' }} backdrop-blur-xl py-3 my-6">
                 <div class="flex items-center gap-3">
                     <!-- LEFT SCROLL ARROW BUTTON -->
-                    <button type="button" id="execNavScrollLeft" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/5 border border-white/15 text-slate-300 hover:text-white hover:bg-white/15 hover:border-indigo-400/50 transition-all flex items-center justify-center shrink-0 shadow-lg cursor-pointer" title="Scroll Left">
+                    <button type="button" id="execNavScrollLeft" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full {{ $isLightMode ? 'bg-white border border-slate-300 text-slate-700 hover:text-indigo-600 hover:border-indigo-500 shadow-sm' : 'bg-white/5 border border-white/15 text-slate-300 hover:text-white hover:bg-white/15' }} transition-all flex items-center justify-center shrink-0 shadow-lg cursor-pointer" title="Scroll Left">
                         <i class="fa-solid fa-chevron-left text-xs"></i>
                     </button>
 
                     <!-- HORIZONTAL SCROLLING MODULE TABS CONTAINER (HIDDEN NATIVE SCROLLBAR) -->
                     <div id="execNavTabsContainer" class="flex-grow overflow-x-auto flex items-center gap-2 sm:gap-3 font-display font-bold text-xs sm:text-sm tracking-tight text-slate-400 py-1" style="scrollbar-width: none; -ms-overflow-style: none;">
                         @foreach($allNavModules as $index => $item)
-                            <a href="#{{ $item['id'] }}" data-target="{{ $item['id'] }}" class="exec-nav-tab cursor-pointer whitespace-nowrap hover:text-white transition-all flex items-center gap-2 py-2 px-4 rounded-full border border-white/10 hover:border-indigo-400/50 hover:bg-white/5 group shrink-0">
-                                <span class="text-[10px] font-mono text-indigo-400">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                            <a href="#{{ $item['id'] }}" data-target="{{ $item['id'] }}" class="exec-nav-tab cursor-pointer whitespace-nowrap transition-all flex items-center gap-2 py-2 px-4 rounded-full border {{ $isLightMode ? 'border-slate-300/80 text-slate-700 hover:text-indigo-600 hover:border-indigo-500 hover:bg-white shadow-sm' : 'border-white/10 text-slate-400 hover:text-white hover:border-indigo-400/50 hover:bg-white/5' }} group shrink-0">
+                                <span class="text-[10px] font-mono {{ $isLightMode ? 'text-indigo-600' : 'text-indigo-400' }}">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
                                 <span>{{ $item['label'] }}</span>
                             </a>
                         @endforeach
                     </div>
 
                     <!-- RIGHT SCROLL ARROW BUTTON -->
-                    <button type="button" id="execNavScrollRight" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/5 border border-white/15 text-slate-300 hover:text-white hover:bg-white/15 hover:border-indigo-400/50 transition-all flex items-center justify-center shrink-0 shadow-lg cursor-pointer" title="Scroll Right">
+                    <button type="button" id="execNavScrollRight" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full {{ $isLightMode ? 'bg-white border border-slate-300 text-slate-700 hover:text-indigo-600 hover:border-indigo-500 shadow-sm' : 'bg-white/5 border border-white/15 text-slate-300 hover:text-white hover:bg-white/15' }} transition-all flex items-center justify-center shrink-0 shadow-lg cursor-pointer" title="Scroll Right">
                         <i class="fa-solid fa-chevron-right text-xs"></i>
                     </button>
 
                     <!-- EXTRA CONTROLS -->
-                    <div class="shrink-0 hidden lg:flex items-center gap-3 pl-2 border-l border-white/10">
-                        <a href="/" class="hover:text-white transition-colors flex items-center gap-1.5 text-xs font-mono text-slate-400"><i class="fa-solid fa-arrow-left text-[10px]"></i> Main Site</a>
+                    <div class="shrink-0 hidden lg:flex items-center gap-3 pl-2 border-l {{ $isLightMode ? 'border-slate-300' : 'border-white/10' }}">
+                        <a href="/" class="hover:text-indigo-600 transition-colors flex items-center gap-1.5 text-xs font-mono {{ $isLightMode ? 'text-slate-600' : 'text-slate-400' }}"><i class="fa-solid fa-arrow-left text-[10px]"></i> Main Site</a>
                         @if($portfolio->resume_file)
-                            <a href="{{ Storage::url($portfolio->resume_file) }}" download class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/20 border border-indigo-400/30 text-indigo-300 text-xs font-bold uppercase tracking-wider hover:bg-indigo-600 hover:text-white transition-all">
+                            <a href="{{ Storage::url($portfolio->resume_file) }}" download class="inline-flex items-center gap-2 px-4 py-2 rounded-full {{ $isLightMode ? 'bg-indigo-600 text-white shadow-md hover:bg-indigo-700' : 'bg-indigo-600/20 border border-indigo-400/30 text-indigo-300 hover:bg-indigo-600 hover:text-white' }} text-xs font-bold uppercase tracking-wider transition-all">
                                 <i class="fa-solid fa-download text-xs"></i> Download Resume
                             </a>
                         @endif
@@ -235,31 +255,31 @@
                     <!-- 1. ABOUT SECTION (INITIALLY VISIBLE) -->
                     <section id="about" class="exec-section-panel block py-6 relative z-10" data-aos="fade-up">
                         <div class="space-y-6">
-                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// ABOUT ME</span>
-                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block">// ABOUT ME</span>
+                            <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">
                                 Strategic Vision & Expertise
                             </h2>
-                            <p class="text-slate-200 text-base sm:text-lg font-light leading-relaxed">
+                            <p class="{{ $execMuted }} text-base sm:text-lg font-light leading-relaxed">
                                 {{ $portfolio->detailed_bio ?? $portfolio->description ?? 'Senior technologist and executive architect leading multi-department governance platforms, enterprise SaaS architectures, and high-scale systems.' }}
                             </p>
 
                             <!-- Information Metadata Grid -->
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-white/10">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t {{ $execBorder }}">
                                 <div>
-                                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-1">Location</span>
-                                    <span class="text-xs font-bold text-white block">{{ trim(($portfolio->city ?? '') . ', ' . ($portfolio->country ?? 'Global')) ?: 'Global / Remote' }}</span>
+                                    <span class="text-xs font-mono {{ $execSubMuted }} uppercase tracking-wider block mb-1">Location</span>
+                                    <span class="text-xs font-bold {{ $execTitle }} block">{{ trim(($portfolio->city ?? '') . ', ' . ($portfolio->country ?? 'Global')) ?: 'Global / Remote' }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-1">Profession</span>
-                                    <span class="text-xs font-bold text-white block">{{ $portfolio->position ?? 'Software Architect' }}</span>
+                                    <span class="text-xs font-mono {{ $execSubMuted }} uppercase tracking-wider block mb-1">Profession</span>
+                                    <span class="text-xs font-bold {{ $execTitle }} block">{{ $portfolio->position ?? 'Software Architect' }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-1">Experience</span>
-                                    <span class="text-xs font-bold text-white block">{{ !empty($experiences) && count($experiences) > 0 ? count($experiences) . '+ Roles' : '10+ Years' }}</span>
+                                    <span class="text-xs font-mono {{ $execSubMuted }} uppercase tracking-wider block mb-1">Experience</span>
+                                    <span class="text-xs font-bold {{ $execTitle }} block">{{ !empty($experiences) && count($experiences) > 0 ? count($experiences) . '+ Roles' : '10+ Years' }}</span>
                                 </div>
                                 <div>
-                                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-1">Status</span>
-                                    <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Available</span>
+                                    <span class="text-xs font-mono {{ $execSubMuted }} uppercase tracking-wider block mb-1">Status</span>
+                                    <span class="text-xs font-bold text-emerald-500 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Available</span>
                                 </div>
                             </div>
                         </div>
@@ -268,25 +288,25 @@
                     <!-- 2. SERVICES OFFERED SECTION -->
                     <section id="services" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
                         <div class="space-y-6">
-                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// EXPERTISE & ADVISORY</span>
-                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Services Offered</h2>
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block">// EXPERTISE & ADVISORY</span>
+                            <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Services Offered</h2>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                                 @if($portfolio->services && $portfolio->services->isNotEmpty())
                                     @foreach($portfolio->services as $service)
-                                        <div class="p-6 rounded-3xl bg-[#121826]/70 border border-white/10 hover:border-indigo-400/50 transition-all backdrop-blur-md space-y-3 group">
-                                            <i class="fa-solid {{ $service->icon ?? 'fa-compass-drafting' }} text-xl text-indigo-400 group-hover:scale-110 transition-transform"></i>
-                                            <h3 class="text-lg font-display font-bold text-white group-hover:text-indigo-300 transition-colors">{{ $service->title }}</h3>
-                                            <p class="text-slate-300 text-xs font-light leading-relaxed">{{ $service->description }}</p>
+                                        <div class="p-6 rounded-3xl {{ $execCard }} hover:border-indigo-400/50 transition-all backdrop-blur-md space-y-3 group">
+                                            <i class="fa-solid {{ $service->icon ?? 'fa-compass-drafting' }} text-xl {{ $execAccent }} group-hover:scale-110 transition-transform"></i>
+                                            <h3 class="text-lg font-display font-bold {{ $execTitle }} group-hover:text-indigo-500 transition-colors">{{ $service->title }}</h3>
+                                            <p class="{{ $execMuted }} text-xs font-light leading-relaxed">{{ $service->description }}</p>
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-compass-drafting"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No services records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No services records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -296,36 +316,36 @@
                     <!-- 3. WORK EXPERIENCE SECTION -->
                     <section id="experience" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
                         <div class="space-y-6">
-                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// CAREER TRAJECTORY</span>
-                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Work Experience</h2>
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block">// CAREER TRAJECTORY</span>
+                            <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Work Experience</h2>
 
                             <div class="space-y-0 pt-2">
                                 @if(!empty($experiences) && count($experiences) > 0)
                                     @foreach($experiences as $index => $exp)
-                                        <div class="editorial-row py-6 px-4 border-b border-white/5" data-aos="fade-up" data-aos-delay="{{ ($index % 5) * 80 }}">
+                                        <div class="editorial-row py-6 px-4 border-b {{ $execBorderSubtle }}" data-aos="fade-up" data-aos-delay="{{ ($index % 5) * 80 }}">
                                             <div class="space-y-3">
                                                 <div class="flex flex-wrap justify-between items-center gap-2">
-                                                    <span class="text-xs font-mono font-semibold text-indigo-400 uppercase tracking-wider">
+                                                    <span class="text-xs font-mono font-semibold {{ $execAccent }} uppercase tracking-wider">
                                                         {{ $exp->period ?? (($exp->start_date ? (is_string($exp->start_date) ? $exp->start_date : $exp->start_date->format('M Y')) : '') . ' — ' . ($exp->is_current ? 'PRESENT' : ($exp->end_date ? (is_string($exp->end_date) ? $exp->end_date : $exp->end_date->format('M Y')) : ''))) }}
                                                     </span>
-                                                    <span class="text-xs font-mono text-slate-400">{{ $exp->company ?? $portfolio->organization ?? 'Enterprise Organization' }}</span>
+                                                    <span class="text-xs font-mono {{ $execSubMuted }}">{{ $exp->company ?? $portfolio->organization ?? 'Enterprise Organization' }}</span>
                                                 </div>
-                                                <h3 class="text-xl font-display font-bold text-white">
+                                                <h3 class="text-xl font-display font-bold {{ $execTitle }}">
                                                     {{ $exp->position ?? $exp->title ?? 'Executive Consultant' }}
                                                 </h3>
-                                                <p class="text-slate-300 text-sm font-light leading-relaxed">
+                                                <p class="{{ $execMuted }} text-sm font-light leading-relaxed">
                                                     {{ $exp->description ?? 'Directed digital transformation, scalable database infrastructures, and enterprise application roadmaps.' }}
                                                 </p>
                                             </div>
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-briefcase"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No work experience records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No work experience records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -335,8 +355,8 @@
                     <!-- 4. SKILLS SECTION -->
                     <section id="skills" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
                         <div class="space-y-6">
-                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// TECHNICAL MATRIX</span>
-                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Skills & Competencies</h2>
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block">// TECHNICAL MATRIX</span>
+                            <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Skills & Competencies</h2>
 
                             <div class="space-y-8 pt-2">
                                 @if(!empty($skills) && count($skills) > 0)
@@ -347,16 +367,16 @@
                                     @endphp
                                     @foreach($skillsGrouped as $categoryName => $catSkills)
                                         <div>
-                                            <h3 class="text-xs font-mono font-bold uppercase tracking-widest text-slate-400 mb-3 flex items-center gap-3">
+                                            <h3 class="text-xs font-mono font-bold uppercase tracking-widest {{ $execSubMuted }} mb-3 flex items-center gap-3">
                                                 <span>// {{ $categoryName }}</span>
-                                                <span class="flex-grow h-px bg-white/10"></span>
+                                                <span class="flex-grow h-px {{ $execBorderSubtle }}"></span>
                                             </h3>
                                             <div class="flex flex-wrap gap-2.5">
                                                 @foreach($catSkills as $skill)
-                                                    <div class="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:border-indigo-400/50 hover:bg-white/10 transition-all flex items-center gap-2.5 group">
-                                                        <span class="font-display font-semibold text-xs text-white group-hover:text-indigo-300 transition-colors">{{ $skill->name }}</span>
+                                                    <div class="px-4 py-2.5 rounded-xl border {{ $execBorder }} {{ $isLightMode ? 'bg-white shadow-sm hover:border-indigo-500' : 'bg-white/5 hover:border-indigo-400/50 hover:bg-white/10' }} transition-all flex items-center gap-2.5 group">
+                                                        <span class="font-display font-semibold text-xs {{ $execTitle }} group-hover:text-indigo-500 transition-colors">{{ $skill->name }}</span>
                                                         @if(!empty($skill->level))
-                                                            <span class="text-[10px] font-mono text-slate-400 group-hover:text-indigo-400 transition-colors">{{ $skill->level }}%</span>
+                                                            <span class="text-[10px] font-mono {{ $execSubMuted }} group-hover:text-indigo-500 transition-colors">{{ $skill->level }}%</span>
                                                         @endif
                                                     </div>
                                                 @endforeach
@@ -364,12 +384,12 @@
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-code"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No skill records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No skill records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -381,36 +401,36 @@
                         <div class="space-y-6">
                             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                                 <div>
-                                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block mb-1">// CASE STUDIES</span>
-                                    <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Projects & Initiatives</h2>
+                                    <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block mb-1">// CASE STUDIES</span>
+                                    <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Projects & Initiatives</h2>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-4">
                                 @if(!empty($projects) && count($projects) > 0)
                                     @foreach($projects as $index => $project)
-                                        <div class="group relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-[#121826] aspect-[4/5] flex flex-col justify-end transition-all duration-500 hover:border-indigo-400/50 hover:shadow-indigo-500/20" data-aos="fade-up" data-aos-delay="{{ ($index % 4) * 100 }}">
+                                        <div class="group relative rounded-3xl overflow-hidden border {{ $execBorder }} shadow-2xl {{ $isLightMode ? 'bg-white' : 'bg-[#121826]' }} aspect-[4/5] flex flex-col justify-end transition-all duration-500 hover:border-indigo-400/50 hover:shadow-indigo-500/20" data-aos="fade-up" data-aos-delay="{{ ($index % 4) * 100 }}">
                                             <!-- PROJECT IMAGE BACKGROUND -->
                                             @if($project->image_path)
                                                 <img src="{{ Storage::url($project->image_path) }}" alt="{{ $project->title }}" class="absolute inset-0 w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700">
                                             @else
-                                                <div class="absolute inset-0 w-full h-full bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 flex flex-col items-center justify-center p-6 text-center">
-                                                    <i class="fa-solid fa-layer-group text-4xl text-indigo-400/40 mb-2 group-hover:scale-110 transition-transform"></i>
+                                                <div class="absolute inset-0 w-full h-full {{ $isLightMode ? 'bg-gradient-to-br from-slate-100 via-indigo-50 to-slate-200' : 'bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900' }} flex flex-col items-center justify-center p-6 text-center">
+                                                    <i class="fa-solid fa-layer-group text-4xl {{ $execAccent }} opacity-40 mb-2 group-hover:scale-110 transition-transform"></i>
                                                 </div>
                                             @endif
 
                                             <!-- GRADIENT OVERLAY FOR READABILITY -->
-                                            <div class="absolute inset-0 bg-gradient-to-t from-[#0B0F17] via-[#0B0F17]/70 to-transparent opacity-90 group-hover:opacity-95 transition-opacity"></div>
+                                            <div class="absolute inset-0 {{ $isLightMode ? 'bg-gradient-to-t from-white via-white/85 to-transparent' : 'bg-gradient-to-t from-[#0B0F17] via-[#0B0F17]/70 to-transparent' }} opacity-90 group-hover:opacity-95 transition-opacity"></div>
 
                                             <!-- OVERLAY CONTENT ON PROJECT IMAGE -->
                                             <div class="relative z-10 p-5 space-y-3">
                                                 <!-- SINGLE LINE TITLE WITH ELLIPSIS IF LONG -->
-                                                <h3 class="text-base font-display font-extrabold text-white truncate tracking-tight" title="{{ $project->title }}">
+                                                <h3 class="text-base font-display font-extrabold {{ $execTitle }} truncate tracking-tight" title="{{ $project->title }}">
                                                     {{ $project->title }}
                                                 </h3>
 
                                                 <!-- READ MORE BUTTON ON PROJECT IMAGE (TRIGGERS MODAL POPUP) -->
-                                                <button type="button" class="exec-project-modal-btn inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-indigo-600 hover:text-white border border-white/20 hover:border-indigo-400 text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 backdrop-blur-md cursor-pointer shrink-0"
+                                                <button type="button" class="exec-project-modal-btn inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl {{ $isLightMode ? 'bg-slate-900 text-white hover:bg-indigo-600 border border-slate-800' : 'bg-white/10 text-white hover:bg-indigo-600 border border-white/20' }} font-bold text-xs uppercase tracking-wider transition-all duration-300 backdrop-blur-md cursor-pointer shrink-0"
                                                     data-title="{{ $project->title }}"
                                                     data-description="{{ $project->description }}"
                                                     data-image="{{ $project->image_path ? Storage::url($project->image_path) : '' }}"
@@ -421,12 +441,12 @@
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-layer-group"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No project records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No project records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -436,8 +456,8 @@
                     <!-- 6. EDUCATION SECTION -->
                     <section id="education" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
                         <div class="space-y-6">
-                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// ACADEMIC HISTORY</span>
-                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Education</h2>
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block">// ACADEMIC HISTORY</span>
+                            <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Education</h2>
 
                             <div class="space-y-4 pt-2">
                                 @if(!empty($education) && count($education) > 0)
@@ -459,27 +479,27 @@
                                                 $countYearsText = $diffYears . ' Years Duration';
                                             }
                                         @endphp
-                                        <div class="editorial-row py-5 px-5 rounded-2xl bg-[#121826]/60 border border-white/10 hover:border-indigo-400/50 transition-all space-y-2" data-aos="fade-up">
+                                        <div class="editorial-row py-5 px-5 rounded-2xl {{ $execCard }} space-y-2" data-aos="fade-up">
                                             <div class="flex flex-wrap items-center justify-between gap-2">
-                                                <span class="text-xs font-mono font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-2">
+                                                <span class="text-xs font-mono font-bold {{ $execAccent }} uppercase tracking-wider flex items-center gap-2">
                                                     <i class="fa-regular fa-calendar-check text-[11px]"></i>
                                                     {{ $startFormatted }} — {{ $endFormatted }}
                                                 </span>
-                                                <span class="text-[11px] font-mono font-semibold text-emerald-400 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                                                <span class="text-[11px] font-mono font-semibold text-emerald-600 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                                                     {{ $countYearsText }}
                                                 </span>
                                             </div>
-                                            <h3 class="text-lg font-display font-bold text-white">{{ $edu->degree }}</h3>
-                                            <p class="text-slate-300 text-xs font-light">{{ $edu->institution }}</p>
+                                            <h3 class="text-lg font-display font-bold {{ $execTitle }}">{{ $edu->degree }}</h3>
+                                            <p class="{{ $execSubMuted }} text-xs font-light">{{ $edu->institution }}</p>
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-graduation-cap"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No education records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No education records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -489,29 +509,29 @@
                     <!-- 7. CERTIFICATIONS SECTION -->
                     <section id="certifications" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
                         <div class="space-y-6">
-                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// CREDENTIALS</span>
-                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Certifications</h2>
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block">// CREDENTIALS</span>
+                            <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Certifications</h2>
 
                             <div class="space-y-4 pt-2">
                                 @if(!empty($certifications) && count($certifications) > 0)
                                     @foreach($certifications as $cert)
-                                        <div class="p-5 rounded-2xl bg-[#121826]/70 border border-white/10 backdrop-blur-md flex justify-between items-center">
+                                        <div class="p-5 rounded-2xl {{ $execCard }} backdrop-blur-md flex justify-between items-center">
                                             <div>
-                                                <h4 class="text-base font-display font-bold text-white">{{ $cert->name }}</h4>
-                                                <span class="text-xs text-slate-400 block">{{ $cert->issuing_organization }}</span>
+                                                <h4 class="text-base font-display font-bold {{ $execTitle }}">{{ $cert->name }}</h4>
+                                                <span class="text-xs {{ $execSubMuted }} block">{{ $cert->issuing_organization }}</span>
                                             </div>
                                             @if(!empty($cert->credential_url))
-                                                <a href="{{ $cert->credential_url }}" target="_blank" class="text-xs font-mono text-indigo-400 hover:text-white">Verify →</a>
+                                                <a href="{{ $cert->credential_url }}" target="_blank" class="text-xs font-mono {{ $execAccent }} hover:text-indigo-800">Verify →</a>
                                             @endif
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-certificate"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No certification records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No certification records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -521,24 +541,24 @@
                     <!-- 8. TRAININGS SECTION -->
                     <section id="trainings" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
                         <div class="space-y-6">
-                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// SPECIALIZED COURSES</span>
-                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Trainings & Workshops</h2>
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block">// SPECIALIZED COURSES</span>
+                            <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Trainings & Workshops</h2>
 
                             <div class="space-y-4 pt-2">
                                 @if(!empty($trainings) && count($trainings) > 0)
                                     @foreach($trainings as $tr)
-                                        <div class="p-5 rounded-2xl bg-[#121826]/70 border border-white/10 backdrop-blur-md">
-                                            <h4 class="text-base font-display font-bold text-white">{{ $tr->title }}</h4>
-                                            <span class="text-xs text-slate-400 block">{{ $tr->institution }}</span>
+                                        <div class="p-5 rounded-2xl {{ $execCard }} backdrop-blur-md">
+                                            <h4 class="text-base font-display font-bold {{ $execTitle }}">{{ $tr->title }}</h4>
+                                            <span class="text-xs {{ $execSubMuted }} block">{{ $tr->institution }}</span>
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-chalkboard-user"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No training records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No training records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -548,25 +568,25 @@
                     <!-- 9. ACHIEVEMENTS SECTION -->
                     <section id="achievements" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
                         <div class="space-y-6">
-                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// RECOGNITION & HONORS</span>
-                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Key Achievements</h2>
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block">// RECOGNITION & HONORS</span>
+                            <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Key Achievements</h2>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                                 @if($portfolio->achievements && $portfolio->achievements->isNotEmpty())
                                     @foreach($portfolio->achievements as $ach)
-                                        <div class="p-6 rounded-3xl bg-[#121826]/70 border border-white/10 backdrop-blur-md space-y-2">
-                                            <span class="text-[10px] font-mono text-indigo-400 uppercase tracking-wider block">{{ $ach->date ?? 'HONOR' }}</span>
-                                            <h3 class="text-base font-display font-bold text-white">{{ $ach->title }}</h3>
-                                            <p class="text-slate-300 text-xs font-light leading-relaxed">{{ $ach->description }}</p>
+                                        <div class="p-6 rounded-3xl {{ $execCard }} backdrop-blur-md space-y-2">
+                                            <span class="text-[10px] font-mono {{ $execAccent }} uppercase tracking-wider block">{{ $ach->date ?? 'HONOR' }}</span>
+                                            <h3 class="text-base font-display font-bold {{ $execTitle }}">{{ $ach->title }}</h3>
+                                            <p class="{{ $execMuted }} text-xs font-light leading-relaxed">{{ $ach->description }}</p>
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-trophy"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No achievement records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No achievement records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -576,29 +596,29 @@
                     <!-- 10. CONTRIBUTIONS SECTION -->
                     <section id="contributions" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
                         <div class="space-y-6">
-                            <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block">// COMMUNITY & OPEN CODE</span>
-                            <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Technical Contributions</h2>
+                            <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block">// COMMUNITY & OPEN CODE</span>
+                            <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Technical Contributions</h2>
 
                             <div class="space-y-4 pt-2">
                                 @if($portfolio->contributions && $portfolio->contributions->isNotEmpty())
                                     @foreach($portfolio->contributions as $cb)
-                                        <div class="p-6 rounded-3xl bg-[#121826]/70 border border-white/10 backdrop-blur-md space-y-3">
+                                        <div class="p-6 rounded-3xl {{ $execCard }} backdrop-blur-md space-y-3">
                                             <div class="flex justify-between items-center">
-                                                <h4 class="text-base font-display font-bold text-white">{{ $cb->title }}</h4>
+                                                <h4 class="text-base font-display font-bold {{ $execTitle }}">{{ $cb->title }}</h4>
                                                 @if(!empty($cb->url))
-                                                    <a href="{{ $cb->url }}" target="_blank" class="text-xs font-mono text-indigo-400 hover:text-white">Repository →</a>
+                                                    <a href="{{ $cb->url }}" target="_blank" class="text-xs font-mono {{ $execAccent }} hover:text-indigo-800">Repository →</a>
                                                 @endif
                                             </div>
-                                            <p class="text-slate-300 text-xs font-light leading-relaxed">{{ $cb->description ?? '' }}</p>
+                                            <p class="{{ $execMuted }} text-xs font-light leading-relaxed">{{ $cb->description ?? '' }}</p>
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-code-commit"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No contribution records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No contribution records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -610,8 +630,8 @@
                         <div class="space-y-6">
                             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                                 <div>
-                                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block mb-1">// CLIENT & LEADER ENDORSEMENTS</span>
-                                    <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Testimonials & Endorsements</h2>
+                                    <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block mb-1">// CLIENT & LEADER ENDORSEMENTS</span>
+                                    <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Testimonials & Endorsements</h2>
                                 </div>
                             </div>
 
@@ -633,13 +653,13 @@
                                                 $initials = strtoupper(substr($name, 0, 2));
                                             }
                                         @endphp
-                                        <div class="relative p-7 sm:p-8 rounded-3xl bg-[#121826]/70 border border-white/10 hover:border-indigo-400/50 transition-all duration-500 backdrop-blur-md space-y-6 flex flex-col justify-between group hover:shadow-2xl hover:shadow-indigo-500/10 overflow-hidden" data-aos="fade-up" data-aos-delay="{{ ($index % 2) * 100 }}">
+                                        <div class="relative p-7 sm:p-8 rounded-3xl {{ $execCard }} hover:border-indigo-400/50 transition-all duration-500 backdrop-blur-md space-y-6 flex flex-col justify-between group hover:shadow-2xl hover:shadow-indigo-500/10 overflow-hidden" data-aos="fade-up" data-aos-delay="{{ ($index % 2) * 100 }}">
                                             <!-- Ambient Quote Icon in Background -->
-                                            <i class="fa-solid fa-quote-right absolute top-6 right-6 text-4xl text-indigo-500/10 group-hover:text-indigo-400/20 transition-all pointer-events-none"></i>
+                                            <i class="fa-solid fa-quote-right absolute top-6 right-6 text-4xl {{ $execAccent }} opacity-15 group-hover:opacity-30 transition-all pointer-events-none"></i>
 
                                             <div class="space-y-4 relative z-10">
                                                 <!-- Star Rating Bar -->
-                                                <div class="flex items-center gap-1 text-amber-400 text-xs">
+                                                <div class="flex items-center gap-1 text-amber-500 text-xs">
                                                     <i class="fa-solid fa-star"></i>
                                                     <i class="fa-solid fa-star"></i>
                                                     <i class="fa-solid fa-star"></i>
@@ -648,32 +668,32 @@
                                                 </div>
 
                                                 <!-- Quote Content -->
-                                                <p class="text-slate-200 text-sm sm:text-base font-light italic leading-relaxed">
+                                                <p class="{{ $execMuted }} text-sm sm:text-base font-light italic leading-relaxed">
                                                     "{{ $content }}"
                                                 </p>
                                             </div>
 
                                             <!-- Client Info Footer -->
-                                            <div class="flex items-center gap-3.5 pt-4 border-t border-white/10 relative z-10">
-                                                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-400/30 text-indigo-300 font-display font-extrabold text-sm flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                                            <div class="flex items-center gap-3.5 pt-4 border-t {{ $execBorder }} relative z-10">
+                                                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-400/30 text-indigo-600 font-display font-extrabold text-sm flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform">
                                                     {{ $initials }}
                                                 </div>
                                                 <div class="space-y-0.5">
-                                                    <h4 class="text-sm font-display font-bold text-white group-hover:text-indigo-300 transition-colors">{{ $name }}</h4>
+                                                    <h4 class="text-sm font-display font-bold {{ $execTitle }} group-hover:text-indigo-500 transition-colors">{{ $name }}</h4>
                                                     @if(!empty($designation))
-                                                        <span class="text-xs font-mono text-slate-400 block">{{ $designation }}</span>
+                                                        <span class="text-xs font-mono {{ $execSubMuted }} block">{{ $designation }}</span>
                                                     @endif
                                                 </div>
                                             </div>
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-quote-left"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No testimonial records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No testimonial records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -685,56 +705,56 @@
                         <div class="space-y-6">
                             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                                 <div>
-                                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block mb-1">// SCHOLARLY & RESEARCH PAPERS</span>
-                                    <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Publications & Reports</h2>
+                                    <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block mb-1">// SCHOLARLY & RESEARCH PAPERS</span>
+                                    <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Publications & Reports</h2>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                                 @if(!empty($publications) && count($publications) > 0)
                                     @foreach($publications as $index => $pub)
-                                        <div class="p-6 sm:p-7 rounded-3xl bg-[#121826]/70 border border-white/10 hover:border-indigo-400/50 transition-all backdrop-blur-md space-y-4 flex flex-col justify-between group" data-aos="fade-up" data-aos-delay="{{ ($index % 2) * 100 }}">
+                                        <div class="p-6 sm:p-7 rounded-3xl {{ $execCard }} hover:border-indigo-400/50 transition-all backdrop-blur-md space-y-4 flex flex-col justify-between group" data-aos="fade-up" data-aos-delay="{{ ($index % 2) * 100 }}">
                                             <div class="space-y-3">
                                                 <div class="flex flex-wrap items-center justify-between gap-2">
-                                                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-mono text-[10px] font-bold uppercase tracking-wider">
+                                                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} font-mono text-[10px] font-bold uppercase tracking-wider">
                                                         {{ $pub->type ?? 'JOURNAL PAPER' }}
                                                     </span>
                                                     @if(!empty($pub->year))
-                                                        <span class="text-xs font-mono text-slate-400 font-semibold flex items-center gap-1.5">
-                                                            <i class="fa-regular fa-calendar text-[10px] text-indigo-400"></i> {{ $pub->year }}
+                                                        <span class="text-xs font-mono {{ $execSubMuted }} font-semibold flex items-center gap-1.5">
+                                                            <i class="fa-regular fa-calendar text-[10px] {{ $execAccent }}"></i> {{ $pub->year }}
                                                         </span>
                                                     @endif
                                                 </div>
 
-                                                <h3 class="text-lg font-display font-extrabold text-white group-hover:text-indigo-300 transition-colors leading-snug">
+                                                <h3 class="text-lg font-display font-extrabold {{ $execTitle }} group-hover:text-indigo-500 transition-colors leading-snug">
                                                     {{ $pub->title }}
                                                 </h3>
 
-                                                <div class="space-y-1.5 text-xs text-slate-300 font-light border-t border-white/5 pt-3">
+                                                <div class="space-y-1.5 text-xs {{ $execMuted }} font-light border-t {{ $execBorderSubtle }} pt-3">
                                                     @if(!empty($pub->authors))
                                                         <p class="flex items-center gap-2">
-                                                            <strong class="font-mono text-[11px] text-indigo-400 uppercase tracking-wider">Authors:</strong>
-                                                            <span class="text-slate-200">{{ $pub->authors }}</span>
+                                                            <strong class="font-mono text-[11px] {{ $execAccent }} uppercase tracking-wider">Authors:</strong>
+                                                            <span class="{{ $execMuted }}">{{ $pub->authors }}</span>
                                                         </p>
                                                     @endif
                                                     @if(!empty($pub->publisher))
                                                         <p class="flex items-center gap-2">
-                                                            <strong class="font-mono text-[11px] text-indigo-400 uppercase tracking-wider">Publisher:</strong>
-                                                            <span class="text-slate-200">{{ $pub->publisher }}</span>
+                                                            <strong class="font-mono text-[11px] {{ $execAccent }} uppercase tracking-wider">Publisher:</strong>
+                                                            <span class="{{ $execMuted }}">{{ $pub->publisher }}</span>
                                                         </p>
                                                     @endif
                                                 </div>
                                             </div>
 
                                             <!-- ACTION BUTTONS -->
-                                            <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-white/10">
+                                            <div class="flex flex-wrap items-center gap-3 pt-4 border-t {{ $execBorder }}">
                                                 @if(!empty($pub->link))
-                                                    <a href="{{ $pub->link }}" target="_blank" class="px-4 py-2 rounded-xl bg-indigo-600/80 hover:bg-indigo-600 text-white font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-2">
+                                                    <a href="{{ $pub->link }}" target="_blank" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-2">
                                                         Online Link <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                                                     </a>
                                                 @endif
                                                 @if(!empty($pub->report_path))
-                                                    <a href="{{ Storage::url($pub->report_path) }}" target="_blank" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white hover:text-slate-950 border border-white/20 text-white font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-2">
+                                                    <a href="{{ Storage::url($pub->report_path) }}" target="_blank" class="px-4 py-2 rounded-xl {{ $isLightMode ? 'bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900' : 'bg-white/10 hover:bg-white hover:text-slate-950 border border-white/20 text-white' }} font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center gap-2">
                                                         Download Report <i class="fa-solid fa-download text-[10px]"></i>
                                                     </a>
                                                 @endif
@@ -742,12 +762,12 @@
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-book-open"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No publication records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No publication records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -759,42 +779,42 @@
                         <div class="space-y-6">
                             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                                 <div>
-                                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-purple-400 block mb-1">// PRESS, KEYNOTES & BROADCASTS</span>
-                                    <h2 class="section-title-clamp font-display font-extrabold text-white uppercase tracking-tight">Media Appearances</h2>
+                                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-purple-600 block mb-1">// PRESS, KEYNOTES & BROADCASTS</span>
+                                    <h2 class="section-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tight">Media Appearances</h2>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                                 @if(!empty($media) && count($media) > 0)
                                     @foreach($media as $index => $med)
-                                        <div class="p-6 sm:p-7 rounded-3xl bg-[#121826]/70 border border-white/10 hover:border-purple-400/50 transition-all backdrop-blur-md space-y-4 flex flex-col justify-between group" data-aos="fade-up" data-aos-delay="{{ ($index % 2) * 100 }}">
+                                        <div class="p-6 sm:p-7 rounded-3xl {{ $execCard }} hover:border-purple-400/50 transition-all backdrop-blur-md space-y-4 flex flex-col justify-between group" data-aos="fade-up" data-aos-delay="{{ ($index % 2) * 100 }}">
                                             <div class="space-y-3">
                                                 <div class="flex flex-wrap items-center justify-between gap-2">
-                                                    <span class="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 font-mono text-[10px] font-bold uppercase tracking-wider">
+                                                    <span class="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 font-mono text-[10px] font-bold uppercase tracking-wider">
                                                         {{ $med->type ?? 'MEDIA APPEARANCE' }}
                                                     </span>
                                                     @if(!empty($med->date))
-                                                        <span class="text-xs font-mono text-slate-400 font-semibold flex items-center gap-1.5">
-                                                            <i class="fa-regular fa-calendar-check text-[10px] text-purple-400"></i> {{ is_string($med->date) ? $med->date : $med->date->format('M Y') }}
+                                                        <span class="text-xs font-mono {{ $execSubMuted }} font-semibold flex items-center gap-1.5">
+                                                            <i class="fa-regular fa-calendar-check text-[10px] text-purple-600"></i> {{ is_string($med->date) ? $med->date : $med->date->format('M Y') }}
                                                         </span>
                                                     @endif
                                                 </div>
 
-                                                <h3 class="text-lg font-display font-extrabold text-white group-hover:text-purple-300 transition-colors leading-snug">
+                                                <h3 class="text-lg font-display font-extrabold {{ $execTitle }} group-hover:text-purple-600 transition-colors leading-snug">
                                                     {{ $med->title }}
                                                 </h3>
 
-                                                <div class="space-y-1.5 text-xs text-slate-300 font-light border-t border-white/5 pt-3">
+                                                <div class="space-y-1.5 text-xs {{ $execMuted }} font-light border-t {{ $execBorderSubtle }} pt-3">
                                                     @if(!empty($med->channel_platform))
                                                         <p class="flex items-center gap-2">
-                                                            <strong class="font-mono text-[11px] text-purple-400 uppercase tracking-wider">Channel / Platform:</strong>
-                                                            <span class="text-slate-200">{{ $med->channel_platform }}</span>
+                                                            <strong class="font-mono text-[11px] text-purple-600 uppercase tracking-wider">Channel / Platform:</strong>
+                                                            <span class="{{ $execMuted }}">{{ $med->channel_platform }}</span>
                                                         </p>
                                                     @endif
                                                     @if(!empty($med->newspaper_name))
                                                         <p class="flex items-center gap-2">
-                                                            <strong class="font-mono text-[11px] text-purple-400 uppercase tracking-wider">Press / Outlet:</strong>
-                                                            <span class="text-slate-200">{{ $med->newspaper_name }}</span>
+                                                            <strong class="font-mono text-[11px] text-purple-600 uppercase tracking-wider">Press / Outlet:</strong>
+                                                            <span class="{{ $execMuted }}">{{ $med->newspaper_name }}</span>
                                                         </p>
                                                     @endif
                                                 </div>
@@ -802,8 +822,8 @@
 
                                             <!-- ACTION BUTTON -->
                                             @if(!empty($med->link))
-                                                <div class="pt-4 border-t border-white/10">
-                                                    <a href="{{ $med->link }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-purple-600/80 hover:bg-purple-600 text-white font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center justify-center gap-2 w-full sm:w-auto">
+                                                <div class="pt-4 border-t {{ $execBorder }}">
+                                                    <a href="{{ $med->link }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs uppercase tracking-wider transition-all inline-flex items-center justify-center gap-2 w-full sm:w-auto">
                                                         Watch / Read Coverage <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                                                     </a>
                                                 </div>
@@ -811,12 +831,12 @@
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="p-8 rounded-3xl bg-[#121826]/50 border border-white/10 text-center space-y-3 col-span-full">
-                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto text-xl">
+                                    <div class="p-8 rounded-3xl {{ $execCardMuted }} text-center space-y-3 col-span-full">
+                                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center mx-auto text-xl">
                                             <i class="fa-solid fa-video"></i>
                                         </div>
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider">No Records Found</h3>
-                                        <p class="text-slate-400 text-xs max-w-sm mx-auto">No media appearance records have been added yet.</p>
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider">No Records Found</h3>
+                                        <p class="{{ $execSubMuted }} text-xs max-w-sm mx-auto">No media appearance records have been added yet.</p>
                                     </div>
                                 @endif
                             </div>
@@ -827,11 +847,11 @@
                     <section id="contact" class="exec-section-panel hidden py-6 relative z-10" data-aos="fade-up">
                         <div class="space-y-8">
                             <div>
-                                <span class="text-xs font-mono font-bold uppercase tracking-widest text-indigo-400 block mb-2">// INITIATE DIALOGUE & INQUIRIES</span>
-                                <h2 class="hero-title-clamp font-display font-extrabold text-white uppercase tracking-tighter leading-none mb-3">
+                                <span class="text-xs font-mono font-bold uppercase tracking-widest {{ $execAccent }} block mb-2">// INITIATE DIALOGUE & INQUIRIES</span>
+                                <h2 class="hero-title-clamp font-display font-extrabold {{ $execTitle }} uppercase tracking-tighter leading-none mb-3">
                                     LET’S WORK TOGETHER.
                                 </h2>
-                                <p class="text-slate-300 text-sm font-light leading-relaxed max-w-xl">
+                                <p class="{{ $execMuted }} text-sm font-light leading-relaxed max-w-xl">
                                     Available for executive advisory, system architecture, and strategic technology consulting. Reach out directly or send a message below.
                                 </p>
                             </div>
@@ -839,18 +859,18 @@
                             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-2">
                                 <!-- LEFT COLUMN: DIRECT CONTACT DETAILS -->
                                 <div class="lg:col-span-5 space-y-4">
-                                    <div class="p-7 rounded-3xl bg-[#121826]/70 border border-white/10 backdrop-blur-md space-y-6">
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider border-b border-white/10 pb-3">Contact Details</h3>
+                                    <div class="p-7 rounded-3xl {{ $execCard }} backdrop-blur-md space-y-6">
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider border-b {{ $execBorder }} pb-3">Contact Details</h3>
 
                                         <div class="space-y-4">
                                             @if($portfolio->show_email && !empty($profile['email']))
                                                 <div class="flex items-start gap-4 group">
-                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                                                         <i class="fa-solid fa-envelope text-sm"></i>
                                                     </div>
                                                     <div class="space-y-0.5 overflow-hidden">
-                                                        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Direct Email</span>
-                                                        <a href="mailto:{{ $profile['email'] }}" class="text-xs sm:text-sm font-display font-semibold text-white hover:text-indigo-300 transition-colors truncate block">
+                                                        <span class="text-[10px] font-mono uppercase tracking-wider {{ $execSubMuted }} block">Direct Email</span>
+                                                        <a href="mailto:{{ $profile['email'] }}" class="text-xs sm:text-sm font-display font-semibold {{ $execTitle }} group-hover:text-indigo-500 transition-colors truncate block">
                                                             {{ $profile['email'] }}
                                                         </a>
                                                     </div>
@@ -859,12 +879,12 @@
 
                                             @if($portfolio->show_phone && !empty($profile['phone']))
                                                 <div class="flex items-start gap-4 group">
-                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                                                         <i class="fa-solid fa-phone text-sm"></i>
                                                     </div>
                                                     <div class="space-y-0.5 overflow-hidden">
-                                                        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Phone / Mobile</span>
-                                                        <a href="tel:{{ $profile['phone'] }}" class="text-xs sm:text-sm font-display font-semibold text-white hover:text-indigo-300 transition-colors truncate block">
+                                                        <span class="text-[10px] font-mono uppercase tracking-wider {{ $execSubMuted }} block">Phone / Mobile</span>
+                                                        <a href="tel:{{ $profile['phone'] }}" class="text-xs sm:text-sm font-display font-semibold {{ $execTitle }} group-hover:text-indigo-500 transition-colors truncate block">
                                                             {{ $profile['phone'] }}
                                                         </a>
                                                     </div>
@@ -873,12 +893,12 @@
 
                                             @if(!empty($profile['location']))
                                                 <div class="flex items-start gap-4 group">
-                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                                                         <i class="fa-solid fa-location-dot text-sm"></i>
                                                     </div>
                                                     <div class="space-y-0.5 overflow-hidden">
-                                                        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">Location</span>
-                                                        <span class="text-xs sm:text-sm font-display font-semibold text-white truncate block">
+                                                        <span class="text-[10px] font-mono uppercase tracking-wider {{ $execSubMuted }} block">Location</span>
+                                                        <span class="text-xs sm:text-sm font-display font-semibold {{ $execTitle }} truncate block">
                                                             {{ $profile['location'] }}
                                                         </span>
                                                     </div>
@@ -887,12 +907,12 @@
 
                                             @if($portfolio->show_linkedin && !empty($profile['linkedin']))
                                                 <div class="flex items-start gap-4 group">
-                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                    <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 {{ $execAccent }} flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                                                         <i class="fa-brands fa-linkedin-in text-sm"></i>
                                                     </div>
                                                     <div class="space-y-0.5 overflow-hidden">
-                                                        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block">LinkedIn Profile</span>
-                                                        <a href="{{ $profile['linkedin'] }}" target="_blank" class="text-xs sm:text-sm font-display font-semibold text-indigo-400 hover:text-white transition-colors truncate block">
+                                                        <span class="text-[10px] font-mono uppercase tracking-wider {{ $execSubMuted }} block">LinkedIn Profile</span>
+                                                        <a href="{{ $profile['linkedin'] }}" target="_blank" class="text-xs sm:text-sm font-display font-semibold {{ $execAccent }} hover:underline truncate block">
                                                             Connect on LinkedIn →
                                                         </a>
                                                     </div>
@@ -904,18 +924,18 @@
 
                                 <!-- RIGHT COLUMN: CONTACT FORM -->
                                 <div class="lg:col-span-7">
-                                    <div class="p-7 sm:p-8 rounded-3xl bg-[#121826]/70 border border-white/10 shadow-2xl backdrop-blur-md space-y-5">
-                                        <h3 class="text-base font-display font-bold text-white uppercase tracking-wider border-b border-white/10 pb-3">Send Message</h3>
+                                    <div class="p-7 sm:p-8 rounded-3xl {{ $execCard }} shadow-2xl backdrop-blur-md space-y-5">
+                                        <h3 class="text-base font-display font-bold {{ $execTitle }} uppercase tracking-wider border-b {{ $execBorder }} pb-3">Send Message</h3>
 
                                         @if(session('status') == 'message-sent')
-                                            <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-mono flex items-center gap-3">
+                                            <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-xs font-mono flex items-center gap-3">
                                                 <i class="fa-solid fa-circle-check text-base"></i>
                                                 <span>Message sent successfully! {{ $user->name }} will respond shortly.</span>
                                             </div>
                                         @endif
 
                                         @if ($errors->any())
-                                            <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-mono space-y-1">
+                                            <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs font-mono space-y-1">
                                                 @foreach ($errors->all() as $error)
                                                     <div class="flex items-center gap-2">
                                                         <i class="fa-solid fa-triangle-exclamation text-sm"></i>
@@ -929,17 +949,17 @@
                                             @csrf
                                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                                 <div>
-                                                    <label class="text-xs font-mono uppercase tracking-wider text-slate-400 block mb-2">Your Name <span class="text-rose-400">*</span></label>
-                                                    <input type="text" name="name" placeholder="Full Name" required class="w-full px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors text-sm">
+                                                    <label class="text-xs font-mono uppercase tracking-wider {{ $execSubMuted }} block mb-2">Your Name <span class="text-rose-500">*</span></label>
+                                                    <input type="text" name="name" placeholder="Full Name" required class="w-full px-5 py-3.5 rounded-xl {{ $execInput }} transition-colors text-sm">
                                                 </div>
                                                 <div>
-                                                    <label class="text-xs font-mono uppercase tracking-wider text-slate-400 block mb-2">Your Email <span class="text-rose-400">*</span></label>
-                                                    <input type="email" name="email" placeholder="name@domain.com" required class="w-full px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors text-sm">
+                                                    <label class="text-xs font-mono uppercase tracking-wider {{ $execSubMuted }} block mb-2">Your Email <span class="text-rose-500">*</span></label>
+                                                    <input type="email" name="email" placeholder="name@domain.com" required class="w-full px-5 py-3.5 rounded-xl {{ $execInput }} transition-colors text-sm">
                                                 </div>
                                             </div>
                                             <div>
-                                                <label class="text-xs font-mono uppercase tracking-wider text-slate-400 block mb-2">Your Inquiry / Message <span class="text-rose-400">*</span></label>
-                                                <textarea name="message" rows="4" placeholder="Brief details regarding your requirement..." required class="w-full px-5 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors text-sm"></textarea>
+                                                <label class="text-xs font-mono uppercase tracking-wider {{ $execSubMuted }} block mb-2">Your Inquiry / Message <span class="text-rose-500">*</span></label>
+                                                <textarea name="message" rows="4" placeholder="Brief details regarding your requirement..." required class="w-full px-5 py-3.5 rounded-xl {{ $execInput }} transition-colors text-sm"></textarea>
                                             </div>
                                             <button type="submit" class="w-full py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-xl shadow-indigo-600/30 flex items-center justify-center gap-2 cursor-pointer">
                                                 Send Message <i class="fa-solid fa-paper-plane text-[10px]"></i>
@@ -1323,20 +1343,36 @@
         .bc-anim-contact { animation: bcGlassRise 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 
-    <div class="relative bg-[#07090E] text-slate-100 font-sans antialiased overflow-x-hidden min-h-screen selection:bg-amber-500 selection:text-slate-950">
+        @php
+            $bcBg = $isLightMode ? 'bg-[#FDFBF7] text-slate-900' : 'bg-[#07090E] text-slate-100';
+            $bcTitle = $isLightMode ? 'text-slate-900' : 'text-white';
+            $bcMuted = $isLightMode ? 'text-slate-600' : 'text-slate-300';
+            $bcSubMuted = $isLightMode ? 'text-slate-500' : 'text-slate-400';
+            $bcCard = $isLightMode ? 'bg-white border border-amber-200/80 text-slate-800 shadow-xl shadow-amber-900/5' : 'bg-[#0F131C]/90 border border-amber-400/20 text-slate-100 shadow-2xl';
+            $bcCardMuted = $isLightMode ? 'bg-amber-50/40 border border-amber-200/60 text-slate-800 shadow-sm' : 'bg-[#0F131C]/50 border border-white/10 text-slate-100';
+            $bcBorder = $isLightMode ? 'border-amber-200/80' : 'border-amber-400/20';
+            $bcOverlayBg = $isLightMode ? 'bg-[#FDFBF7]/95 text-slate-900' : 'bg-[#07090E]/95 text-slate-100';
+            $bcAccent = $isLightMode ? 'text-amber-800' : 'text-amber-300';
+            $bcAccentText = $isLightMode ? 'text-amber-700' : 'text-amber-400';
+            $bcInput = $isLightMode ? 'bg-white border border-amber-200 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 shadow-sm' : 'bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:border-amber-400';
+        @endphp
+
+    <div class="relative {{ $bcBg }} font-sans antialiased overflow-x-hidden min-h-screen selection:bg-amber-500 selection:text-slate-950">
         <!-- Ambient Gold & Deep Slate Background Glow Orbs -->
-        <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-amber-500/10 via-yellow-600/5 to-indigo-600/10 rounded-full blur-[160px] pointer-events-none z-0"></div>
-        <div class="fixed top-0 right-0 w-[500px] h-[500px] bg-amber-600/5 rounded-full blur-[140px] pointer-events-none z-0"></div>
+        <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] {{ $isLightMode ? 'bg-gradient-to-tr from-amber-200/40 via-yellow-200/20 to-indigo-200/30' : 'bg-gradient-to-tr from-amber-500/10 via-yellow-600/5 to-indigo-600/10' }} rounded-full blur-[160px] pointer-events-none z-0"></div>
+        <div class="fixed top-0 right-0 w-[500px] h-[500px] {{ $isLightMode ? 'bg-amber-300/15' : 'bg-amber-600/5' }} rounded-full blur-[140px] pointer-events-none z-0"></div>
 
         <!-- MAIN CENTRAL ORBIT CONTAINER -->
         <main class="relative z-10 min-h-screen flex flex-col items-center justify-start pt-6 sm:pt-10 pb-16 px-4 sm:px-6">
 
             <!-- STACKED HEADER ABOVE AVATAR (NAME, POSITION, AND SHORT SUMMARY) -->
             <div class="text-center space-y-2.5 max-w-3xl mx-auto mb-6 sm:mb-8">
-                <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-[11px] uppercase tracking-widest shadow-inner">
-                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                    // {{ strtoupper($portfolio->position ?? 'Executive Leader & Systems Architect') }}
-                </span>
+                <div class="flex items-center justify-center gap-2 flex-wrap mb-1">
+                    <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full {{ $isLightMode ? 'bg-amber-500/15 border border-amber-500/40 text-amber-900 shadow-sm' : 'bg-amber-500/10 border border-amber-500/30 text-amber-300' }} font-mono text-[11px] uppercase tracking-widest shadow-inner">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        // {{ strtoupper($portfolio->position ?? 'Executive Leader & Systems Architect') }}
+                    </span>
+                </div>
                 @php
                     $nameLen = mb_strlen($user->name ?? '');
                     $nameFontSize = $nameLen > 30 
@@ -1346,11 +1382,11 @@
                             : 'text-lg sm:text-2xl md:text-3xl lg:text-4xl');
                 @endphp
                 <div class="w-full overflow-hidden px-1 flex justify-center items-center">
-                    <h1 class="whitespace-nowrap font-serif font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-white uppercase tracking-tight leading-none text-center inline-block max-w-full {{ $nameFontSize }}">
+                    <h1 class="whitespace-nowrap font-serif font-black {{ $isLightMode ? 'text-slate-900 bg-clip-text bg-gradient-to-r from-amber-800 via-amber-900 to-slate-900' : 'text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-white' }} uppercase tracking-tight leading-none text-center inline-block max-w-full {{ $nameFontSize }}">
                         {{ $user->name }}
                     </h1>
                 </div>
-                <p class="text-slate-300 text-xs sm:text-sm md:text-base font-light leading-relaxed max-w-xl mx-auto">
+                <p class="{{ $isLightMode ? 'text-slate-600' : 'text-slate-300' }} text-xs sm:text-sm md:text-base font-light leading-relaxed max-w-xl mx-auto">
                     {{ $portfolio->summary ?? $portfolio->description ?? $portfolio->detailed_bio ?? 'Strategic technologist and executive architect leading enterprise SaaS platforms and high-scale systems.' }}
                 </p>
             </div>
@@ -1365,7 +1401,7 @@
                     <div class="absolute -inset-2 rounded-full border border-amber-400/40 animate-ping opacity-25"></div>
                     
                     <!-- Avatar Circle -->
-                    <div class="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-full p-1.5 bg-gradient-to-b from-amber-400 via-amber-600/60 to-slate-900 shadow-[0_0_60px_rgba(212,175,55,0.3)] transition-transform duration-500 group-hover:scale-105 relative z-10 overflow-hidden">
+                    <div class="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-full p-1.5 {{ $isLightMode ? 'bg-gradient-to-b from-amber-500 via-amber-600 to-amber-200 shadow-[0_0_50px_rgba(212,175,55,0.25)]' : 'bg-gradient-to-b from-amber-400 via-amber-600/60 to-slate-900 shadow-[0_0_60px_rgba(212,175,55,0.3)]' }} transition-transform duration-500 group-hover:scale-105 relative z-10 overflow-hidden">
                         @if($portfolio->profile_image)
                             <img src="{{ Storage::url($portfolio->profile_image) }}" alt="{{ $user->name }}" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
                         @else
@@ -1374,7 +1410,7 @@
                     </div>
 
                     <!-- Gold Ring Overlay Badge -->
-                    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full bg-[#07090E]/90 border border-amber-400/40 text-[10px] font-mono font-bold text-amber-300 uppercase tracking-widest shadow-xl whitespace-nowrap z-30">
+                    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full {{ $isLightMode ? 'bg-white border border-amber-400/60 text-amber-900 shadow-md' : 'bg-[#07090E]/90 border border-amber-400/40 text-amber-300' }} text-[10px] font-mono font-bold uppercase tracking-widest shadow-xl whitespace-nowrap z-30">
                         EXECUTIVE HUB
                     </div>
                 </div>
@@ -1416,10 +1452,10 @@
                                     style="left: {{ number_format($leftPercent, 2) }}%; top: {{ number_format($topPercent, 2) }}%;"
                                     class="bc-orbit-node absolute -translate-x-1/2 -translate-y-1/2 group pointer-events-auto cursor-pointer focus:outline-none z-30 transition-all duration-300 hover:scale-115"
                                     title="{{ $item['label'] }}">
-                                <div class="w-11 h-11 lg:w-13 lg:h-13 rounded-2xl bg-[#0F131C]/90 border border-amber-400/30 hover:border-amber-400 text-amber-300 hover:bg-amber-500 hover:text-slate-950 shadow-xl shadow-amber-500/10 backdrop-blur-md flex items-center justify-center transition-all duration-300">
+                                <div class="w-11 h-11 lg:w-13 lg:h-13 rounded-2xl {{ $isLightMode ? 'bg-white/95 border border-amber-400/50 text-amber-900 hover:bg-amber-500 hover:text-slate-950 shadow-xl shadow-amber-500/10' : 'bg-[#0F131C]/90 border border-amber-400/30 text-amber-300 hover:bg-amber-500 hover:text-slate-950 shadow-xl' }} backdrop-blur-md flex items-center justify-center transition-all duration-300">
                                     <i class="fa-solid {{ $item['icon'] }} text-sm lg:text-base"></i>
                                 </div>
-                                <span class="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2.5 py-0.5 rounded-full bg-[#0F131C]/95 border border-amber-400/30 text-[10px] font-display font-semibold text-amber-200/90 whitespace-nowrap pointer-events-none shadow-md group-hover:border-amber-400 group-hover:text-amber-300 group-hover:bg-[#0F131C] transition-all">
+                                <span class="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-2.5 py-0.5 rounded-full {{ $isLightMode ? 'bg-white/95 border border-amber-400/50 text-amber-900 shadow-md' : 'bg-[#0F131C]/95 border border-amber-400/30 text-amber-200/90 shadow-md' }} text-[10px] font-display font-semibold whitespace-nowrap pointer-events-none group-hover:border-amber-400 group-hover:text-amber-300 group-hover:bg-[#0F131C] transition-all">
                                     {{ $item['label'] }}
                                 </span>
                             </button>
@@ -1435,8 +1471,8 @@
                     <button type="button" 
                             data-bc-target="{{ $item['id'] }}" 
                             data-external="{{ $item['external'] ?? '' }}"
-                            class="bc-orbit-node p-3 rounded-2xl bg-[#0F131C]/90 border border-amber-400/30 hover:border-amber-400 text-slate-200 hover:text-white flex items-center gap-2.5 shadow-lg backdrop-blur-md cursor-pointer transition-all active:scale-95">
-                        <div class="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 text-xs">
+                            class="bc-orbit-node p-3 rounded-2xl {{ $isLightMode ? 'bg-white/95 border border-amber-400/40 text-slate-800 hover:border-amber-500' : 'bg-[#0F131C]/90 border border-amber-400/30 text-slate-200 hover:border-amber-400' }} hover:text-amber-600 flex items-center gap-2.5 shadow-lg backdrop-blur-md cursor-pointer transition-all active:scale-95">
+                        <div class="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center shrink-0 text-xs">
                             <i class="fa-solid {{ $item['icon'] }}"></i>
                         </div>
                         <span class="text-xs font-display font-semibold truncate text-left">{{ $item['label'] }}</span>
@@ -1454,31 +1490,31 @@
             </button>
         </div>
 
-        <!-- 1. ABOUT OVERLAY -->
-        <div id="bc-overlay-about" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
-            <div class="max-w-4xl mx-auto pt-16 pb-20 space-y-8 bc-anim-about">
+           <!-- 1. ABOUT ME OVERLAY -->
+        <div id="bc-overlay-about" class="bc-overlay-modal fixed inset-0 z-40 {{ $isLightMode ? 'bg-[#FDFBF7]/95 text-slate-900' : 'bg-[#07090E]/95 text-slate-100' }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+            <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-about">
                 <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// EXECUTIVE SUMMARY</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Strategic Vision & About</h2>
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// EXECUTIVE SUMMARY</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $isLightMode ? 'text-slate-900' : 'text-white' }} uppercase tracking-tight">Strategic Vision & About</h2>
                 </div>
-                <div class="p-8 sm:p-10 rounded-3xl bg-[#0F131C]/80 border border-amber-400/20 space-y-6 text-slate-200 text-base sm:text-lg font-light leading-relaxed shadow-2xl">
-                    <p>{{ $portfolio->detailed_bio ?? $portfolio->description ?? 'Executive architect and technology strategist.' }}</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-white/10 text-xs font-mono">
+                <div class="p-8 sm:p-10 rounded-3xl {{ $isLightMode ? 'bg-white border border-amber-200/80 text-slate-800 shadow-xl shadow-amber-900/5' : 'bg-[#0F131C]/80 border border-amber-400/20 text-slate-200 shadow-2xl' }} space-y-6 text-base sm:text-lg font-light leading-relaxed">
+                    <p class="{{ $isLightMode ? 'text-slate-600' : 'text-slate-200' }}">{{ $portfolio->detailed_bio ?? $portfolio->description ?? 'Executive architect and technology strategist.' }}</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t {{ $isLightMode ? 'border-amber-200/60' : 'border-white/10' }} text-xs font-mono">
                         <div>
-                            <span class="text-slate-400 block mb-1 uppercase tracking-wider">Location</span>
-                            <strong class="text-amber-300 font-semibold">{{ trim(($portfolio->city ?? '') . ', ' . ($portfolio->country ?? 'Global')) ?: 'Global / Remote' }}</strong>
+                            <span class="{{ $isLightMode ? 'text-slate-500' : 'text-slate-400' }} block mb-1 uppercase tracking-wider">Location</span>
+                            <strong class="{{ $isLightMode ? 'text-amber-800' : 'text-amber-300' }} font-semibold">{{ trim(($portfolio->city ?? '') . ', ' . ($portfolio->country ?? 'Global')) ?: 'Global / Remote' }}</strong>
                         </div>
                         <div>
-                            <span class="text-slate-400 block mb-1 uppercase tracking-wider">Position</span>
-                            <strong class="text-amber-300 font-semibold">{{ $portfolio->position ?? 'Executive Architect' }}</strong>
+                            <span class="{{ $isLightMode ? 'text-slate-500' : 'text-slate-400' }} block mb-1 uppercase tracking-wider">Position</span>
+                            <strong class="{{ $isLightMode ? 'text-amber-800' : 'text-amber-300' }} font-semibold">{{ $portfolio->position ?? 'Executive Architect' }}</strong>
                         </div>
                         <div>
-                            <span class="text-slate-400 block mb-1 uppercase tracking-wider">Experience</span>
-                            <strong class="text-amber-300 font-semibold">{{ !empty($experiences) && count($experiences) > 0 ? count($experiences) . '+ Roles' : '10+ Years' }}</strong>
+                            <span class="{{ $isLightMode ? 'text-slate-500' : 'text-slate-400' }} block mb-1 uppercase tracking-wider">Experience</span>
+                            <strong class="{{ $isLightMode ? 'text-amber-800' : 'text-amber-300' }} font-semibold">{{ !empty($experiences) && count($experiences) > 0 ? count($experiences) . '+ Roles' : '10+ Years' }}</strong>
                         </div>
                         <div>
-                            <span class="text-slate-400 block mb-1 uppercase tracking-wider">Status</span>
-                            <strong class="text-emerald-400 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Available</strong>
+                            <span class="{{ $isLightMode ? 'text-slate-500' : 'text-slate-400' }} block mb-1 uppercase tracking-wider">Status</span>
+                            <strong class="text-emerald-500 flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Available</strong>
                         </div>
                     </div>
                 </div>
@@ -1486,21 +1522,21 @@
         </div>
 
         <!-- 2. SERVICES OFFERED OVERLAY -->
-        <div id="bc-overlay-services" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-services" class="bc-overlay-modal fixed inset-0 z-40 {{ $isLightMode ? 'bg-[#FDFBF7]/95 text-slate-900' : 'bg-[#07090E]/95 text-slate-100' }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-services">
                 <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// CORE CAPABILITIES</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Services Offered</h2>
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// CORE CAPABILITIES</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $isLightMode ? 'text-slate-900' : 'text-white' }} uppercase tracking-tight">Services Offered</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @if(!empty($services) && count($services) > 0)
                         @foreach($services as $srv)
-                            <div class="p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 hover:border-amber-400/60 transition-all space-y-4 shadow-2xl group">
-                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-xl">
+                            <div class="p-8 rounded-3xl {{ $isLightMode ? 'bg-white border border-amber-200/80 text-slate-800 shadow-xl shadow-amber-900/5' : 'bg-[#0F131C]/90 border border-amber-400/20 text-slate-100 shadow-2xl' }} hover:border-amber-400/60 transition-all space-y-4 group">
+                                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center text-xl">
                                     <i class="fa-solid {{ $srv->icon ?? 'fa-cube' }}"></i>
                                 </div>
-                                <h3 class="text-xl font-display font-bold text-white group-hover:text-amber-300 transition-colors">{{ $srv->title }}</h3>
-                                <p class="text-slate-300 text-sm font-light leading-relaxed">{!! $srv->description !!}</p>
+                                <h3 class="text-xl font-display font-bold {{ $isLightMode ? 'text-slate-900 group-hover:text-amber-800' : 'text-white group-hover:text-amber-300' }} transition-colors">{{ $srv->title }}</h3>
+                                <p class="{{ $isLightMode ? 'text-slate-600' : 'text-slate-300' }} text-sm font-light leading-relaxed">{!! $srv->description !!}</p>
                             </div>
                         @endforeach
                     @else
@@ -1514,34 +1550,34 @@
         </div>
 
         <!-- 3. WORK EXPERIENCE OVERLAY -->
-        <div id="bc-overlay-experience" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-experience" class="bc-overlay-modal fixed inset-0 z-40 {{ $bcOverlayBg }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-4xl mx-auto pt-16 pb-20 space-y-8 bc-anim-experience">
-                <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// CAREER TRACK</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Work Experience</h2>
+                <div class="border-b {{ $bcBorder }} pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// CAREER TRACK</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $bcTitle }} uppercase tracking-tight">Work Experience</h2>
                 </div>
                 <div class="relative pl-6 sm:pl-10 space-y-8">
                     <div class="bc-gold-timeline-line absolute top-0 bottom-0 left-2.5 w-0.5 bg-gradient-to-b from-amber-400 via-amber-600/50 to-transparent"></div>
                     @if(!empty($experiences) && count($experiences) > 0)
                         @foreach($experiences as $exp)
-                            <div class="relative space-y-3 p-7 rounded-3xl bg-[#0F131C]/80 border border-amber-400/20 shadow-xl">
-                                <div class="absolute -left-6 sm:-left-10 top-8 w-5 h-5 rounded-full bg-[#07090E] border-2 border-amber-400 flex items-center justify-center">
+                            <div class="relative space-y-3 p-7 rounded-3xl {{ $bcCard }} shadow-xl">
+                                <div class="absolute -left-6 sm:-left-10 top-8 w-5 h-5 rounded-full {{ $isLightMode ? 'bg-[#FDFBF7]' : 'bg-[#07090E]' }} border-2 border-amber-400 flex items-center justify-center">
                                     <div class="w-2 h-2 rounded-full bg-amber-400"></div>
                                 </div>
                                 <div class="flex flex-wrap items-center justify-between gap-2">
-                                    <h3 class="text-lg font-display font-bold text-white">{{ $exp->position }}</h3>
-                                    <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono text-xs">
+                                    <h3 class="text-lg font-display font-bold {{ $bcTitle }}">{{ $exp->position }}</h3>
+                                    <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 font-mono text-xs">
                                         {{ $exp->start_date->format('M Y') }} – {{ $exp->end_date ? $exp->end_date->format('M Y') : 'Present' }}
                                     </span>
                                 </div>
-                                <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400">{{ $exp->company }}</h4>
-                                <p class="text-slate-300 text-sm font-light leading-relaxed">{!! $exp->description !!}</p>
+                                <h4 class="text-xs font-mono uppercase tracking-wider {{ $bcSubMuted }}">{{ $exp->company }}</h4>
+                                <p class="{{ $bcMuted }} text-sm font-light leading-relaxed">{!! $exp->description !!}</p>
                             </div>
                         @endforeach
                     @else
-                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
-                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
-                            <p class="text-slate-400 text-xs">No work experience records have been added yet.</p>
+                        <div class="p-8 rounded-3xl {{ $bcCardMuted }} text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold {{ $bcTitle }} uppercase">No Records Found</h3>
+                            <p class="{{ $bcSubMuted }} text-xs">No work experience records have been added yet.</p>
                         </div>
                     @endif
                 </div>
@@ -1549,11 +1585,11 @@
         </div>
 
         <!-- 4. SKILLS OVERLAY -->
-        <div id="bc-overlay-skills" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-skills" class="bc-overlay-modal fixed inset-0 z-40 {{ $bcOverlayBg }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-skills">
-                <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// TECHNICAL PROFICIENCY</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Skills & Competencies</h2>
+                <div class="border-b {{ $bcBorder }} pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// TECHNICAL PROFICIENCY</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $bcTitle }} uppercase tracking-tight">Skills & Competencies</h2>
                 </div>
                 <div class="space-y-8">
                     @if(!empty($skills) && count($skills) > 0)
@@ -1565,9 +1601,9 @@
                         @endphp
                         @foreach($bcSkillsGrouped as $parentCategory => $catSkills)
                             <div>
-                                <h3 class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 mb-4 flex items-center gap-3">
+                                <h3 class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 mb-4 flex items-center gap-3">
                                     <span>// {{ $parentCategory }}</span>
-                                    <span class="flex-grow h-px bg-amber-400/20"></span>
+                                    <span class="flex-grow h-px {{ $bcBorder }}"></span>
                                 </h3>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                     @foreach($catSkills as $sk)
@@ -1575,13 +1611,13 @@
                                             $skName = is_array($sk) ? ($sk['name'] ?? '') : ($sk->name ?? '');
                                             $skProf = is_array($sk) ? ($sk['proficiency'] ?? $sk['percentage'] ?? 90) : ($sk->proficiency ?? $sk->percentage ?? 90);
                                         @endphp
-                                        <div class="p-4 rounded-2xl bg-[#0F131C]/90 border border-amber-400/20 hover:border-amber-400/50 space-y-2.5 shadow-xl transition-all">
+                                        <div class="p-4 rounded-2xl {{ $bcCard }} hover:border-amber-400/50 space-y-2.5 shadow-xl transition-all">
                                             <div class="flex items-center justify-between">
-                                                <span class="text-xs font-display font-bold text-white">{{ $skName }}</span>
-                                                <span class="text-[10px] font-mono text-amber-400 font-bold">{{ $skProf }}%</span>
+                                                <span class="text-xs font-display font-bold {{ $bcTitle }}">{{ $skName }}</span>
+                                                <span class="text-[10px] font-mono text-amber-600 font-bold">{{ $skProf }}%</span>
                                             </div>
-                                            <div class="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
-                                                <div class="h-full bg-gradient-to-r from-amber-500 to-yellow-300 rounded-full" style="width: {{ $skProf }}%;"></div>
+                                            <div class="w-full h-1.5 rounded-full {{ $isLightMode ? 'bg-slate-200' : 'bg-white/10' }} overflow-hidden">
+                                                <div class="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full" style="width: {{ $skProf }}%;"></div>
                                             </div>
                                         </div>
                                     @endforeach
@@ -1589,9 +1625,9 @@
                             </div>
                         @endforeach
                     @else
-                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
-                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
-                            <p class="text-slate-400 text-xs">No skill records have been added yet.</p>
+                        <div class="p-8 rounded-3xl {{ $bcCardMuted }} text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold {{ $bcTitle }} uppercase">No Records Found</h3>
+                            <p class="{{ $bcSubMuted }} text-xs">No skill records have been added yet.</p>
                         </div>
                     @endif
                 </div>
@@ -1599,37 +1635,37 @@
         </div>
 
         <!-- 5. PROJECTS OVERLAY -->
-        <div id="bc-overlay-projects" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-projects" class="bc-overlay-modal fixed inset-0 z-40 {{ $bcOverlayBg }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-6xl mx-auto pt-16 pb-20 space-y-8 bc-anim-projects">
-                <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// FEATURED PORTFOLIO</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Projects & Case Studies</h2>
+                <div class="border-b {{ $bcBorder }} pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// FEATURED PORTFOLIO</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $bcTitle }} uppercase tracking-tight">Projects & Case Studies</h2>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @if(!empty($projects) && count($projects) > 0)
                         @foreach($projects as $proj)
-                            <div class="group h-full rounded-3xl bg-[#0F131C] border border-amber-400/20 hover:border-amber-400/60 overflow-hidden shadow-2xl flex flex-col justify-between transition-all duration-300">
+                            <div class="group h-full rounded-3xl {{ $bcCard }} overflow-hidden shadow-2xl flex flex-col justify-between transition-all duration-300">
                                 <!-- TOP IMAGE CONTAINER -->
-                                <div class="relative w-full h-44 sm:h-48 overflow-hidden shrink-0 bg-[#07090E]">
+                                <div class="relative w-full h-44 sm:h-48 overflow-hidden shrink-0 {{ $isLightMode ? 'bg-slate-100' : 'bg-[#07090E]' }}">
                                     @if(!empty($proj->image_path))
                                         <img src="{{ Storage::url($proj->image_path) }}" alt="{{ $proj->title }}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700">
                                     @else
-                                        <div class="w-full h-full bg-gradient-to-br from-[#0F131C] via-slate-900 to-[#07090E] flex flex-col items-center justify-center p-4 text-center">
-                                            <i class="fa-solid fa-layer-group text-3xl text-amber-400/40 mb-1 group-hover:scale-110 transition-transform"></i>
-                                            <span class="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Case Study</span>
+                                        <div class="w-full h-full {{ $isLightMode ? 'bg-gradient-to-br from-amber-50 via-slate-100 to-amber-100' : 'bg-gradient-to-br from-[#0F131C] via-slate-900 to-[#07090E]' }} flex flex-col items-center justify-center p-4 text-center">
+                                            <i class="fa-solid fa-layer-group text-3xl text-amber-500/40 mb-1 group-hover:scale-110 transition-transform"></i>
+                                            <span class="text-[10px] font-mono {{ $bcSubMuted }} uppercase tracking-widest">Case Study</span>
                                         </div>
                                     @endif
-                                    <div class="absolute inset-0 bg-gradient-to-t from-[#0F131C] via-transparent to-transparent opacity-80"></div>
+                                    <div class="absolute inset-0 {{ $isLightMode ? 'bg-gradient-to-t from-white via-transparent to-transparent' : 'bg-gradient-to-t from-[#0F131C] via-transparent to-transparent' }} opacity-80"></div>
                                 </div>
                                 
                                 <!-- CARD CONTENT BODY -->
-                                <div class="p-5 flex flex-col flex-grow justify-between space-y-3 bg-[#0F131C]">
+                                <div class="p-5 flex flex-col flex-grow justify-between space-y-3 {{ $isLightMode ? 'bg-white' : 'bg-[#0F131C]' }}">
                                     <div class="space-y-1.5">
-                                        <span class="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-widest block">// FEATURED PROJECT</span>
-                                        <h3 class="text-sm sm:text-base font-display font-extrabold text-white line-clamp-1 leading-snug" title="{{ $proj->title }}">
+                                        <span class="text-[10px] font-mono font-bold text-amber-600 uppercase tracking-widest block">// FEATURED PROJECT</span>
+                                        <h3 class="text-sm sm:text-base font-display font-extrabold {{ $bcTitle }} line-clamp-1 leading-snug" title="{{ $proj->title }}">
                                             {{ $proj->title }}
                                         </h3>
-                                        <p class="text-slate-300 text-xs font-light leading-relaxed line-clamp-3">
+                                        <p class="{{ $bcMuted }} text-xs font-light leading-relaxed line-clamp-3">
                                             {{ strip_tags($proj->description) }}
                                         </p>
                                     </div>
@@ -1639,16 +1675,16 @@
                                             data-bc-modal-desc="{{ $proj->description }}" 
                                             data-bc-modal-img="{{ !empty($proj->image_path) ? Storage::url($proj->image_path) : 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?fit=crop&w=1200&q=80' }}"
                                             data-bc-modal-url="{{ $proj->project_url ?? '#contact' }}" 
-                                            class="bc-read-more-btn w-full py-2.5 px-4 rounded-xl bg-amber-500/10 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-400/30 hover:border-amber-400 font-mono font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 mt-2">
+                                            class="bc-read-more-btn w-full py-2.5 px-4 rounded-xl {{ $isLightMode ? 'bg-amber-500/15 hover:bg-amber-500 text-amber-900 hover:text-white border border-amber-300' : 'bg-amber-500/10 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-400/30' }} font-mono font-bold text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 mt-2">
                                         Read More <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                     </button>
                                 </div>
                             </div>
                         @endforeach
                     @else
-                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
-                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
-                            <p class="text-slate-400 text-xs">No project records have been added yet.</p>
+                        <div class="p-8 rounded-3xl {{ $bcCardMuted }} text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold {{ $bcTitle }} uppercase">No Records Found</h3>
+                            <p class="{{ $bcSubMuted }} text-xs">No project records have been added yet.</p>
                         </div>
                     @endif
                 </div>
@@ -1656,27 +1692,27 @@
         </div>
 
         <!-- 6. EDUCATION OVERLAY -->
-        <div id="bc-overlay-education" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-education" class="bc-overlay-modal fixed inset-0 z-40 {{ $bcOverlayBg }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-4xl mx-auto pt-16 pb-20 space-y-8 bc-anim-education">
-                <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// ACADEMIC QUALIFICATIONS</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Education</h2>
+                <div class="border-b {{ $bcBorder }} pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// ACADEMIC QUALIFICATIONS</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $bcTitle }} uppercase tracking-tight">Education</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @if(!empty($education) && count($education) > 0)
                         @foreach($education as $edu)
-                            <div class="p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-3 shadow-xl relative overflow-hidden">
-                                <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono text-xs">
+                            <div class="p-8 rounded-3xl {{ $bcCard }} space-y-3 shadow-xl relative overflow-hidden">
+                                <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 font-mono text-xs">
                                     {{ $edu->start_date->format('Y') }} – {{ $edu->end_date->format('Y') }}
                                 </span>
-                                <h3 class="text-xl font-display font-bold text-white pt-2">{{ $edu->degree }}</h3>
-                                <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400">{{ $edu->institution }}</h4>
+                                <h3 class="text-xl font-display font-bold {{ $bcTitle }} pt-2">{{ $edu->degree }}</h3>
+                                <h4 class="text-xs font-mono uppercase tracking-wider {{ $bcSubMuted }}">{{ $edu->institution }}</h4>
                             </div>
                         @endforeach
                     @else
-                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
-                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
-                            <p class="text-slate-400 text-xs">No education records have been added yet.</p>
+                        <div class="p-8 rounded-3xl {{ $bcCardMuted }} text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold {{ $bcTitle }} uppercase">No Records Found</h3>
+                            <p class="{{ $bcSubMuted }} text-xs">No education records have been added yet.</p>
                         </div>
                     @endif
                 </div>
@@ -1684,26 +1720,26 @@
         </div>
 
         <!-- 7. CERTIFICATIONS OVERLAY -->
-        <div id="bc-overlay-certifications" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-certifications" class="bc-overlay-modal fixed inset-0 z-40 {{ $bcOverlayBg }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-certifications">
-                <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// VERIFIED CREDENTIALS</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Certifications</h2>
+                <div class="border-b {{ $bcBorder }} pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// VERIFIED CREDENTIALS</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $bcTitle }} uppercase tracking-tight">Certifications</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     @if(!empty($certifications) && count($certifications) > 0)
                         @foreach($certifications as $cert)
-                            <div class="bc-gold-shimmer-card p-7 rounded-3xl bg-[#0F131C]/90 border border-amber-400/30 space-y-3 shadow-xl relative overflow-hidden">
-                                <div class="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg">
+                            <div class="bc-gold-shimmer-card p-7 rounded-3xl {{ $bcCard }} space-y-3 shadow-xl relative overflow-hidden">
+                                <div class="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center text-lg">
                                     <i class="fa-solid fa-award"></i>
                                 </div>
-                                <h3 class="text-base font-display font-bold text-white">{{ $cert->name }}</h3>
-                                <p class="text-xs font-mono text-slate-400">{{ $cert->issuing_organization ?? 'Professional Board' }}</p>
+                                <h3 class="text-base font-display font-bold {{ $bcTitle }}">{{ $cert->name }}</h3>
+                                <p class="text-xs font-mono {{ $bcSubMuted }}">{{ $cert->issuing_organization ?? 'Professional Board' }}</p>
                             </div>
                         @endforeach
                     @else
-                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
-                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
+                        <div class="p-8 rounded-3xl {{ $bcCardMuted }} text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold {{ $bcTitle }} uppercase">No Records Found</h3>
                             <p class="text-slate-400 text-xs">No certification records have been added yet.</p>
                         </div>
                     @endif
@@ -1712,24 +1748,24 @@
         </div>
 
         <!-- 8. TRAININGS OVERLAY -->
-        <div id="bc-overlay-trainings" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-trainings" class="bc-overlay-modal fixed inset-0 z-40 {{ $bcOverlayBg }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-trainings">
-                <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// PROFESSIONAL DEVELOPMENT</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Trainings & Workshops</h2>
+                <div class="border-b {{ $bcBorder }} pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// PROFESSIONAL DEVELOPMENT</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $bcTitle }} uppercase tracking-tight">Trainings & Workshops</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @if(!empty($trainings) && count($trainings) > 0)
                         @foreach($trainings as $trn)
-                            <div class="p-7 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-3 shadow-xl">
-                                <h3 class="text-lg font-display font-bold text-white">{{ $trn->title }}</h3>
-                                <p class="text-xs font-mono text-amber-400">{{ $trn->institution ?? 'Executive Institute' }}</p>
+                            <div class="p-7 rounded-3xl {{ $bcCard }} space-y-3 shadow-xl">
+                                <h3 class="text-lg font-display font-bold {{ $bcTitle }}">{{ $trn->title }}</h3>
+                                <p class="text-xs font-mono text-amber-600 font-semibold">{{ $trn->institution ?? 'Executive Institute' }}</p>
                             </div>
                         @endforeach
                     @else
-                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
-                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
-                            <p class="text-slate-400 text-xs">No training records have been added yet.</p>
+                        <div class="p-8 rounded-3xl {{ $bcCardMuted }} text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold {{ $bcTitle }} uppercase">No Records Found</h3>
+                            <p class="{{ $bcSubMuted }} text-xs">No training records have been added yet.</p>
                         </div>
                     @endif
                 </div>
@@ -1737,24 +1773,24 @@
         </div>
 
         <!-- 9. CONTRIBUTIONS OVERLAY -->
-        <div id="bc-overlay-contributions" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-contributions" class="bc-overlay-modal fixed inset-0 z-40 {{ $bcOverlayBg }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-contributions">
-                <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// IMPACT & INITIATIVES</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Contributions</h2>
+                <div class="border-b {{ $bcBorder }} pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// IMPACT & INITIATIVES</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $bcTitle }} uppercase tracking-tight">Contributions</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @if(!empty($contributions) && count($contributions) > 0)
                         @foreach($contributions as $cnt)
-                            <div class="p-7 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-3 shadow-xl">
-                                <h3 class="text-lg font-display font-bold text-white">{{ $cnt->title }}</h3>
-                                <div class="text-slate-300 text-sm font-light leading-relaxed">{!! $cnt->description !!}</div>
+                            <div class="p-7 rounded-3xl {{ $bcCard }} space-y-3 shadow-xl">
+                                <h3 class="text-lg font-display font-bold {{ $bcTitle }}">{{ $cnt->title }}</h3>
+                                <div class="{{ $bcMuted }} text-sm font-light leading-relaxed">{!! $cnt->description !!}</div>
                             </div>
                         @endforeach
                     @else
-                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
-                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
-                            <p class="text-slate-400 text-xs">No contribution records have been added yet.</p>
+                        <div class="p-8 rounded-3xl {{ $bcCardMuted }} text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold {{ $bcTitle }} uppercase">No Records Found</h3>
+                            <p class="{{ $bcSubMuted }} text-xs">No contribution records have been added yet.</p>
                         </div>
                     @endif
                 </div>
@@ -1762,11 +1798,11 @@
         </div>
 
         <!-- 10. TESTIMONIALS OVERLAY -->
-        <div id="bc-overlay-testimonials" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-testimonials" class="bc-overlay-modal fixed inset-0 z-40 {{ $bcOverlayBg }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-testimonials">
-                <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// CLIENT ENDORSEMENTS</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Testimonials</h2>
+                <div class="border-b {{ $bcBorder }} pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// CLIENT ENDORSEMENTS</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $bcTitle }} uppercase tracking-tight">Testimonials</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @if(!empty($testimonials) && count($testimonials) > 0)
@@ -1776,19 +1812,19 @@
                                 $tDesig = $tst->designation ?? $tst->author_title ?? '';
                                 $tContent = $tst->content ?? $tst->quote ?? '';
                             @endphp
-                            <div class="p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-5 shadow-2xl relative overflow-hidden">
-                                <i class="fa-solid fa-quote-right absolute top-6 right-6 text-4xl text-amber-500/10"></i>
-                                <p class="text-slate-200 text-sm sm:text-base font-light italic leading-relaxed">"{{ $tContent }}"</p>
-                                <div class="border-t border-white/10 pt-4">
-                                    <h4 class="text-sm font-bold text-white">{{ $tName }}</h4>
-                                    <span class="text-xs font-mono text-amber-400 block">{{ $tDesig }}</span>
+                            <div class="p-8 rounded-3xl {{ $bcCard }} space-y-5 shadow-2xl relative overflow-hidden">
+                                <i class="fa-solid fa-quote-right absolute top-6 right-6 text-4xl text-amber-500/15"></i>
+                                <p class="{{ $bcMuted }} text-sm sm:text-base font-light italic leading-relaxed">"{{ $tContent }}"</p>
+                                <div class="border-t {{ $bcBorder }} pt-4">
+                                    <h4 class="text-sm font-bold {{ $bcTitle }}">{{ $tName }}</h4>
+                                    <span class="text-xs font-mono text-amber-600 block font-semibold">{{ $tDesig }}</span>
                                 </div>
                             </div>
                         @endforeach
                     @else
-                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
-                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
-                            <p class="text-slate-400 text-xs">No testimonial records have been added yet.</p>
+                        <div class="p-8 rounded-3xl {{ $bcCardMuted }} text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold {{ $bcTitle }} uppercase">No Records Found</h3>
+                            <p class="{{ $bcSubMuted }} text-xs">No testimonial records have been added yet.</p>
                         </div>
                     @endif
                 </div>
@@ -1796,32 +1832,32 @@
         </div>
 
         <!-- 11. PUBLICATIONS OVERLAY -->
-        <div id="bc-overlay-publications" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-publications" class="bc-overlay-modal fixed inset-0 z-40 {{ $bcOverlayBg }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-publications">
-                <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// RESEARCH & PAPERS</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Publications & Reports</h2>
+                <div class="border-b {{ $bcBorder }} pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// RESEARCH & PAPERS</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $bcTitle }} uppercase tracking-tight">Publications & Reports</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @if(!empty($publications) && count($publications) > 0)
                         @foreach($publications as $pub)
-                            <div class="p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-4 shadow-2xl">
-                                <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono text-xs">
+                            <div class="p-8 rounded-3xl {{ $bcCard }} space-y-4 shadow-2xl">
+                                <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 font-mono text-xs font-semibold">
                                     {{ $pub->type ?? 'JOURNAL PAPER' }} ({{ $pub->year }})
                                 </span>
-                                <h3 class="text-lg font-display font-bold text-white">{{ $pub->title }}</h3>
-                                <p class="text-xs font-mono text-slate-400">Authors: {{ $pub->authors }}</p>
+                                <h3 class="text-lg font-display font-bold {{ $bcTitle }}">{{ $pub->title }}</h3>
+                                <p class="text-xs font-mono {{ $bcSubMuted }}">Authors: {{ $pub->authors }}</p>
                                 @if(!empty($pub->link))
-                                    <a href="{{ $pub->link }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all">
+                                    <a href="{{ $pub->link }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 hover:text-white font-bold text-xs uppercase tracking-wider transition-all">
                                         Online Link <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                                     </a>
                                 @endif
                             </div>
                         @endforeach
                     @else
-                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
-                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
-                            <p class="text-slate-400 text-xs">No publication records have been added yet.</p>
+                        <div class="p-8 rounded-3xl {{ $bcCardMuted }} text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold {{ $bcTitle }} uppercase">No Records Found</h3>
+                            <p class="{{ $bcSubMuted }} text-xs">No publication records have been added yet.</p>
                         </div>
                     @endif
                 </div>
@@ -1829,34 +1865,34 @@
         </div>
 
         <!-- 12. MEDIA APPEARANCES OVERLAY -->
-        <div id="bc-overlay-media" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-media" class="bc-overlay-modal fixed inset-0 z-40 {{ $bcOverlayBg }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-5xl mx-auto pt-16 pb-20 space-y-8 bc-anim-media">
-                <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// PRESS & BROADCASTS</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Media Appearances</h2>
+                <div class="border-b {{ $bcBorder }} pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// PRESS & BROADCASTS</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $bcTitle }} uppercase tracking-tight">Media Appearances</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @if(!empty($media) && count($media) > 0)
                         @foreach($media as $med)
-                            <div class="p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-4 shadow-2xl">
-                                <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono text-xs">
+                            <div class="p-8 rounded-3xl {{ $bcCard }} space-y-4 shadow-2xl">
+                                <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 font-mono text-xs font-semibold">
                                     {{ $med->type == 'tv' ? 'TV / Video Interview' : 'Newspaper / Op-Ed Article' }}
                                 </span>
-                                <h3 class="text-lg font-display font-bold text-white">{{ $med->title }}</h3>
-                                <p class="text-xs font-mono text-slate-400">
+                                <h3 class="text-lg font-display font-bold {{ $bcTitle }}">{{ $med->title }}</h3>
+                                <p class="text-xs font-mono {{ $bcSubMuted }}">
                                     {{ $med->channel_platform ?? $med->newspaper_name }}
                                 </p>
                                 @if(!empty($med->link))
-                                    <a href="{{ $med->link }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all">
+                                    <a href="{{ $med->link }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 hover:text-white font-bold text-xs uppercase tracking-wider transition-all">
                                         Watch / Read <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                                     </a>
                                 @endif
                             </div>
                         @endforeach
                     @else
-                        <div class="p-8 rounded-3xl bg-[#0F131C]/50 border border-white/10 text-center space-y-3 col-span-full">
-                            <h3 class="text-base font-bold text-white uppercase">No Records Found</h3>
-                            <p class="text-slate-400 text-xs">No media appearance records have been added yet.</p>
+                        <div class="p-8 rounded-3xl {{ $bcCardMuted }} text-center space-y-3 col-span-full">
+                            <h3 class="text-base font-bold {{ $bcTitle }} uppercase">No Records Found</h3>
+                            <p class="{{ $bcSubMuted }} text-xs">No media appearance records have been added yet.</p>
                         </div>
                     @endif
                 </div>
@@ -1864,45 +1900,45 @@
         </div>
 
         <!-- 13. CONTACT OVERLAY -->
-        <div id="bc-overlay-contact" class="bc-overlay-modal fixed inset-0 z-40 bg-[#07090E]/95 backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
+        <div id="bc-overlay-contact" class="bc-overlay-modal fixed inset-0 z-40 {{ $bcOverlayBg }} backdrop-blur-2xl p-6 sm:p-12 overflow-y-auto hidden">
             <div class="max-w-4xl mx-auto pt-16 pb-20 space-y-8 bc-anim-contact">
-                <div class="border-b border-amber-400/20 pb-4">
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 block mb-1">// INITIATE DIALOGUE</span>
-                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold text-white uppercase tracking-tight">Contact</h2>
+                <div class="border-b {{ $bcBorder }} pb-4">
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-amber-500 block mb-1">// INITIATE DIALOGUE</span>
+                    <h2 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-extrabold {{ $bcTitle }} uppercase tracking-tight">Contact</h2>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    <div class="lg:col-span-5 p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-6">
-                        <h3 class="text-lg font-bold text-white">Direct Details</h3>
+                    <div class="lg:col-span-5 p-8 rounded-3xl {{ $bcCard }} space-y-6">
+                        <h3 class="text-lg font-bold {{ $bcTitle }}">Direct Details</h3>
                         <div class="space-y-4 text-xs font-mono">
                             @if($portfolio->show_email && !empty($profile['email']))
                                 <div>
-                                    <span class="text-slate-400 block mb-1">EMAIL</span>
-                                    <a href="mailto:{{ $profile['email'] }}" class="text-amber-300 font-bold hover:underline">{{ $profile['email'] }}</a>
+                                    <span class="{{ $bcSubMuted }} block mb-1">EMAIL</span>
+                                    <a href="mailto:{{ $profile['email'] }}" class="text-amber-600 font-bold hover:underline">{{ $profile['email'] }}</a>
                                 </div>
                             @endif
                             @if($portfolio->show_phone && !empty($profile['phone']))
                                 <div>
-                                    <span class="text-slate-400 block mb-1">PHONE</span>
-                                    <a href="tel:{{ $profile['phone'] }}" class="text-amber-300 font-bold hover:underline">{{ $profile['phone'] }}</a>
+                                    <span class="{{ $bcSubMuted }} block mb-1">PHONE</span>
+                                    <a href="tel:{{ $profile['phone'] }}" class="text-amber-600 font-bold hover:underline">{{ $profile['phone'] }}</a>
                                 </div>
                             @endif
                             @if(!empty($profile['location']))
                                 <div>
-                                    <span class="text-slate-400 block mb-1">LOCATION</span>
-                                    <span class="text-white font-bold">{{ $profile['location'] }}</span>
+                                    <span class="{{ $bcSubMuted }} block mb-1">LOCATION</span>
+                                    <span class="{{ $bcTitle }} font-bold">{{ $profile['location'] }}</span>
                                 </div>
                             @endif
                         </div>
                     </div>
 
-                    <div class="lg:col-span-7 p-8 rounded-3xl bg-[#0F131C]/90 border border-amber-400/20 space-y-5">
-                        <h3 class="text-lg font-bold text-white">Send Inquiry</h3>
+                    <div class="lg:col-span-7 p-8 rounded-3xl {{ $bcCard }} space-y-5">
+                        <h3 class="text-lg font-bold {{ $bcTitle }}">Send Inquiry</h3>
                         <form action="{{ route('portfolio.contact.store', $portfolio->id) }}" method="POST" class="space-y-4">
                             @csrf
-                            <input type="text" name="name" placeholder="Your Name" required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-xs font-mono">
-                            <input type="email" name="email" placeholder="Your Email" required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-xs font-mono">
-                            <textarea name="message" rows="4" placeholder="Your Message..." required class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 text-xs font-mono"></textarea>
-                            <button type="submit" class="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase font-mono tracking-widest transition-all">
+                            <input type="text" name="name" placeholder="Your Name" required class="w-full px-4 py-3 rounded-xl {{ $bcInput }} text-xs font-mono">
+                            <input type="email" name="email" placeholder="Your Email" required class="w-full px-4 py-3 rounded-xl {{ $bcInput }} text-xs font-mono">
+                            <textarea name="message" rows="4" placeholder="Your Message..." required class="w-full px-4 py-3 rounded-xl {{ $bcInput }} text-xs font-mono"></textarea>
+                            <button type="submit" class="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 hover:text-white font-bold text-xs uppercase font-mono tracking-widest transition-all">
                                 Send Message →
                             </button>
                         </form>
@@ -1913,19 +1949,19 @@
 
         <!-- PROJECT DETAILS MODAL POPUP FOR BUSINESS CLASS -->
         <div id="bcProjectModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/90 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
-            <div class="relative w-full max-w-2xl bg-[#0F131C] border border-amber-400/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] text-slate-100">
+            <div class="relative w-full max-w-2xl {{ $isLightMode ? 'bg-white text-slate-900 border border-amber-300' : 'bg-[#0F131C] text-slate-100 border border-amber-400/30' }} rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <button type="button" id="closeBcProjectModal" class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-slate-900/80 hover:bg-amber-500 hover:text-slate-950 border border-white/20 text-slate-300 font-bold flex items-center justify-center transition-all cursor-pointer">
                     <i class="fa-solid fa-xmark text-base"></i>
                 </button>
                 <div id="bcModalImgWrapper" class="relative w-full h-48 sm:h-60 bg-slate-900 overflow-hidden shrink-0">
                     <img id="bcModalProjectImg" src="" alt="Project Image" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#0F131C] via-transparent to-transparent"></div>
+                    <div class="absolute inset-0 {{ $isLightMode ? 'bg-gradient-to-t from-white via-transparent to-transparent' : 'bg-gradient-to-t from-[#0F131C] via-transparent to-transparent' }}"></div>
                 </div>
                 <div class="p-6 sm:p-8 overflow-y-auto space-y-4">
-                    <h3 id="bcModalProjectTitle" class="text-xl sm:text-2xl font-serif font-extrabold text-amber-300 uppercase tracking-tight"></h3>
-                    <p id="bcModalProjectDesc" class="text-slate-300 text-sm font-light leading-relaxed whitespace-pre-line border-t border-white/10 pt-4"></p>
-                    <div class="flex items-center gap-4 pt-4 border-t border-white/10">
-                        <a id="bcModalProjectUrl" href="#" target="_blank" class="px-6 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs uppercase tracking-wider">
+                    <h3 id="bcModalProjectTitle" class="text-xl sm:text-2xl font-serif font-extrabold {{ $isLightMode ? 'text-amber-800' : 'text-amber-300' }} uppercase tracking-tight"></h3>
+                    <p id="bcModalProjectDesc" class="{{ $isLightMode ? 'text-slate-600 border-slate-200' : 'text-slate-300 border-white/10' }} text-sm font-light leading-relaxed whitespace-pre-line border-t pt-4"></p>
+                    <div class="flex items-center gap-4 pt-4 {{ $isLightMode ? 'border-slate-200' : 'border-white/10' }} border-t">
+                        <a id="bcModalProjectUrl" href="#" target="_blank" class="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs uppercase tracking-wider">
                             Visit Live Site <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
                         </a>
                         <button type="button" id="closeBcProjectModalBtn" class="px-6 py-2.5 rounded-xl bg-white/10 hover:bg-white hover:text-slate-950 border border-white/20 text-white font-bold text-xs uppercase tracking-wider cursor-pointer">

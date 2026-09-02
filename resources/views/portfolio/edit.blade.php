@@ -926,13 +926,45 @@
                         @foreach($themes as $theme)
                             @php
                                 $tSlug = strtolower(trim($theme->slug ?? $theme->name));
-                                $tKey = str_contains($tSlug, 'business') ? 'business-class' : (str_contains($tSlug, 'executive') ? 'executive' : (str_contains($tSlug, 'premium') ? 'premium' : (str_contains($tSlug, 'elegant') ? 'elegant' : 'classic')));
+                                if (str_contains($tSlug, 'business') && str_contains($tSlug, 'light')) {
+                                    $tKey = 'business-class-light';
+                                } elseif (str_contains($tSlug, 'business')) {
+                                    $tKey = 'business-class';
+                                } elseif (str_contains($tSlug, 'executive') && str_contains($tSlug, 'light')) {
+                                    $tKey = 'executive-light';
+                                } elseif (str_contains($tSlug, 'executive')) {
+                                    $tKey = 'executive';
+                                } elseif (str_contains($tSlug, 'premium')) {
+                                    $tKey = 'premium';
+                                } elseif (str_contains($tSlug, 'elegant')) {
+                                    $tKey = 'elegant';
+                                } else {
+                                    $tKey = 'classic';
+                                }
+
                                 $pTheme = strtolower(trim($portfolio->theme ?? 'classic'));
-                                $currentThemeKey = str_contains($pTheme, 'business') ? 'business-class' : (str_contains($pTheme, 'executive') ? 'executive' : (str_contains($pTheme, 'premium') ? 'premium' : (str_contains($pTheme, 'elegant') ? 'elegant' : 'classic')));
+                                if (str_contains($pTheme, 'business') && str_contains($pTheme, 'light')) {
+                                    $currentThemeKey = 'business-class-light';
+                                } elseif (str_contains($pTheme, 'business')) {
+                                    $currentThemeKey = 'business-class';
+                                } elseif (str_contains($pTheme, 'executive') && str_contains($pTheme, 'light')) {
+                                    $currentThemeKey = 'executive-light';
+                                } elseif (str_contains($pTheme, 'executive')) {
+                                    $currentThemeKey = 'executive';
+                                } elseif (str_contains($pTheme, 'premium')) {
+                                    $currentThemeKey = 'premium';
+                                } elseif (str_contains($pTheme, 'elegant')) {
+                                    $currentThemeKey = 'elegant';
+                                } else {
+                                    $currentThemeKey = 'classic';
+                                }
+
                                 $isCurrentActive = ($currentThemeKey === $tKey);
 
                                 $themeDesc = [
-                                    'business-class' => 'Luxury executive theme featuring a 360° central orbital hub with 13 distinct section animation signatures and smooth hash state linking.',
+                                    'business-class-light' => 'Luxury executive light theme featuring a 360° central orbital hub with warm ivory slate colors and champagne gold accents.',
+                                    'business-class' => 'Luxury executive dark theme featuring a 360° central orbital hub with 13 distinct section animation signatures and dark gold styling.',
+                                    'executive-light' => 'Editorial 2-column composition with horizontal directory navigation bar in crisp executive light slate and indigo aesthetic.',
                                     'executive' => 'Editorial 2-column composition with horizontal directory navigation bar and dark glassmorphic cards.',
                                     'premium' => 'Modern dark glassmorphism layout with vibrant neon gradients, smooth animations, and reactive cards.',
                                     'elegant' => 'Clean serif typography and elegant indigo layout for academic and executive leaders.',

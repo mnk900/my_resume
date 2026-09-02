@@ -816,10 +816,16 @@
                     <i class="fa-solid fa-palette me-2" style="color: #a78bfa !important;"></i> Elegant Indigo (Serif)
                 </button>
                 <button class="btn btn-outline-glass px-4 py-2 rounded-pill" id="theme-btn-executive" onclick="previewTheme('executive')">
-                    <i class="fa-solid fa-briefcase me-2" style="color: #818cf8 !important;"></i> Executive Theme (Dark)
+                    <i class="fa-solid fa-briefcase me-2" style="color: #818cf8 !important;"></i> Executive (Dark)
+                </button>
+                <button class="btn btn-outline-glass px-4 py-2 rounded-pill" id="theme-btn-executive-light" onclick="previewTheme('executive-light')">
+                    <i class="fa-solid fa-briefcase me-2" style="color: #6366f1 !important;"></i> Executive (Light)
                 </button>
                 <button class="btn btn-outline-glass px-4 py-2 rounded-pill" id="theme-btn-business-class" onclick="previewTheme('business-class')">
-                    <i class="fa-solid fa-crown me-2" style="color: #f59e0b !important;"></i> Business Class (Orbit Luxury)
+                    <i class="fa-solid fa-crown me-2" style="color: #f59e0b !important;"></i> Business Class (Dark)
+                </button>
+                <button class="btn btn-outline-glass px-4 py-2 rounded-pill" id="theme-btn-business-class-light" onclick="previewTheme('business-class-light')">
+                    <i class="fa-solid fa-crown me-2" style="color: #d97706 !important;"></i> Business Class (Light)
                 </button>
             </div>
 

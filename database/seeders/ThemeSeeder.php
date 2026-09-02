@@ -16,8 +16,10 @@ class ThemeSeeder extends Seeder
             ['name' => 'Classic Clean', 'slug' => 'classic', 'is_active' => true],
             ['name' => 'Elegant Indigo', 'slug' => 'elegant', 'is_active' => true],
             ['name' => 'Premium Professional', 'slug' => 'premium', 'is_active' => true],
-            ['name' => 'Executive Theme', 'slug' => 'executive', 'is_active' => true],
-            ['name' => 'Business Class', 'slug' => 'business-class', 'is_active' => true],
+            ['name' => 'Executive Theme (Dark)', 'slug' => 'executive', 'is_active' => true],
+            ['name' => 'Executive Theme (Light)', 'slug' => 'executive-light', 'is_active' => true],
+            ['name' => 'Business Class (Dark)', 'slug' => 'business-class', 'is_active' => true],
+            ['name' => 'Business Class (Light)', 'slug' => 'business-class-light', 'is_active' => true],
         ];
 
         // Clean up deleted themes
