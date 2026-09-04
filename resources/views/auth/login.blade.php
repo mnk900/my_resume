@@ -42,8 +42,7 @@
         </button>
 
         <div class="text-center pt-2 border-top">
-            <span class="text-muted small">New to MyResume.cloud?</span>
-            <a href="{{ route('register') }}" class="text-decoration-none fw-semibold ms-1">Create an account</a>
+            <span class="text-muted small"><i class="fa-solid fa-lock me-1"></i> Public registration is managed by platform administrators.</span>
         </div>
     </form>
 </x-guest-layout>

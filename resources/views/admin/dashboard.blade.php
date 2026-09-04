@@ -7,6 +7,7 @@
         <p class="text-secondary small mb-0">System governance, platform overview, verification queues, and operational metrics.</p>
     </div>
     <div class="d-flex gap-2 mt-3 mt-md-0">
+        <a href="{{ route('register') }}" class="btn btn-success btn-sm rounded-pill shadow-sm"><i class="fa-solid fa-user-plus me-1"></i> Register Portfolio User</a>
         <a href="{{ route('admin.verification.index') }}" class="btn btn-primary btn-sm rounded-pill"><i class="fa-solid fa-shield-halved me-1"></i> Verification Queue</a>
         <a href="{{ route('admin.moderation.index') }}" class="btn btn-outline-danger btn-sm rounded-pill"><i class="fa-solid fa-triangle-exclamation me-1"></i> Moderation Queue</a>
     </div>

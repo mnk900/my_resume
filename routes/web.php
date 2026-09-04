@@ -13,9 +13,9 @@ Route::get('/', [HomeController::class, 'index'])->name('welcome');
 
 
 
-// Public Messaging - Absolute simplest path
+// Public Messaging - Throttled against spam
 Route::get('/contact/submit/{portfolio}', function() { return 'Contact endpoint is reachable'; });
-Route::post('/contact/submit/{portfolio}', [\App\Http\Controllers\MessageController::class, 'store'])->name('portfolio.contact.store');
+Route::post('/contact/submit/{portfolio}', [\App\Http\Controllers\MessageController::class, 'store'])->middleware('throttle:6,1')->name('portfolio.contact.store');
 
 // Laravel UI Routes
 Auth::routes(['verify' => true]);
@@ -170,16 +170,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 
     // Content Reports
-    Route::post('/reports', [\App\Http\Controllers\ContentReportController::class, 'store'])->name('reports.store');
+    Route::post('/reports', [\App\Http\Controllers\ContentReportController::class, 'store'])->middleware('throttle:10,1')->name('reports.store');
 });
 
-// Public Discovery Routes
-Route::get('/companies', [\App\Http\Controllers\CompanyController::class, 'index'])->name('companies.index');
-Route::get('/company/{slug}', [\App\Http\Controllers\CompanyController::class, 'show'])->name('companies.show');
-Route::get('/jobs', [\App\Http\Controllers\OpportunityController::class, 'index'])->name('opportunities.index');
-Route::get('/job/{slug}', [\App\Http\Controllers\OpportunityController::class, 'show'])->name('opportunities.show');
-Route::get('/talent', [\App\Http\Controllers\TalentDiscoveryController::class, 'index'])->name('talent.index');
-Route::get('/search', [\App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
+// Public Discovery Routes (Rate-Limited)
+Route::middleware('throttle:60,1')->group(function() {
+    Route::get('/companies', [\App\Http\Controllers\CompanyController::class, 'index'])->name('companies.index');
+    Route::get('/company/{slug}', [\App\Http\Controllers\CompanyController::class, 'show'])->name('companies.show');
+    Route::get('/jobs', [\App\Http\Controllers\OpportunityController::class, 'index'])->name('opportunities.index');
+    Route::get('/job/{slug}', [\App\Http\Controllers\OpportunityController::class, 'show'])->name('opportunities.show');
+    Route::get('/talent', [\App\Http\Controllers\TalentDiscoveryController::class, 'index'])->name('talent.index');
+    Route::get('/search', [\App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
+});
 
 Route::get('/sitemap.xml', function() {
     $portfolios = \App\Models\Portfolio::where('is_active', true)->where('is_public', true)->with('user')->get();

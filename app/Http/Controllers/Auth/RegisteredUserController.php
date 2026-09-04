@@ -21,8 +21,8 @@ class RegisteredUserController extends Controller
     public function create(): View
     {
         \App\Services\SeoService::set([
-            'title' => 'Create Your Account | MyResume.cloud',
-            'description' => 'Build your professional portfolio, discover career opportunities, and connect with top organizations on MyResume.cloud.',
+            'title' => 'Register Candidate User | Admin Panel',
+            'description' => 'Admin control panel registration form for candidate portfolio users.',
             'robots' => 'noindex, nofollow'
         ]);
 
@@ -30,7 +30,7 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
+     * Handle an incoming registration request from Admin.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -60,8 +60,6 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(RouteServiceProvider::HOME);
+        return redirect()->route('admin.index')->with('success', "Portfolio user account '{$user->name}' ({$user->email}) was successfully created!");
     }
 }

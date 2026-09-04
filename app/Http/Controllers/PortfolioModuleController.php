@@ -158,13 +158,13 @@ class PortfolioModuleController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'link' => 'nullable|string',
-            'image' => 'nullable|image|max:5120'
+            'link' => 'nullable|string|max:500',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:5120'
         ]);
 
         $data = [
             'title' => $request->title,
-            'description' => $request->description,
+            'description' => \App\Services\SecurityService::cleanHtml($request->description),
             'link' => $request->link,
         ];
 
@@ -186,23 +186,30 @@ class PortfolioModuleController extends Controller
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'description' => 'nullable|string'
         ]);
-        Auth::user()->portfolio->experiences()->create($request->only(['company', 'position', 'start_date', 'end_date', 'description']));
+        
+        $data = $request->only(['company', 'position', 'start_date', 'end_date']);
+        $data['description'] = \App\Services\SecurityService::cleanHtml($request->input('description'));
+
+        Auth::user()->portfolio->experiences()->create($data);
         $this->bustCache();
         return back()->with('status', 'experience-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeService(Request $request)
     {
-        $request->validate(['title' => 'required|string', 'description' => 'required|string']);
-        Auth::user()->portfolio->services()->create($request->all());
+        $request->validate(['title' => 'required|string|max:255', 'description' => 'required|string', 'icon' => 'nullable|string|max:100']);
+        $data = $request->only(['title', 'icon']);
+        $data['description'] = \App\Services\SecurityService::cleanHtml($request->input('description'));
+
+        Auth::user()->portfolio->services()->create($data);
         $this->bustCache();
         return back()->with('status', 'service-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeCertification(Request $request)
     {
-        $request->validate(['name' => 'required|string', 'issuer' => 'required|string']);
-        Auth::user()->portfolio->certifications()->create($request->all());
+        $request->validate(['name' => 'required|string|max:255', 'issuer' => 'required|string|max:255', 'date' => 'nullable|date', 'link' => 'nullable|url|max:500']);
+        Auth::user()->portfolio->certifications()->create($request->only(['name', 'issuer', 'date', 'link']));
         $this->bustCache();
         return back()->with('status', 'certification-added')->with('active_tab', 'cmsPane');
     }
@@ -222,32 +229,41 @@ class PortfolioModuleController extends Controller
 
     public function storeAchievement(Request $request)
     {
-        $request->validate(['title' => 'required|string']);
-        Auth::user()->portfolio->achievements()->create($request->all());
+        $request->validate(['title' => 'required|string|max:255', 'description' => 'nullable|string']);
+        $data = $request->only(['title']);
+        $data['description'] = \App\Services\SecurityService::cleanHtml($request->input('description'));
+
+        Auth::user()->portfolio->achievements()->create($data);
         $this->bustCache();
         return back()->with('status', 'achievement-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeContribution(Request $request)
     {
-        $request->validate(['title' => 'required|string', 'description' => 'required|string']);
-        Auth::user()->portfolio->contributions()->create($request->all());
+        $request->validate(['title' => 'required|string|max:255', 'description' => 'required|string', 'link' => 'nullable|url|max:500']);
+        $data = $request->only(['title', 'link']);
+        $data['description'] = \App\Services\SecurityService::cleanHtml($request->input('description'));
+
+        Auth::user()->portfolio->contributions()->create($data);
         $this->bustCache();
         return back()->with('status', 'contribution-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeTraining(Request $request)
     {
-        $request->validate(['title' => 'required|string', 'institution' => 'required|string']);
-        Auth::user()->portfolio->trainings()->create($request->all());
+        $request->validate(['title' => 'required|string|max:255', 'institution' => 'required|string|max:255', 'date' => 'nullable|date']);
+        Auth::user()->portfolio->trainings()->create($request->only(['title', 'institution', 'date']));
         $this->bustCache();
         return back()->with('status', 'training-added')->with('active_tab', 'cmsPane');
     }
 
     public function storeTestimonial(Request $request)
     {
-        $request->validate(['client_name' => 'required|string', 'content' => 'required|string']);
-        Auth::user()->portfolio->testimonials()->create($request->all());
+        $request->validate(['client_name' => 'required|string|max:255', 'designation' => 'nullable|string|max:255', 'content' => 'required|string']);
+        $data = $request->only(['client_name', 'designation']);
+        $data['content'] = \App\Services\SecurityService::cleanHtml($request->input('content'));
+
+        Auth::user()->portfolio->testimonials()->create($data);
         $this->bustCache();
         return back()->with('status', 'testimonial-added')->with('active_tab', 'cmsPane');
     }

@@ -25,8 +25,11 @@
             </div>
             <div class="col-6 col-lg-2">
                 <h6 class="fw-bold text-dark mb-2 small">Professionals</h6>
-                <ul class="list-unstyled d-flex flex-column gap-1 small">
-                    <li><a href="{{ route('register') }}" class="text-secondary text-decoration-none hover-primary">Create Portfolio</a></li>
+                    @auth
+                        <li><a href="{{ route('portfolio.edit') }}" class="text-secondary text-decoration-none hover-primary">My Portfolio CMS</a></li>
+                    @else
+                        <li><a href="{{ route('login') }}" class="text-secondary text-decoration-none hover-primary">Sign In</a></li>
+                    @endauth
                     <li><a href="{{ route('applications.candidate.index') }}" class="text-secondary text-decoration-none hover-primary">My Applications</a></li>
                     @if(\App\Models\SystemSetting::isAiMockEnabled())
                         <li><a href="{{ route('mock-interviews.index') }}" class="text-secondary text-decoration-none hover-primary">AI Mock Interviews</a></li>

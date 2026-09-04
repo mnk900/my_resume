@@ -1,7 +1,10 @@
 <x-guest-layout>
     <div class="text-center mb-4">
-        <h3 class="fw-bold text-dark mb-1">Create Your Account</h3>
-        <p class="text-muted small">Build your professional portfolio and discover career opportunities.</p>
+        <div class="badge bg-danger-subtle text-danger border border-danger-subtle mb-2 px-3 py-1 rounded-pill" style="font-size: 0.75rem;">
+            <i class="fa-solid fa-shield-halved me-1"></i> ADMIN USER PROVISIONING
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Register Portfolio Candidate</h3>
+        <p class="text-muted small mb-0">Create a new user account for candidate portfolios.</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}">
@@ -44,13 +47,12 @@
         </div>
 
         <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm mb-3">
-            {{ __('Create Free Account') }}
+            <i class="fa-solid fa-user-plus me-1"></i> {{ __('Create Portfolio User') }}
         </button>
 
         <div class="text-center pt-2 border-top">
-            <span class="text-muted small">Already have an account?</span>
-            <a class="text-decoration-none fw-semibold ms-1" href="{{ route('login') }}">
-                {{ __('Sign In') }}
+            <a class="text-decoration-none fw-semibold small text-secondary" href="{{ route('admin.index') }}">
+                <i class="fa-solid fa-arrow-left me-1"></i> {{ __('Return to Admin Dashboard') }}
             </a>
         </div>
     </form>

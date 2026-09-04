@@ -18,10 +18,10 @@
     <meta property="og:description" content="Showcase your professional identity, discover jobs, connect with companies, and prepare for interviews.">
     <meta property="og:image" content="{{ asset('images/logo.jpeg') }}">
 
-    <!-- Google Fonts: Outfit (Headings) & Inter (Body) -->
+    <!-- Google Fonts: Inter (400, 500, 600) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Bootstrap CSS 5.3.3 & FontAwesome 6.4.0 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -58,8 +58,8 @@
             --text-muted-slate: #94a3b8;
             --text-light-slate: #cbd5e1;
 
-            --font-headings: 'Outfit', sans-serif;
-            --font-body: 'Inter', sans-serif;
+            --font-headings: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
@@ -67,13 +67,59 @@
             background-color: var(--bg-dark-obsidian);
             color: var(--text-light-slate);
             overflow-x: hidden;
-            line-height: 1.6;
+            font-size: 0.9125rem; /* 14.6px (14px–15px / 0.875rem–0.9375rem) */
+            line-height: 1.55;
+            font-weight: 400;
         }
 
-        h1, h2, h3, h4, h5, h6 {
+        /* Compact SaaS Typography Scale (Inter Standard Aesthetics) */
+        h1, .hero-section h1, h1.display-4 {
             font-family: var(--font-headings);
             color: var(--text-heading);
-            font-weight: 700;
+            font-weight: 600 !important; /* font-semibold (600) */
+            font-size: 2.375rem !important; /* 38px (36px–40px / 2.25rem–2.5rem) */
+            letter-spacing: -0.02em !important;
+            line-height: 1.15 !important;
+        }
+
+        h2, section h2, .display-5, .display-6 {
+            font-family: var(--font-headings);
+            color: var(--text-heading);
+            font-weight: 600 !important; /* font-semibold (600) */
+            font-size: 1.625rem !important; /* 26px (24px–28px / 1.5rem–1.75rem) */
+            letter-spacing: -0.015em !important;
+            line-height: 1.25 !important;
+        }
+
+        h3, h4, h5, .card-title {
+            font-family: var(--font-headings);
+            color: var(--text-heading);
+            font-weight: 600 !important; /* font-semibold (600) */
+            font-size: 1.0625rem !important; /* 17px (16px–18px / 1rem–1.125rem) */
+            line-height: 1.35 !important;
+        }
+
+        p, .section-desc, .text-muted-slate {
+            font-size: 0.9125rem; /* 14.6px (14px–15px / 0.875rem–0.9375rem) */
+            color: var(--text-muted-slate);
+            font-weight: 400 !important; /* font-normal (400) */
+            line-height: 1.55;
+        }
+
+        /* Text Container Constraints (max-w-2xl) */
+        .max-w-2xl {
+            max-width: 640px !important;
+        }
+
+        /* Reduced Vertical Padding on Hero & Sections */
+        section {
+            padding: 48px 0; /* Reduced from py-20/py-24 to py-12 (48px) */
+        }
+
+        .hero-section {
+            position: relative;
+            padding: 48px 0 56px !important; /* Reduced vertical hero padding */
+            overflow: hidden;
         }
 
         /* Glassmorphism Common Utilities */
@@ -82,7 +128,7 @@
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border-slate-subtle);
-            border-radius: 16px;
+            border-radius: 14px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
@@ -90,26 +136,40 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .glass-panel-interactive:hover {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
             border-color: var(--border-slate-glow);
-            box-shadow: 0 12px 40px 0 rgba(37, 99, 235, 0.15);
+            box-shadow: 0 10px 30px 0 rgba(37, 99, 235, 0.15);
         }
 
-        /* Buttons */
+        /* Nav links, badge chips, and buttons: 13px–14px (text-sm), medium/semibold weight */
+        .btn {
+            font-size: 0.84375rem !important; /* 13.5px (13px–14px) */
+            font-weight: 600;
+            padding: 0.45rem 1.15rem;
+            border-radius: 9999px;
+            transition: all 0.25s ease;
+        }
+        .btn-sm {
+            font-size: 0.8125rem !important; /* 13px */
+            padding: 0.35rem 0.85rem;
+        }
+        .btn-lg {
+            font-size: 0.875rem !important; /* 14px */
+            padding: 0.55rem 1.35rem;
+        }
+
         .btn-gradient-primary {
             background: var(--gradient-primary);
             color: #ffffff !important;
             border: none;
-            font-weight: 600;
             position: relative;
             overflow: hidden;
             z-index: 1;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
         }
         .btn-gradient-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.45);
             color: #ffffff !important;
         }
         .btn-gradient-primary::after {
@@ -128,9 +188,7 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-slate-subtle);
             color: var(--text-heading) !important;
-            font-weight: 600;
             backdrop-filter: blur(8px);
-            transition: all 0.3s ease;
         }
         .btn-outline-glass:hover {
             background: rgba(255, 255, 255, 0.1);
@@ -141,39 +199,34 @@
 
         /* Sticky Glass Navbar */
         .glass-navbar {
-            background: rgba(10, 15, 29, 0.85);
+            background: rgba(10, 15, 29, 0.88);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-slate-subtle);
             position: sticky;
             top: 0;
             z-index: 1050;
-            padding: 0.85rem 0;
+            padding: 0.65rem 0;
         }
         .nav-link-custom {
             color: var(--text-muted-slate) !important;
             font-weight: 500;
-            font-size: 0.925rem;
-            padding: 0.5rem 1rem !important;
+            font-size: 0.84375rem !important; /* 13.5px (13px–14px) */
+            padding: 0.4rem 0.85rem !important;
             transition: all 0.2s ease;
         }
         .nav-link-custom:hover, .nav-link-custom.active {
             color: var(--electric-cyan) !important;
         }
 
-        /* Hero Section Styling */
-        .hero-section {
-            position: relative;
-            padding: 75px 0 90px;
-            overflow: hidden;
-        }
+        /* Hero Glow Backgrounds */
         .hero-glow-bg {
             position: absolute;
             top: -100px;
             right: -50px;
-            width: 650px;
-            height: 650px;
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, rgba(99, 102, 241, 0.12) 40%, transparent 70%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.18) 0%, rgba(99, 102, 241, 0.1) 40%, transparent 70%);
             filter: blur(50px);
             z-index: 0;
             pointer-events: none;
@@ -182,9 +235,9 @@
             position: absolute;
             bottom: -150px;
             left: -100px;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.14) 0%, transparent 70%);
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%);
             filter: blur(60px);
             z-index: 0;
             pointer-events: none;
@@ -194,13 +247,13 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 16px;
+            padding: 5px 14px;
             border-radius: 9999px;
             background: rgba(37, 99, 235, 0.12);
             border: 1px solid rgba(56, 189, 248, 0.3);
             color: var(--electric-cyan);
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.8125rem; /* 13px */
+            font-weight: 500;
         }
 
         /* Pulse Animation */
@@ -225,25 +278,25 @@
         }
         .floating-badge-match {
             position: absolute;
-            top: -24px;
-            right: -16px;
+            top: -20px;
+            right: -12px;
             z-index: 10;
             animation: float-slow 4s ease-in-out infinite;
         }
         .floating-badge-ai {
             position: absolute;
-            bottom: -28px;
-            left: -20px;
+            bottom: -24px;
+            left: -16px;
             z-index: 10;
             animation: float-reverse 4.5s ease-in-out infinite;
         }
         @keyframes float-slow {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-8px); }
         }
         @keyframes float-reverse {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(10px); }
+            50% { transform: translateY(8px); }
         }
 
         /* Skill Chips */
@@ -251,22 +304,22 @@
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text-light-slate);
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.78125rem; /* 12.5px */
             font-weight: 500;
         }
 
         /* 4-Pillar Feature Grid */
         .feature-icon-box {
-            width: 52px;
-            height: 52px;
-            border-radius: 12px;
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.35rem;
-            margin-bottom: 1.25rem;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
         }
 
         /* Tabbed Portfolio Showcase & Theme Switcher */
@@ -275,9 +328,10 @@
             border: none;
             color: var(--text-muted-slate);
             font-family: var(--font-headings);
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 10px;
+            font-weight: 500;
+            font-size: 0.84375rem; /* 13.5px */
+            padding: 8px 16px;
+            border-radius: 9999px;
             transition: all 0.2s ease;
         }
         .tab-btn-custom:hover {
@@ -287,7 +341,8 @@
         .tab-btn-custom.active {
             background: var(--electric-blue);
             color: #ffffff;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+            font-weight: 600;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
         }
 
         /* Opportunity Filters */
@@ -295,9 +350,9 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-slate-subtle);
             color: var(--text-muted-slate);
-            padding: 6px 18px;
+            padding: 5px 15px;
             border-radius: 9999px;
-            font-size: 0.85rem;
+            font-size: 0.8125rem; /* 13px */
             font-weight: 500;
             transition: all 0.2s ease;
         }
@@ -309,7 +364,7 @@
 
         /* Progress Bars */
         .custom-progress {
-            height: 8px;
+            height: 7px;
             background: rgba(255, 255, 255, 0.08);
             border-radius: 9999px;
             overflow: hidden;
@@ -324,15 +379,17 @@
         .accordion-dark .accordion-item {
             background: var(--bg-card-glass);
             border: 1px solid var(--border-slate-subtle);
-            border-radius: 12px !important;
-            margin-bottom: 12px;
+            border-radius: 10px !important;
+            margin-bottom: 10px;
             overflow: hidden;
         }
         .accordion-dark .accordion-button {
             background: rgba(30, 41, 59, 0.4);
             color: var(--text-heading);
+            font-size: 0.9125rem; /* 14.6px */
             font-weight: 600;
             box-shadow: none !important;
+            padding: 0.9rem 1.15rem;
         }
         .accordion-dark .accordion-button:not(.collapsed) {
             background: rgba(37, 99, 235, 0.15);
@@ -343,25 +400,35 @@
             filter: invert(1);
         }
         .accordion-dark .accordion-body {
-            color: var(--text-light-slate);
-            font-size: 0.925rem;
-            line-height: 1.6;
+            color: var(--text-muted-slate);
+            font-size: 0.875rem; /* 14px */
+            line-height: 1.55;
+            padding: 0.9rem 1.15rem;
         }
 
-        /* Footer */
+        /* Footer Links */
         .footer-link {
             color: var(--text-muted-slate);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.84375rem; /* 13.5px */
+            font-weight: 400;
             transition: color 0.2s ease;
         }
         .footer-link:hover {
             color: var(--electric-cyan);
         }
 
-        /* Responsive Mobile Adjustments */
+        /* Responsive Adjustments */
         @media (max-width: 991px) {
-            .hero-canvas { margin-top: 50px; }
+            h1, .hero-section h1, h1.display-4 {
+                font-size: 1.875rem !important; /* 30px mobile */
+            }
+            h2, section h2, .display-5, .display-6 {
+                font-size: 1.375rem !important; /* 22px mobile */
+            }
+            .hero-section { padding: 36px 0 44px !important; }
+            section { padding: 36px 0; }
+            .hero-canvas { margin-top: 40px; }
             .floating-badge-match { top: -10px; right: 0; }
             .floating-badge-ai { bottom: -15px; left: 0; }
         }
@@ -443,12 +510,12 @@
                         Next-Gen Professional Identity & Talent Ecosystem
                     </div>
 
-                    <h1 class="display-4 fw-extrabold text-white mb-4 lh-sm">
+                    <h1 class="fw-semibold text-white mb-3">
                         Build Your Professional Identity.<br>
                         <span style="background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Discover Your Next Opportunity.</span>
                     </h1>
 
-                    <p class="fs-5 text-muted-slate mb-4 pb-2" style="max-width: 540px;">
+                    <p class="text-muted-slate mb-4 max-w-2xl">
                         Create a verified professional portfolio, connect with your network, discover jobs and opportunities, and prepare for your next career move — all in one unified ecosystem.
                     </p>
 
@@ -500,7 +567,7 @@
                             </div>
                             <div>
                                 <div class="d-flex align-items-center gap-2">
-                                    <span class="fw-bold text-white fs-5">92% Match</span>
+                                    <span class="fw-semibold text-white fs-5">92% Match</span>
                                     <span class="pulse-dot"></span>
                                 </div>
                                 <div class="text-muted-slate fs-7">Job Criteria Alignment</div>
@@ -523,7 +590,7 @@
                                         <span class="position-absolute bottom-0 end-0 bg-info rounded-circle border border-dark p-1" title="Verified Professional" style="width: 18px; height: 18px;"></span>
                                     </div>
                                     <div>
-                                        <h5 class="mb-0 text-white fw-bold d-flex align-items-center gap-2">
+                                        <h5 class="mb-0 text-white fw-semibold d-flex align-items-center gap-2">
                                             {{ $topCandidate->name ?? 'Fazal Ali Khan' }}
                                             <i class="fa-solid fa-circle-check text-info fs-6" title="Verified Profile"></i>
                                         </h5>
@@ -566,7 +633,7 @@
                             </div>
                             <div>
                                 <div class="d-flex align-items-center gap-2">
-                                    <span class="fw-bold text-white fs-6">AI Prep Readiness</span>
+                                    <span class="fw-semibold text-white fs-6">AI Prep Readiness</span>
                                     <span class="badge bg-purple text-white px-2" style="background: var(--ai-purple); font-size: 0.65rem;">82% Score</span>
                                 </div>
                                 <div class="text-muted-slate fs-7">Mock Interview Diagnostic Active</div>
@@ -584,25 +651,25 @@
             <div class="row g-4 text-center">
                 <div class="col-6 col-md-3">
                     <div class="p-3">
-                        <div class="display-6 fw-extrabold text-white mb-1" style="font-family: var(--font-headings);">{{ number_format($stats['total_portfolios'] ?? 1250) }}</div>
+                        <div class="fs-4 fw-semibold text-white mb-1" style="font-family: var(--font-headings);">{{ number_format($stats['total_portfolios'] ?? 1250) }}</div>
                         <div class="text-info fs-7 fw-semibold"><i class="fa-solid fa-id-badge me-1"></i> Verified Portfolios</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="p-3">
-                        <div class="display-6 fw-extrabold text-white mb-1" style="font-family: var(--font-headings);">{{ number_format($stats['total_opportunities'] ?? 450) }}</div>
+                        <div class="fs-4 fw-semibold text-white mb-1" style="font-family: var(--font-headings);">{{ number_format($stats['total_opportunities'] ?? 450) }}</div>
                         <div class="text-success fs-7 fw-semibold"><i class="fa-solid fa-briefcase me-1"></i> Published Jobs</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="p-3">
-                        <div class="display-6 fw-extrabold text-white mb-1" style="font-family: var(--font-headings);">{{ number_format($stats['total_companies'] ?? 85) }}</div>
+                        <div class="fs-4 fw-semibold text-white mb-1" style="font-family: var(--font-headings);">{{ number_format($stats['total_companies'] ?? 85) }}</div>
                         <div class="text-warning fs-7 fw-semibold"><i class="fa-solid fa-building me-1"></i> Hiring Organizations</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="p-3">
-                        <div class="display-6 fw-extrabold text-white mb-1" style="font-family: var(--font-headings);">{{ number_format($stats['total_connections'] ?? 3200) }}</div>
+                        <div class="fs-4 fw-semibold text-white mb-1" style="font-family: var(--font-headings);">{{ number_format($stats['total_connections'] ?? 3200) }}</div>
                         <div class="text-purple fs-7 fw-semibold" style="color: #a78bfa !important;"><i class="fa-solid fa-diagram-project me-1"></i> Network Connections</div>
                     </div>
                 </div>
@@ -620,8 +687,8 @@
                         <div class="feature-icon-box text-white" style="background: rgba(37, 99, 235, 0.2); border: 1px solid rgba(56, 189, 248, 0.3);">
                             <i class="fa-solid fa-id-card text-info"></i>
                         </div>
-                        <h4 class="text-white mb-2 fs-5">1. Build</h4>
-                        <p class="text-muted-slate fs-7 mb-0">
+                        <h4 class="text-white mb-2">1. Build</h4>
+                        <p class="text-muted-slate mb-0">
                             Create a comprehensive, multi-theme portfolio representing your complete professional identity, projects, and credentials.
                         </p>
                     </div>
@@ -633,8 +700,8 @@
                         <div class="feature-icon-box text-white" style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.3);">
                             <i class="fa-solid fa-compass text-success"></i>
                         </div>
-                        <h4 class="text-white mb-2 fs-5">2. Discover</h4>
-                        <p class="text-muted-slate fs-7 mb-0">
+                        <h4 class="text-white mb-2">2. Discover</h4>
+                        <p class="text-muted-slate mb-0">
                             Explore tailored job opportunities, internships, freelance projects, and organizational vacancies matched to your skills.
                         </p>
                     </div>
@@ -646,8 +713,8 @@
                         <div class="feature-icon-box text-white" style="background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.3);">
                             <i class="fa-solid fa-diagram-project text-warning"></i>
                         </div>
-                        <h4 class="text-white mb-2 fs-5">3. Connect</h4>
-                        <p class="text-muted-slate fs-7 mb-0">
+                        <h4 class="text-white mb-2">3. Connect</h4>
+                        <p class="text-muted-slate mb-0">
                             Establish verified connections with professional peers, mentors, recruiters, and companies across the network.
                         </p>
                     </div>
@@ -659,8 +726,8 @@
                         <div class="feature-icon-box text-white" style="background: rgba(99, 102, 241, 0.2); border: 1px solid rgba(139, 92, 246, 0.3);">
                             <i class="fa-solid fa-robot text-purple" style="color: #a78bfa !important;"></i>
                         </div>
-                        <h4 class="text-white mb-2 fs-5">4. Prepare</h4>
-                        <p class="text-muted-slate fs-7 mb-0">
+                        <h4 class="text-white mb-2">4. Prepare</h4>
+                        <p class="text-muted-slate mb-0">
                             Simulate real job interviews using AI mock interview practice tailored specifically to target job descriptions.
                         </p>
                     </div>
@@ -674,9 +741,9 @@
         <div class="container py-3">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-end mb-4">
                 <div>
-                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 mb-2">Corporate Network</span>
-                    <h2 class="display-6 text-white fw-bold mb-1">Top Hiring Organizations</h2>
-                    <p class="text-muted-slate mb-0 fs-6">Explore verified enterprise companies and startups actively building teams on MyResume.cloud.</p>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2">Corporate Network</span>
+                    <h2 class="text-white fw-semibold mb-1">Top Hiring Organizations</h2>
+                    <p class="text-muted-slate mb-0 max-w-2xl">Explore verified enterprise companies and startups actively building teams on MyResume.cloud.</p>
                 </div>
                 <a href="{{ route('companies.index') }}" class="btn btn-outline-glass rounded-pill px-4 mt-3 mt-md-0">
                     View All Companies <i class="fa-solid fa-arrow-right ms-2"></i>
@@ -697,7 +764,7 @@
                                         </div>
                                     @endif
                                     <div>
-                                        <h5 class="text-white fw-bold mb-0 text-truncate" style="max-width: 150px;">{{ $company->name }}</h5>
+                                        <h5 class="text-white fw-semibold mb-0 text-truncate" style="max-width: 150px;">{{ $company->name }}</h5>
                                         <div class="text-info fs-7">{{ $company->industry ?? 'Technology' }}</div>
                                     </div>
                                 </div>
@@ -796,11 +863,11 @@
     <!-- SECTION 5: LIVE THEME ENGINE PREVIEWER -->
     <section class="py-5">
         <div class="container py-4">
-            <div class="text-center mb-5">
-                <span class="badge bg-primary-subtle text-info border border-info-subtle rounded-pill px-3 py-2 mb-2">Multi-Theme Engine</span>
-                <h2 class="display-6 text-white fw-bold mb-3">Switch Portfolio Themes in One Click</h2>
-                <p class="text-muted-slate mx-auto fs-6" style="max-width: 650px;">
-                    Experience how your professional identity dynamically adapts to distinct design aesthetic engines (`Premium Dark Glass`, `Classic Light`, `Elegant Indigo`).
+            <div class="text-center mb-4">
+                <span class="badge bg-primary-subtle text-info border border-info-subtle rounded-pill px-3 py-1 mb-2">Multi-Theme Engine</span>
+                <h2 class="text-white fw-semibold mb-2">Switch Portfolio Themes in One Click</h2>
+                <p class="text-muted-slate mx-auto max-w-2xl mb-4">
+                    Experience how your professional identity dynamically adapts to distinct design aesthetic engines (<code>Premium Dark Glass</code>, <code>Classic Light</code>, <code>Elegant Indigo</code>).
                 </p>
             </div>
 
@@ -873,10 +940,10 @@
     <!-- SECTION 6: DYNAMIC PORTFOLIO SHOWCASE (CMS PREVIEW) -->
     <section class="py-5" style="background: rgba(15, 23, 42, 0.5);">
         <div class="container py-4">
-            <div class="text-center mb-5">
-                <span class="badge bg-primary-subtle text-info border border-info-subtle rounded-pill px-3 py-2 mb-2">Interactive CMS Modules</span>
-                <h2 class="display-6 text-white fw-bold mb-3">More Than a Resume. A Complete Digital Identity.</h2>
-                <p class="text-muted-slate mx-auto fs-6" style="max-width: 650px;">
+            <div class="text-center mb-4">
+                <span class="badge bg-primary-subtle text-info border border-info-subtle rounded-pill px-3 py-1 mb-2">Interactive CMS Modules</span>
+                <h2 class="text-white fw-semibold mb-2">More Than a Resume. A Complete Digital Identity.</h2>
+                <p class="text-muted-slate mx-auto max-w-2xl mb-4">
                     Switch between portfolio sections to preview how your skills, project media, experience timeline, and achievements are rendered in high-definition themes.
                 </p>
             </div>
@@ -935,9 +1002,9 @@
         <div class="container py-4">
             <div class="row align-items-end mb-4">
                 <div class="col-lg-7">
-                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 mb-2">Algorithmic Job Match</span>
-                    <h2 class="display-6 text-white fw-bold mb-2">Live Opportunities & Skill Matching</h2>
-                    <p class="text-muted-slate mb-0">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2">Algorithmic Job Match</span>
+                    <h2 class="text-white fw-semibold mb-2">Live Opportunities & Skill Matching</h2>
+                    <p class="text-muted-slate mb-0 max-w-2xl">
                         Our intelligent engine matches your portfolio competencies directly against active employer requirements.
                     </p>
                 </div>
@@ -963,7 +1030,7 @@
                                     <span class="text-muted-slate fs-7"><i class="fa-regular fa-clock me-1"></i> {{ $job->created_at ? $job->created_at->diffForHumans() : 'Recent' }}</span>
                                 </div>
 
-                                <h5 class="text-white fw-bold mb-2">{{ $job->title }}</h5>
+                                <h5 class="text-white fw-semibold mb-2">{{ $job->title }}</h5>
                                 <div class="text-info fs-7 mb-3">
                                     <i class="fa-solid fa-building me-1"></i> {{ $job->company->name ?? 'Enterprise Org' }}
                                 </div>
@@ -1017,12 +1084,12 @@
         <div class="container py-4">
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-5 mb-lg-0">
-                    <span class="badge bg-purple text-white rounded-pill px-3 py-2 mb-3" style="background: var(--gradient-ai) !important;">
+                    <span class="badge bg-purple text-white rounded-pill px-3 py-1 mb-2" style="background: var(--gradient-ai) !important;">
                         <i class="fa-solid fa-robot me-1"></i> AI Interview Simulator
                     </span>
 
-                    <h2 class="display-6 text-white fw-bold mb-3">Practice Real Interview Scenarios. Get Instant Diagnostic Feedback.</h2>
-                    <p class="text-muted-slate fs-6 mb-4">
+                    <h2 class="text-white fw-semibold mb-3">Practice Real Interview Scenarios. Get Instant Diagnostic Feedback.</h2>
+                    <p class="text-muted-slate mb-4 max-w-2xl">
                         Prepare for upcoming interviews with custom AI mock interview sessions tailored specifically to target job titles and skills. Get scored on technical accuracy, communication clarity, and readiness.
                     </p>
 
@@ -1054,7 +1121,7 @@
                     <div class="glass-panel p-4 p-md-5 border-indigo-subtle">
                         <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom border-slate-subtle">
                             <div>
-                                <h4 class="text-white mb-0 fw-bold">Diagnostic Report Card</h4>
+                                <h4 class="text-white mb-0 fw-semibold">Diagnostic Report Card</h4>
                                 <div class="text-muted-slate fs-7">Session ID: #MOCK-2026-882</div>
                             </div>
                             <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fs-7">
@@ -1065,19 +1132,19 @@
                         <div class="row text-center mb-4">
                             <div class="col-4">
                                 <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.8);">
-                                    <div class="display-6 fw-bold text-info">82%</div>
+                                    <div class="display-6 fw-semibold text-info">82%</div>
                                     <div class="text-muted-slate fs-7">Overall Score</div>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.8);">
-                                    <div class="display-6 fw-bold text-success">88%</div>
+                                    <div class="display-6 fw-semibold text-success">88%</div>
                                     <div class="text-muted-slate fs-7">Technical Depth</div>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.8);">
-                                    <div class="display-6 fw-bold text-warning">79%</div>
+                                    <div class="display-6 fw-semibold text-warning">79%</div>
                                     <div class="text-muted-slate fs-7">Communication</div>
                                 </div>
                             </div>
@@ -1105,10 +1172,10 @@
     <!-- SECTION 9: ENTERPRISE TRUST, SECURITY & VERIFICATION STANDARDS BANNER -->
     <section class="py-5 position-relative">
         <div class="container py-3">
-            <div class="text-center mb-5">
-                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 mb-2">Enterprise Standard</span>
-                <h2 class="display-6 text-white fw-bold mb-3">Built for High Trust, Security & Compliance</h2>
-                <p class="text-muted-slate mx-auto fs-6" style="max-width: 650px;">
+            <div class="text-center mb-4">
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 mb-2">Enterprise Standard</span>
+                <h2 class="text-white fw-semibold mb-2">Built for High Trust, Security & Compliance</h2>
+                <p class="text-muted-slate mx-auto max-w-2xl mb-4">
                     Engineered to meet rigorous corporate privacy standards, automated ATS parser formatting, and verified credential protection.
                 </p>
             </div>
@@ -1159,9 +1226,9 @@
         <div class="container py-4">
             <div class="row align-items-end mb-4">
                 <div class="col-lg-8">
-                    <span class="badge bg-primary-subtle text-info border border-info-subtle rounded-pill px-3 py-2 mb-2">Verified Talent Directory</span>
-                    <h2 class="display-6 text-white fw-bold mb-2">Top Verified Professionals Available Now</h2>
-                    <p class="text-muted-slate mb-0">
+                    <span class="badge bg-primary-subtle text-info border border-info-subtle rounded-pill px-3 py-1 mb-2">Verified Talent Directory</span>
+                    <h2 class="text-white fw-semibold mb-2">Top Verified Professionals Available Now</h2>
+                    <p class="text-muted-slate mb-0 max-w-2xl">
                         Browse verified portfolios, credentials, and work samples from active software architects, designers, researchers, and engineers.
                     </p>
                 </div>
@@ -1244,10 +1311,10 @@
     <!-- SECTION 11: INTERACTIVE FAQ ACCORDION -->
     <section class="py-5">
         <div class="container py-4">
-            <div class="text-center mb-5">
-                <span class="badge bg-primary-subtle text-info border border-info-subtle rounded-pill px-3 py-2 mb-2">Knowledge Base</span>
-                <h2 class="display-6 text-white fw-bold mb-3">Frequently Asked Questions</h2>
-                <p class="text-muted-slate mx-auto fs-6" style="max-width: 600px;">Everything you need to know about building your portfolio, AI interview practice, and hiring verified talent.</p>
+            <div class="text-center mb-4">
+                <span class="badge bg-primary-subtle text-info border border-info-subtle rounded-pill px-3 py-1 mb-2">Knowledge Base</span>
+                <h2 class="text-white fw-semibold mb-2">Frequently Asked Questions</h2>
+                <p class="text-muted-slate mx-auto max-w-2xl mb-4">Everything you need to know about building your portfolio, AI interview practice, and hiring verified talent.</p>
             </div>
 
             <div class="row justify-content-center">
@@ -1313,9 +1380,9 @@
     <!-- SECTION 12: STEP-BY-STEP WORKFLOW & HIGH-IMPACT BOTTOM CTA -->
     <section class="py-5 position-relative">
         <div class="container py-4">
-            <div class="text-center mb-5">
-                <span class="badge bg-primary-subtle text-info border border-info-subtle rounded-pill px-3 py-2 mb-2">Simple Workflow</span>
-                <h2 class="display-6 text-white fw-bold mb-3">How MyResume.cloud Powers Your Career Path</h2>
+            <div class="text-center mb-4">
+                <span class="badge bg-primary-subtle text-info border border-info-subtle rounded-pill px-3 py-1 mb-2">Simple Workflow</span>
+                <h2 class="text-white fw-semibold mb-3">How MyResume.cloud Powers Your Career Path</h2>
             </div>
 
             <!-- 4-Step Timeline Grid -->
@@ -1351,9 +1418,9 @@
             </div>
 
             <!-- High-Impact Bottom Banner -->
-            <div class="glass-panel p-5 text-center position-relative overflow-hidden" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.25) 0%, rgba(99, 102, 241, 0.2) 100%); border: 1px solid rgba(56, 189, 248, 0.3);">
-                <h2 class="display-5 text-white fw-bold mb-3">Your Professional Future Starts Here.</h2>
-                <p class="text-light-slate mx-auto fs-5 mb-4" style="max-width: 600px;">
+            <div class="glass-panel p-4 p-md-5 text-center position-relative overflow-hidden" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.25) 0%, rgba(99, 102, 241, 0.2) 100%); border: 1px solid rgba(56, 189, 248, 0.3);">
+                <h2 class="text-white fw-semibold mb-2">Your Professional Future Starts Here.</h2>
+                <p class="text-muted-slate mx-auto max-w-2xl mb-4">
                     Join thousands of professionals and top organizations building verified careers on MyResume.cloud.
                 </p>
                 <div class="d-flex flex-wrap justify-content-center gap-3">

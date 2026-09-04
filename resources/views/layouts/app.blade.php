@@ -7,10 +7,10 @@
     <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
     @include('partials.seo')
 
-    <!-- Google Fonts: Outfit (Headings) & Inter (Body) -->
+    <!-- Google Fonts: Inter (400, 500, 600) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Bootstrap CSS 5.3.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -30,8 +30,8 @@
             --brand-tint: #f0f4f8;               /* Light Slate Surface Tint */
             --brand-light: #f8fafc;              /* Application Surface BG */
             
-            --font-headings: 'Outfit', sans-serif;
-            --font-body: 'Inter', sans-serif;
+            --font-headings: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
             /* Type Scale & Sizing System */
             --font-size-hero: 2.375rem;          /* 38px Marketing Hero H1 */
@@ -295,6 +295,7 @@
                                 <li><a class="dropdown-item py-2 small" href="{{ route('mock-interviews.index') }}"><i class="fa-solid fa-robot me-2 text-warning"></i> AI Mock Interviews</a></li>
                             @endif
                             <li><a class="dropdown-item py-2 small" href="{{ route('preferences.edit') }}"><i class="fa-solid fa-sliders me-2 text-secondary"></i> Career Preferences</a></li>
+                            <li><a class="dropdown-item py-2 small" href="{{ route('profile.edit') }}"><i class="fa-solid fa-key me-2 text-warning"></i> Account & Password</a></li>
                             <li><hr class="dropdown-divider"></li>
                             @if(Auth::user()->companies->isNotEmpty())
                                 @foreach(Auth::user()->companies as $myCompany)
@@ -317,11 +318,8 @@
                         </ul>
                     </li>
                     @else
-                    <li class="nav-item me-2">
-                        <a class="btn btn-outline-secondary btn-sm rounded-pill px-3" href="{{ route('login') }}">Sign In</a>
-                    </li>
                     <li class="nav-item">
-                        <a class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold shadow-sm" href="{{ route('register') }}">Create Portfolio</a>
+                        <a class="btn btn-primary btn-sm rounded-pill px-4 fw-semibold shadow-sm" href="{{ route('login') }}"><i class="fa-solid fa-right-to-bracket me-1"></i> Sign In</a>
                     </li>
                     @endauth
                 </ul>

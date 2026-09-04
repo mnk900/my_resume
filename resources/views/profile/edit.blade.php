@@ -1,28 +1,22 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-2">
+                    <div>
+                        <h1 class="h3 fw-bold text-dark mb-1">Account & Security Settings ⚙️</h1>
+                        <p class="text-secondary small mb-0">Manage your login password, security credentials, and account details.</p>
+                    </div>
+                    <div>
+                        <a href="{{ route('portfolio.edit') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+                            <i class="fa-solid fa-arrow-left me-1"></i> Back to Portfolio CMS
+                        </a>
+                    </div>
                 </div>
-            </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
+                @include('profile.partials.update-password-form')
+                @include('profile.partials.update-profile-information-form')
+                @include('profile.partials.delete-user-form')
             </div>
         </div>
     </div>

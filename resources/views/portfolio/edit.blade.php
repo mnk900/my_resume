@@ -277,6 +277,9 @@
                 <button class="nav-link text-start border-0 bg-transparent" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settingsPane" type="button" role="tab">
                     <i class="fa-solid fa-sliders"></i> <span>Portfolio Settings</span>
                 </button>
+                <a class="nav-link text-start border-0 bg-transparent text-decoration-none" href="{{ route('profile.edit') }}">
+                    <i class="fa-solid fa-key text-warning"></i> <span>Account & Password</span>
+                </a>
                 <button class="nav-link text-start border-0 bg-transparent" id="themes-tab" data-bs-toggle="tab" data-bs-target="#themesPane" type="button" role="tab">
                     <i class="fa-solid fa-palette"></i> <span>Portfolio Themes</span>
                 </button>

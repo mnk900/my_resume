@@ -7,10 +7,10 @@
     <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
     @include('partials.seo')
 
-    <!-- Google Fonts: Outfit & Inter -->
+    <!-- Google Fonts: Inter (400, 500, 600) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Bootstrap CSS 5.3.3 & FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -23,8 +23,8 @@
             --brand-primary-hover: #375c85;
             --brand-secondary: #1e293b;
             --brand-light: #f8fafc;
-            --font-headings: 'Outfit', sans-serif;
-            --font-body: 'Inter', sans-serif;
+            --font-headings: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {

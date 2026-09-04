@@ -7,10 +7,10 @@
 
     @include('partials.seo')
 
-    <!-- Google Fonts: Outfit (Headings) & Inter (Body) -->
+    <!-- Google Fonts: Inter (400, 500, 600) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- FontAwesome 6.4.0 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -27,6 +27,8 @@
             --brand-accent: #b0c6db;
             --brand-tint: #f0f4f8;
             --brand-light: #f8fafc;
+            --font-headings: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             --font-size-hero: 2.375rem;
             --font-size-h1: 1.625rem;
             --font-size-h2: 1.375rem;
@@ -205,6 +207,11 @@
 
                 <div class="admin-sidebar-header">Platform Management</div>
                 <ul class="nav flex-column gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('register') ? 'active' : '' }}" href="{{ route('register') }}">
+                            <i class="fa-solid fa-user-plus me-2"></i> Register Portfolio User
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.professionals.*') ? 'active' : '' }}" href="{{ route('admin.professionals.index') }}">
                             <i class="fa-solid fa-users me-2"></i> Professionals
