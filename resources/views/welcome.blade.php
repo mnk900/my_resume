@@ -496,6 +496,27 @@
         </div>
     </nav>
 
+    @if (session('error'))
+        <div class="container pt-4 position-relative" style="z-index: 10;">
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-4 d-flex align-items-center gap-3 p-3 mb-0" role="alert" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3) !important; color: #fca5a5;">
+                <i class="fa-solid fa-circle-exclamation fs-4 text-danger"></i>
+                <div>
+                    <strong>Notice:</strong> {{ session('error') }}
+                </div>
+                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    @endif
+    @if (session('status') && !in_array(session('status'), ['profile-updated', 'password-updated', 'verification-link-sent', 'message-sent']))
+        <div class="container pt-4 position-relative" style="z-index: 10;">
+            <div class="alert alert-info alert-dismissible fade show border-0 shadow-sm rounded-4 d-flex align-items-center gap-3 p-3 mb-0" role="alert" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3) !important; color: #7dd3fc;">
+                <i class="fa-solid fa-circle-info fs-4 text-info"></i>
+                <div>{{ session('status') }}</div>
+                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    @endif
+
     <!-- SECTION 1: HERO SECTION & INTEGRATED GLOBAL SEARCH -->
     <section class="hero-section">
         <div class="hero-glow-bg"></div>

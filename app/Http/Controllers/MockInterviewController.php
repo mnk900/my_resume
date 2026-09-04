@@ -18,7 +18,11 @@ class MockInterviewController extends Controller
 
         $this->middleware(function ($request, $next) {
             if (!\App\Models\SystemSetting::isAiMockEnabled()) {
-                abort(404, 'The AI Mock Interview feature is currently disabled by system administrator.');
+                $previousUrl = url()->previous();
+                if (empty($previousUrl) || $previousUrl === $request->fullUrl()) {
+                    return redirect()->route('welcome')->with('error', 'This feature has been restricted by the administrator.');
+                }
+                return redirect()->back()->with('error', 'This feature has been restricted by the administrator.');
             }
             return $next($request);
         });
@@ -29,6 +33,10 @@ class MockInterviewController extends Controller
      */
     public function index()
     {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
         $interviews = MockInterview::where('user_id', Auth::id())
             ->with(['opportunity', 'questions'])
             ->latest()

@@ -9,6 +9,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\HomeController;
 
 Route::get('/', [HomeController::class, 'index'])->name('welcome');
+Route::get('/mock-interviews', [\App\Http\Controllers\MockInterviewController::class, 'index'])->name('mock-interviews.index');
 
 
 
@@ -143,7 +144,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/applications/{application}/shortlist', [\App\Http\Controllers\JobApplicationController::class, 'toggleShortlist'])->name('applications.shortlist');
 
     // AI Mock Interview Engine
-    Route::get('/mock-interviews', [\App\Http\Controllers\MockInterviewController::class, 'index'])->name('mock-interviews.index');
     Route::post('/mock-interviews/start', [\App\Http\Controllers\MockInterviewController::class, 'start'])->name('mock-interviews.start');
     Route::get('/mock-interviews/{session}/take', [\App\Http\Controllers\MockInterviewController::class, 'take'])->name('mock-interviews.take');
     Route::post('/mock-interviews/{session}/submit', [\App\Http\Controllers\MockInterviewController::class, 'submit'])->name('mock-interviews.submit');

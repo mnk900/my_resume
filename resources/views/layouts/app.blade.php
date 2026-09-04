@@ -391,6 +391,20 @@
         @endif
 
         <div class="{{ ($fullWidth ?? false) || request()->routeIs('portfolio.edit') ? 'container-fluid p-0' : 'container py-4' }}">
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3 d-flex align-items-center gap-3 p-3 mb-4" role="alert">
+                    <i class="fa-solid fa-circle-exclamation fs-4"></i>
+                    <div>{{ session('error') }}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            @if (session('status') && !in_array(session('status'), ['profile-updated', 'password-updated', 'verification-link-sent', 'message-sent']))
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3 d-flex align-items-center gap-3 p-3 mb-4" role="alert">
+                    <i class="fa-solid fa-circle-check fs-4"></i>
+                    <div>{{ session('status') }}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             {{ $slot ?? '' }}
             @yield('content')
         </div>
