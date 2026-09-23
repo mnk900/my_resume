@@ -9,10 +9,11 @@ class PortfolioSection extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['portfolio_id', 'type', 'title', 'content', 'order', 'file_path', 'image_path'];
+    protected $fillable = ['portfolio_id', 'type', 'title', 'content', 'order', 'file_path', 'image_path', 'is_active'];
 
     protected $casts = [
         'content' => 'array',
+        'is_active' => 'boolean',
     ];
 
     public function portfolio()

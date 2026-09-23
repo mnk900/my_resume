@@ -17,7 +17,12 @@ class Publication extends Model
         'title',
         'publisher',
         'link',
-        'report_path'
+        'report_path',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     /**

@@ -26,12 +26,27 @@ class PortfolioController extends Controller
     {
         $portfolio = $this->portfolioService->getByUsername($username);
 
-        // Force fresh load of all relations — prevents stale cached data
+        $activeConstraint = function($q) {
+            $q->where('is_active', true);
+        };
+
+        // Force fresh load of active relations — prevents stale cached data
         $portfolio->load([
-            'user', 'skills', 'projects', 'experiences',
-            'education', 'certifications', 'trainings',
-            'achievements', 'contributions', 'publications',
-            'testimonials', 'media', 'services', 'messages', 'sections'
+            'user',
+            'sections' => $activeConstraint,
+            'skills' => $activeConstraint,
+            'projects' => $activeConstraint,
+            'experiences' => $activeConstraint,
+            'education' => $activeConstraint,
+            'certifications' => $activeConstraint,
+            'trainings' => $activeConstraint,
+            'achievements' => $activeConstraint,
+            'contributions' => $activeConstraint,
+            'publications' => $activeConstraint,
+            'testimonials' => $activeConstraint,
+            'media' => $activeConstraint,
+            'services' => $activeConstraint,
+            'messages'
         ]);
 
         $user = $portfolio->user;
@@ -69,6 +84,33 @@ class PortfolioController extends Controller
 
         $seoParams = \App\Services\SeoService::generatePortfolioSeo($portfolio);
         \App\Services\SeoService::set($seoParams);
+
+        // Sanitize & decode HTML entities across all portfolio attributes to prevent double-escaped &amp; display issue
+        $cleanString = function($str) {
+            if (is_string($str) && (str_contains($str, '&amp;') || str_contains($str, '&amp'))) {
+                return html_entity_decode(html_entity_decode($str, ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            }
+            return $str;
+        };
+
+        $cleanModel = function($model) use ($cleanString) {
+            if (!$model) return;
+            foreach ($model->getAttributes() as $attr => $val) {
+                if (is_string($val)) {
+                    $model->$attr = $cleanString($val);
+                }
+            }
+        };
+
+        $cleanModel($portfolio);
+        $cleanModel($user);
+        foreach (['skills', 'projects', 'experiences', 'education', 'certifications', 'trainings', 'achievements', 'contributions', 'publications', 'testimonials', 'media', 'services', 'sections'] as $rel) {
+            if ($portfolio->relationLoaded($rel)) {
+                foreach ($portfolio->$rel as $item) {
+                    $cleanModel($item);
+                }
+            }
+        }
 
         return view('portfolio.public', compact('user', 'portfolio'));
     }

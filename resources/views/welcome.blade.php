@@ -1059,7 +1059,7 @@
                                 <div class="d-flex flex-wrap gap-2 mb-3 fs-7 text-muted-slate">
                                     <span class="badge bg-dark border border-slate-subtle"><i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ $job->city ?? 'Remote' }}</span>
                                     <span class="badge bg-dark border border-slate-subtle"><i class="fa-solid fa-briefcase me-1 text-warning"></i> {{ ucfirst($job->employment_type ?? 'Full-time') }}</span>
-                                    <span class="badge bg-dark border border-slate-subtle"><i class="fa-solid fa-dollar-sign me-1 text-success"></i> {{ $job->salary_min ? '$' . number_format($job->salary_min) . '-' . number_format($job->salary_max) : 'Competitive' }}</span>
+                                    <span class="badge bg-dark border border-slate-subtle"><i class="fa-solid fa-coins me-1 text-success"></i> {{ $job->compensation_text }}</span>
                                 </div>
 
                                 <p class="text-light-slate fs-7 line-clamp-2 mb-3">

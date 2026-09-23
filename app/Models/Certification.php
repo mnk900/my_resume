@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Certification extends Model
 {
     use HasFactory;
-    protected $fillable = ['portfolio_id', 'name', 'issuer', 'date', 'link'];
+    protected $fillable = ['portfolio_id', 'name', 'issuer', 'date', 'link', 'is_active'];
+    protected $casts = ['is_active' => 'boolean'];
 
     public function portfolio()
     {

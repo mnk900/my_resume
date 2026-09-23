@@ -44,21 +44,14 @@
                     </div>
 
                     @php
-                        $symbol = ($opportunity->salary_currency === 'PKR' || $opportunity->salary_currency === 'Rs') ? 'PKR ' : '$';
-                        if ($opportunity->salary_min && $opportunity->salary_max) {
-                            $salaryText = $symbol . number_format($opportunity->salary_min) . ' - ' . $symbol . number_format($opportunity->salary_max) . ' / ' . $opportunity->salary_period;
-                        } elseif ($opportunity->salary_min) {
-                            $salaryText = $symbol . number_format($opportunity->salary_min) . ' / ' . $opportunity->salary_period;
-                        } else {
-                            $salaryText = 'Negotiable';
-                        }
+                        $salaryText = $opportunity->compensation_text;
                         $deadlineBadge = $opportunity->deadline_badge;
                     @endphp
                     <!-- Meta Tags Row -->
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 my-4 p-3 bg-light rounded-3 border">
                         <div><span class="text-muted d-block small">Employment Type</span> <strong class="text-dark">{{ ucfirst($opportunity->employment_type) }}</strong></div>
                         <div><span class="text-muted d-block small">Min Experience</span> <strong class="text-dark">{{ $opportunity->min_experience }} Years</strong></div>
-                        <div><span class="text-muted d-block small">Salary Range</span> <strong class="text-dark">{{ $salaryText }}</strong></div>
+                        <div><span class="text-muted d-block small">Compensation</span> <strong class="text-dark">{{ $salaryText }}</strong></div>
                         <div><span class="text-muted d-block small">Posted Date</span> <strong class="text-dark">{{ $opportunity->published_at ? $opportunity->published_at->format('M d, Y') : 'Recently' }}</strong></div>
                         <div>
                             <span class="text-muted d-block small">Deadline Status</span>

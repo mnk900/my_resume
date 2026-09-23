@@ -145,7 +145,7 @@ class OpportunityController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $rules = [
             'company_id' => 'nullable|exists:companies,id',
             'type' => 'required|string|in:job,internship,freelance,training,workshop,scholarship,event,volunteer,other',
             'title' => 'required|string|max:255',
@@ -160,6 +160,9 @@ class OpportunityController extends Controller
             'city' => 'nullable|string|max:100',
             'country' => 'nullable|string|max:100',
             'employment_type' => 'required|string|in:full-time,part-time,contract,freelance,internship',
+            'compensation_type' => 'nullable|string|in:salary,revenue_share,hybrid',
+            'revenue_share_min' => 'nullable|numeric|min:0|max:100',
+            'revenue_share_max' => 'nullable|numeric|min:0|max:100|gte:revenue_share_min',
             'salary_min' => 'nullable|numeric|min:0',
             'salary_max' => 'nullable|numeric|gte:salary_min',
             'salary_currency' => 'nullable|string|max:10',
@@ -168,8 +171,30 @@ class OpportunityController extends Controller
             'external_url' => 'nullable|url|max:255',
             'is_internal_application' => 'nullable|boolean',
             'vacancies_count' => 'required|integer|min:1',
-            'skills' => 'nullable|string', // comma separated skills
-        ]);
+            'skills' => 'nullable|string',
+        ];
+
+        $messages = [
+            'title.required' => 'Opportunity / Job Title is required.',
+            'title.max' => 'Opportunity Title cannot exceed 255 characters.',
+            'description.required' => 'Job Description is required.',
+            'type.required' => 'Please select an Opportunity Type (e.g. Job, Internship, Freelance).',
+            'min_experience.required' => 'Minimum Experience field is required.',
+            'min_experience.integer' => 'Minimum Experience must be a valid number of years.',
+            'max_experience.gte' => 'Maximum Experience cannot be less than Minimum Experience.',
+            'vacancies_count.required' => 'Vacancies Count is required.',
+            'vacancies_count.min' => 'Vacancies Count must be at least 1.',
+            'salary_min.numeric' => 'Minimum Salary must be a valid number.',
+            'salary_max.numeric' => 'Maximum Salary must be a valid number.',
+            'salary_max.gte' => 'Maximum Salary cannot be less than Minimum Salary.',
+            'revenue_share_min.numeric' => 'Minimum Revenue Share percentage must be a valid number.',
+            'revenue_share_max.numeric' => 'Maximum Revenue Share percentage must be a valid number.',
+            'revenue_share_max.gte' => 'Maximum Revenue Share percentage cannot be less than Minimum Revenue Share percentage.',
+            'application_deadline.after_or_equal' => 'Application Deadline date cannot be in the past.',
+            'external_url.url' => 'External link must be a valid Web URL (e.g. https://example.com).',
+        ];
+
+        $validated = $request->validate($rules, $messages);
 
         $slug = Str::slug($validated['title']);
         $originalSlug = $slug;
@@ -196,6 +221,9 @@ class OpportunityController extends Controller
             'city' => $validated['city'] ?? null,
             'country' => $validated['country'] ?? null,
             'employment_type' => $validated['employment_type'],
+            'compensation_type' => $validated['compensation_type'] ?? 'salary',
+            'revenue_share_min' => $validated['revenue_share_min'] ?? null,
+            'revenue_share_max' => $validated['revenue_share_max'] ?? null,
             'salary_min' => $validated['salary_min'] ?? null,
             'salary_max' => $validated['salary_max'] ?? null,
             'salary_currency' => $validated['salary_currency'] ?? 'PKR',
@@ -208,11 +236,11 @@ class OpportunityController extends Controller
             'published_at' => now(),
         ]);
 
-        // Process attached skills string
+        // Process attached skills string safely
         if (!empty($validated['skills'])) {
-            $rawSkills = trim(strip_tags($validated['skills']));
-            $skillNames = array_map('trim', explode(',', $rawSkills));
-            foreach ($skillNames as $name) {
+            $rawSkills = preg_split('/[,\n\r]+/', $validated['skills']);
+            foreach ($rawSkills as $skillItem) {
+                $name = substr(trim(strip_tags($skillItem)), 0, 250);
                 if (!empty($name)) {
                     OpportunitySkill::create([
                         'opportunity_id' => $opportunity->id,
@@ -283,7 +311,7 @@ class OpportunityController extends Controller
             abort(403, 'Unauthorized to update this job posting.');
         }
 
-        $validated = $request->validate([
+        $rules = [
             'company_id' => 'nullable|exists:companies,id',
             'type' => 'required|string|in:job,internship,freelance,training,workshop,scholarship,event,volunteer,other',
             'title' => 'required|string|max:255',
@@ -298,6 +326,9 @@ class OpportunityController extends Controller
             'city' => 'nullable|string|max:100',
             'country' => 'nullable|string|max:100',
             'employment_type' => 'required|string|in:full-time,part-time,contract,freelance,internship',
+            'compensation_type' => 'nullable|string|in:salary,revenue_share,hybrid',
+            'revenue_share_min' => 'nullable|numeric|min:0|max:100',
+            'revenue_share_max' => 'nullable|numeric|min:0|max:100|gte:revenue_share_min',
             'salary_min' => 'nullable|numeric|min:0',
             'salary_max' => 'nullable|numeric|gte:salary_min',
             'salary_currency' => 'nullable|string|max:10',
@@ -307,7 +338,28 @@ class OpportunityController extends Controller
             'is_internal_application' => 'nullable|boolean',
             'vacancies_count' => 'required|integer|min:1',
             'skills' => 'nullable|string',
-        ]);
+        ];
+
+        $messages = [
+            'title.required' => 'Opportunity / Job Title is required.',
+            'title.max' => 'Opportunity Title cannot exceed 255 characters.',
+            'description.required' => 'Job Description is required.',
+            'type.required' => 'Please select an Opportunity Type (e.g. Job, Internship, Freelance).',
+            'min_experience.required' => 'Minimum Experience field is required.',
+            'min_experience.integer' => 'Minimum Experience must be a valid number of years.',
+            'max_experience.gte' => 'Maximum Experience cannot be less than Minimum Experience.',
+            'vacancies_count.required' => 'Vacancies Count is required.',
+            'vacancies_count.min' => 'Vacancies Count must be at least 1.',
+            'salary_min.numeric' => 'Minimum Salary must be a valid number.',
+            'salary_max.numeric' => 'Maximum Salary must be a valid number.',
+            'salary_max.gte' => 'Maximum Salary cannot be less than Minimum Salary.',
+            'revenue_share_min.numeric' => 'Minimum Revenue Share percentage must be a valid number.',
+            'revenue_share_max.numeric' => 'Maximum Revenue Share percentage must be a valid number.',
+            'revenue_share_max.gte' => 'Maximum Revenue Share percentage cannot be less than Minimum Revenue Share percentage.',
+            'external_url.url' => 'External link must be a valid Web URL (e.g. https://example.com).',
+        ];
+
+        $validated = $request->validate($rules, $messages);
 
         $opportunity->update([
             'company_id' => $validated['company_id'] ?? null,
@@ -324,6 +376,9 @@ class OpportunityController extends Controller
             'city' => $validated['city'] ?? null,
             'country' => $validated['country'] ?? null,
             'employment_type' => $validated['employment_type'],
+            'compensation_type' => $validated['compensation_type'] ?? 'salary',
+            'revenue_share_min' => $validated['revenue_share_min'] ?? null,
+            'revenue_share_max' => $validated['revenue_share_max'] ?? null,
             'salary_min' => $validated['salary_min'] ?? null,
             'salary_max' => $validated['salary_max'] ?? null,
             'salary_currency' => $validated['salary_currency'] ?? 'PKR',
@@ -334,12 +389,12 @@ class OpportunityController extends Controller
             'vacancies_count' => $validated['vacancies_count'],
         ]);
 
-        // Sync skills
+        // Sync skills safely
         OpportunitySkill::where('opportunity_id', $opportunity->id)->delete();
         if (!empty($validated['skills'])) {
-            $rawSkills = trim(strip_tags($validated['skills']));
-            $skillNames = array_map('trim', explode(',', $rawSkills));
-            foreach ($skillNames as $name) {
+            $rawSkills = preg_split('/[,\n\r]+/', $validated['skills']);
+            foreach ($rawSkills as $skillItem) {
+                $name = substr(trim(strip_tags($skillItem)), 0, 250);
                 if (!empty($name)) {
                     OpportunitySkill::create([
                         'opportunity_id' => $opportunity->id,

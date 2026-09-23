@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Experience extends Model
 {
     use HasFactory;
-    protected $fillable = ['portfolio_id', 'company', 'position', 'start_date', 'end_date', 'description'];
-    protected $casts = ['start_date' => 'date', 'end_date' => 'date'];
+    protected $fillable = ['portfolio_id', 'company', 'position', 'start_date', 'end_date', 'description', 'is_active'];
+    protected $casts = ['start_date' => 'date', 'end_date' => 'date', 'is_active' => 'boolean'];
 
     public function portfolio()
     {

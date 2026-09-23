@@ -8,7 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Skill extends Model
 {
     use HasFactory;
-    protected $fillable = ['portfolio_id', 'name', 'percentage', 'category', 'icon'];
+    protected $fillable = ['portfolio_id', 'name', 'percentage', 'category', 'icon', 'is_active'];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
 
     public function portfolio()
     {

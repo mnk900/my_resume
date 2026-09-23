@@ -14,11 +14,13 @@ class Training extends Model
         'title',
         'institution',
         'description',
-        'date'
+        'date',
+        'is_active'
     ];
 
     protected $casts = [
-        'date' => 'date'
+        'date' => 'date',
+        'is_active' => 'boolean'
     ];
 
     public function portfolio()

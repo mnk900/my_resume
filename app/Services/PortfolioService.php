@@ -16,11 +16,27 @@ class PortfolioService
      */
     public function getByUsername(string $username)
     {
-        return Cache::remember("portfolio_{$username}", 3600, function() use ($username) {
+        $activeConstraint = function($q) {
+            $q->where('is_active', true);
+        };
+
+        return Cache::remember("portfolio_{$username}", 3600, function() use ($username, $activeConstraint) {
             $user = User::where('username', $username)->firstOrFail();
             return Portfolio::where('user_id', $user->id)
                 ->where('is_active', true)
-                ->with(['user', 'sections', 'skills', 'projects', 'experiences', 'testimonials', 'services', 'certifications', 'education', 'achievements', 'contributions'])
+                ->with([
+                    'user',
+                    'sections' => $activeConstraint,
+                    'skills' => $activeConstraint,
+                    'projects' => $activeConstraint,
+                    'experiences' => $activeConstraint,
+                    'testimonials' => $activeConstraint,
+                    'services' => $activeConstraint,
+                    'certifications' => $activeConstraint,
+                    'education' => $activeConstraint,
+                    'achievements' => $activeConstraint,
+                    'contributions' => $activeConstraint
+                ])
                 ->firstOrFail();
         });
     }

@@ -16,7 +16,12 @@ class Media extends Model
         'channel_platform',
         'newspaper_name',
         'date',
-        'link'
+        'link',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     /**

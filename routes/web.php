@@ -93,6 +93,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/publications', [\App\Http\Controllers\PortfolioModuleController::class, 'storePublication'])->name('publications.store');
         Route::match(['put', 'patch', 'post'], '/publications/{publication}', [\App\Http\Controllers\PortfolioModuleController::class, 'updatePublication'])->name('publications.update');
         Route::delete('/publications/{publication}', [\App\Http\Controllers\PortfolioModuleController::class, 'destroyPublication'])->name('publications.destroy');
+
+        Route::post('/{type}/{id}/toggle-active', [\App\Http\Controllers\PortfolioModuleController::class, 'toggleActive'])->name('toggle-active');
     });
 
     // Keep generic for backward compatibility or simple text sections

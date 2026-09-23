@@ -117,12 +117,8 @@
                     @endforeach
                 </div>
                 @endif
-
-                @php
-                    $oppSymbol = ($opp->salary_currency === 'PKR' || $opp->salary_currency === 'Rs') ? 'PKR ' : '$';
-                @endphp
                 <div class="pt-3 border-top d-flex justify-content-between align-items-center mt-auto">
-                    <span class="fw-bold text-dark small">{{ $opp->salary_min ? $oppSymbol . number_format($opp->salary_min) . ' / ' . $opp->salary_period : 'Competitive' }}</span>
+                    <span class="fw-bold text-dark small"><i class="fa-solid fa-coins me-1 text-success"></i> {{ $opp->compensation_text }}</span>
                     <div class="d-flex gap-1 align-items-center">
                         @auth
                             <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-2.5" data-bs-toggle="modal" data-bs-target="#shareModal-{{ $opp->id }}" title="Share to Social Feed">

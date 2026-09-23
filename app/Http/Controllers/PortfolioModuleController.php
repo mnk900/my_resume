@@ -37,6 +37,38 @@ class PortfolioModuleController extends Controller
     {
         abort_unless($model->portfolio->user_id === Auth::id(), 403);
     }
+
+    public function toggleActive(Request $request, string $type, $id)
+    {
+        $portfolio = Auth::user()->portfolio;
+        $modelClass = match($type) {
+            'skills' => Skill::class,
+            'projects' => Project::class,
+            'experiences', 'experience' => Experience::class,
+            'services' => Service::class,
+            'certifications' => Certification::class,
+            'education' => Education::class,
+            'achievements' => Achievement::class,
+            'contributions' => Contribution::class,
+            'testimonials' => Testimonial::class,
+            'trainings' => Training::class,
+            'media' => Media::class,
+            'publications' => Publication::class,
+            'sections' => \App\Models\PortfolioSection::class,
+            default => null
+        };
+
+        if (!$modelClass) {
+            return back()->withErrors(['error' => 'Invalid module type']);
+        }
+
+        $item = $modelClass::where('portfolio_id', $portfolio->id)->findOrFail($id);
+        $item->is_active = !$item->is_active;
+        $item->save();
+
+        $this->bustCache();
+        return back()->with('status', 'item-status-toggled')->with('active_tab', 'cmsPane');
+    }
     public function storeSkill(Request $request)
     {
         $request->validate([

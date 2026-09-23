@@ -27,6 +27,9 @@ class Opportunity extends Model
         'city',
         'country',
         'employment_type',
+        'compensation_type',
+        'revenue_share_min',
+        'revenue_share_max',
         'salary_min',
         'salary_max',
         'salary_currency',
@@ -54,7 +57,39 @@ class Opportunity extends Model
         'vacancies_count' => 'integer',
         'salary_min' => 'decimal:2',
         'salary_max' => 'decimal:2',
+        'revenue_share_min' => 'decimal:2',
+        'revenue_share_max' => 'decimal:2',
     ];
+
+    public function getCompensationTextAttribute()
+    {
+        $symbol = ($this->salary_currency === 'PKR' || $this->salary_currency === 'Rs') ? 'PKR ' : '$';
+        $salaryPart = '';
+        if ($this->salary_min && $this->salary_max) {
+            $salaryPart = $symbol . number_format($this->salary_min) . ' - ' . $symbol . number_format($this->salary_max) . ' / ' . ucfirst($this->salary_period ?? 'monthly');
+        } elseif ($this->salary_min) {
+            $salaryPart = $symbol . number_format($this->salary_min) . ' / ' . ucfirst($this->salary_period ?? 'monthly');
+        }
+
+        $revPart = '';
+        if ($this->revenue_share_min && $this->revenue_share_max && $this->revenue_share_min != $this->revenue_share_max) {
+            $revPart = rtrim(rtrim(number_format($this->revenue_share_min, 2), '0'), '.') . '% - ' . rtrim(rtrim(number_format($this->revenue_share_max, 2), '0'), '.') . '% Revenue Share';
+        } elseif ($this->revenue_share_min || $this->revenue_share_max) {
+            $val = $this->revenue_share_min ?: $this->revenue_share_max;
+            $revPart = rtrim(rtrim(number_format($val, 2), '0'), '.') . '% Revenue Share';
+        }
+
+        if ($this->compensation_type === 'revenue_share') {
+            return $revPart ?: 'Revenue Share Percentage';
+        } elseif ($this->compensation_type === 'hybrid') {
+            if ($salaryPart && $revPart) {
+                return $salaryPart . ' + ' . $revPart;
+            }
+            return $salaryPart ?: ($revPart ?: 'Salary + Revenue Share');
+        } else {
+            return $salaryPart ?: 'Negotiable / Competitive';
+        }
+    }
 
     public function company()
     {

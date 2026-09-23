@@ -1447,9 +1447,15 @@
                                                             <!-- Skill Chips Badges -->
                                                             <div class="d-flex flex-wrap gap-1 mt-2">
                                                                 @foreach($catItems as $skItem)
-                                                                    <span class="badge bg-light text-dark border px-2.5 py-1.5 rounded-pill d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                                                                    <span class="badge {{ $skItem->is_active ? 'bg-light text-dark' : 'bg-secondary-subtle text-muted' }} border px-2.5 py-1.5 rounded-pill d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
                                                                         <span>{{ $skItem->name }}</span>
                                                                         <small class="text-primary fw-bold">({{ $skItem->percentage }}%)</small>
+                                                                        <form action="{{ route('modules.toggle-active', ['type' => 'skills', 'id' => $skItem->id]) }}" method="POST" class="d-inline ms-1">
+                                                                            @csrf
+                                                                            <button type="submit" class="btn p-0 border-0 text-{{ $skItem->is_active ? 'success' : 'secondary' }}" style="font-size: 0.7rem;" title="{{ $skItem->is_active ? 'Visible on portfolio (Click to Deactivate)' : 'Hidden from portfolio (Click to Activate)' }}">
+                                                                                <i class="fa-solid {{ $skItem->is_active ? 'fa-circle-check' : 'fa-circle-xmark' }}"></i>
+                                                                            </button>
+                                                                        </form>
                                                                         <form action="{{ route('modules.skills.destroy', $skItem->id) }}" method="POST" class="d-inline ms-1" onsubmit="return confirm('Remove skill {{ addslashes($skItem->name) }}?');">
                                                                             @csrf
                                                                             @method('DELETE')
@@ -1540,6 +1546,13 @@
                                                     <div class="min-w-0 flex-grow-1">
                                                         <h6 class="fw-bold text-dark mb-1">
                                                             {{ $item->name ?? $item->title ?? $item->degree ?? $item->position ?? 'Item #' . $item->id }}
+                                                            @if(isset($item->is_active))
+                                                                @if($item->is_active)
+                                                                    <span class="badge bg-success-subtle text-success border border-success rounded-pill ms-1" style="font-size: 0.68rem;">Active</span>
+                                                                @else
+                                                                    <span class="badge bg-secondary-subtle text-secondary border rounded-pill ms-1" style="font-size: 0.68rem;">Inactive</span>
+                                                                @endif
+                                                            @endif
                                                         </h6>
                                                         <small class="text-muted d-block" style="font-size: 0.75rem;">
                                                             @if(isset($item->category)) Category: {{ $item->category }} ({{ $item->percentage }}%) @endif
@@ -1551,6 +1564,13 @@
                                                     </div>
 
                                                     <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                                        <!-- Active/Inactive Toggle Button -->
+                                                        <form action="{{ route('modules.toggle-active', ['type' => $key === 'resume' ? 'sections' : $key, 'id' => $item->id]) }}" method="POST" class="d-inline">
+                                                            @csrf
+                                                            <button type="submit" class="btn {{ $item->is_active ? 'btn-outline-success' : 'btn-outline-secondary' }} btn-sm rounded-pill px-2 py-0.5" style="font-size: 0.72rem;" title="Toggle Active/Inactive Visibility">
+                                                                <i class="fa-solid {{ $item->is_active ? 'fa-eye' : 'fa-eye-slash' }} me-1"></i> {{ $item->is_active ? 'Active' : 'Inactive' }}
+                                                            </button>
+                                                        </form>
                                                         @if($key !== 'resume')
                                                             <button class="btn btn-outline-primary btn-sm rounded-pill py-1 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#editCollapse_{{ $key }}_{{ $item->id }}">
                                                                 <i class="fa-solid fa-pen-to-square me-1"></i> Edit

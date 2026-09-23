@@ -9,18 +9,33 @@
                     <h2 class="h4 fw-bold text-dark mb-0"><i class="fa-solid fa-plus-circle me-2 text-primary"></i> Post New Opportunity / Job</h2>
                 </div>
                 <div class="card-body p-4">
+                    @if ($errors->any())
+                        <div class="alert alert-danger border-0 shadow-sm rounded-3 mb-4 p-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fa-solid fa-circle-exclamation fa-lg me-2 text-danger"></i>
+                                <h6 class="fw-bold mb-0 text-danger">Please fix the following validation errors before submitting:</h6>
+                            </div>
+                            <ul class="mb-0 ps-3 small text-danger">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <form action="{{ route('opportunities.store') }}" method="POST">
                         @csrf
 
                         @if($companies->isNotEmpty())
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Posting Company / Organization</label>
-                            <select name="company_id" class="form-select">
+                            <select name="company_id" class="form-select @error('company_id') is-invalid @enderror">
                                 <option value="">Platform Opportunity (Individual / Direct)</option>
                                 @foreach($companies as $comp)
                                     <option value="{{ $comp->id }}" {{ $companyId == $comp->id ? 'selected' : '' }}>{{ $comp->name }}</option>
                                 @endforeach
                             </select>
+                            @error('company_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                         @endif
 
@@ -32,14 +47,15 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold">Type <span class="text-danger">*</span></label>
-                                <select name="type" class="form-select" required>
-                                    <option value="job">Job</option>
-                                    <option value="internship">Internship</option>
-                                    <option value="freelance">Freelance</option>
-                                    <option value="training">Training / Workshop</option>
-                                    <option value="scholarship">Scholarship</option>
-                                    <option value="event">Event</option>
+                                <select name="type" class="form-select @error('type') is-invalid @enderror" required>
+                                    <option value="job" {{ old('type') === 'job' ? 'selected' : '' }}>Job</option>
+                                    <option value="internship" {{ old('type') === 'internship' ? 'selected' : '' }}>Internship</option>
+                                    <option value="freelance" {{ old('type') === 'freelance' ? 'selected' : '' }}>Freelance</option>
+                                    <option value="training" {{ old('type') === 'training' ? 'selected' : '' }}>Training / Workshop</option>
+                                    <option value="scholarship" {{ old('type') === 'scholarship' ? 'selected' : '' }}>Scholarship</option>
+                                    <option value="event" {{ old('type') === 'event' ? 'selected' : '' }}>Event</option>
                                 </select>
+                                @error('type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
 
@@ -51,52 +67,60 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Responsibilities</label>
-                            <textarea name="responsibilities" class="form-control js-summernote" rows="3" placeholder="Key day-to-day responsibilities...">{{ old('responsibilities') }}</textarea>
+                            <textarea name="responsibilities" class="form-control js-summernote @error('responsibilities') is-invalid @enderror" rows="3" placeholder="Key day-to-day responsibilities...">{{ old('responsibilities') }}</textarea>
+                            @error('responsibilities')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Required Background & Education</label>
-                            <textarea name="education_required" class="form-control js-summernote" rows="3" placeholder="Educational qualification or domain background required (e.g. BS Computer Science or equivalent experience)...">{{ old('education_required') }}</textarea>
+                            <textarea name="education_required" class="form-control js-summernote @error('education_required') is-invalid @enderror" rows="3" placeholder="Educational qualification or domain background required (e.g. BS Computer Science or equivalent experience)...">{{ old('education_required') }}</textarea>
+                            @error('education_required')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Required Skills (Comma separated)</label>
-                            <textarea name="skills" class="form-control js-summernote-skills" rows="2" placeholder="PHP, Laravel, MySQL, Bootstrap, REST APIs">{{ old('skills') }}</textarea>
+                            <textarea name="skills" class="form-control js-summernote-skills @error('skills') is-invalid @enderror" rows="2" placeholder="PHP, Laravel, MySQL, Bootstrap, REST APIs">{{ old('skills') }}</textarea>
+                            @error('skills')<div class="invalid-feedback">{{ $message }}</div>@enderror
                         </div>
 
                         <div class="row g-3 mb-3">
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold">Min Experience (Years)</label>
-                                <input type="number" name="min_experience" class="form-control" value="{{ old('min_experience', 0) }}" min="0" required>
+                                <label class="form-label fw-semibold">Min Experience (Years) <span class="text-danger">*</span></label>
+                                <input type="number" name="min_experience" class="form-control @error('min_experience') is-invalid @enderror" value="{{ old('min_experience', 0) }}" min="0" required>
+                                @error('min_experience')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold">Location Type</label>
-                                <select name="location_type" class="form-select">
-                                    <option value="onsite">On-Site</option>
-                                    <option value="remote">Remote</option>
-                                    <option value="hybrid">Hybrid</option>
+                                <label class="form-label fw-semibold">Location Type <span class="text-danger">*</span></label>
+                                <select name="location_type" class="form-select @error('location_type') is-invalid @enderror" required>
+                                    <option value="onsite" {{ old('location_type') === 'onsite' ? 'selected' : '' }}>On-Site</option>
+                                    <option value="remote" {{ old('location_type') === 'remote' ? 'selected' : '' }}>Remote</option>
+                                    <option value="hybrid" {{ old('location_type') === 'hybrid' ? 'selected' : '' }}>Hybrid</option>
                                 </select>
+                                @error('location_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold">Employment Type</label>
-                                <select name="employment_type" class="form-select">
-                                    <option value="full-time">Full-Time</option>
-                                    <option value="part-time">Part-Time</option>
-                                    <option value="contract">Contract</option>
-                                    <option value="freelance">Freelance</option>
-                                    <option value="internship">Internship</option>
+                                <label class="form-label fw-semibold">Employment Type <span class="text-danger">*</span></label>
+                                <select name="employment_type" class="form-select @error('employment_type') is-invalid @enderror" required>
+                                    <option value="full-time" {{ old('employment_type') === 'full-time' ? 'selected' : '' }}>Full-Time</option>
+                                    <option value="part-time" {{ old('employment_type') === 'part-time' ? 'selected' : '' }}>Part-Time</option>
+                                    <option value="contract" {{ old('employment_type') === 'contract' ? 'selected' : '' }}>Contract</option>
+                                    <option value="freelance" {{ old('employment_type') === 'freelance' ? 'selected' : '' }}>Freelance</option>
+                                    <option value="internship" {{ old('employment_type') === 'internship' ? 'selected' : '' }}>Internship</option>
                                 </select>
+                                @error('employment_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                         </div>
 
                         <div class="row g-3 mb-3">
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold">City</label>
-                                <input type="text" name="city" class="form-control" value="{{ old('city') }}" placeholder="e.g. Gilgit">
+                                <input type="text" name="city" class="form-control @error('city') is-invalid @enderror" value="{{ old('city') }}" placeholder="e.g. Gilgit">
+                                @error('city')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold">Vacancies Count</label>
-                                <input type="number" name="vacancies_count" class="form-control" value="{{ old('vacancies_count', 1) }}" min="1" required>
+                                <label class="form-label fw-semibold">Vacancies Count <span class="text-danger">*</span></label>
+                                <input type="number" name="vacancies_count" class="form-control @error('vacancies_count') is-invalid @enderror" value="{{ old('vacancies_count', 1) }}" min="1" required>
+                                @error('vacancies_count')<div class="invalid-feedback">{{ $message }}</div>@enderror
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold">Application Deadline / Expiry Date</label>
@@ -105,30 +129,73 @@
                             </div>
                         </div>
 
-                        <!-- Salary & Compensation Row -->
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold">Currency</label>
-                                <select name="salary_currency" class="form-select">
-                                    <option value="PKR" {{ old('salary_currency', 'PKR') === 'PKR' ? 'selected' : '' }}>PKR (Rs.)</option>
-                                    <option value="USD" {{ old('salary_currency') === 'USD' ? 'selected' : '' }}>USD ($)</option>
-                                </select>
+                        <!-- Compensation Structure Selection -->
+                        <div class="card border-0 bg-light p-3 mb-3 rounded-3 border">
+                            <label class="form-label fw-bold text-dark mb-2"><i class="fa-solid fa-coins text-primary me-2"></i> Compensation Structure</label>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-12">
+                                    <div class="btn-group w-100" role="group" aria-label="Compensation Type">
+                                        <input type="radio" class="btn-check" name="compensation_type" id="comp_salary" value="salary" {{ old('compensation_type', 'salary') === 'salary' ? 'checked' : '' }} onchange="toggleCompFields()">
+                                        <label class="btn btn-outline-primary py-2 fw-semibold" for="comp_salary">
+                                            <i class="fa-solid fa-money-bill-wave me-1"></i> Fixed Salary
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="compensation_type" id="comp_revshare" value="revenue_share" {{ old('compensation_type') === 'revenue_share' ? 'checked' : '' }} onchange="toggleCompFields()">
+                                        <label class="btn btn-outline-primary py-2 fw-semibold" for="comp_revshare">
+                                            <i class="fa-solid fa-chart-line me-1"></i> Revenue Share (%)
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="compensation_type" id="comp_hybrid" value="hybrid" {{ old('compensation_type') === 'hybrid' ? 'checked' : '' }} onchange="toggleCompFields()">
+                                        <label class="btn btn-outline-primary py-2 fw-semibold" for="comp_hybrid">
+                                            <i class="fa-solid fa-layer-group me-1"></i> Hybrid (Salary + Revenue Share)
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold">Min Salary</label>
-                                <input type="number" name="salary_min" class="form-control" value="{{ old('salary_min') }}" placeholder="e.g. 100000">
+
+                            <!-- Salary Inputs -->
+                            <div id="salary_fields_box" class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Currency</label>
+                                    <select name="salary_currency" class="form-select">
+                                        <option value="PKR" {{ old('salary_currency', 'PKR') === 'PKR' ? 'selected' : '' }}>PKR (Rs.)</option>
+                                        <option value="USD" {{ old('salary_currency') === 'USD' ? 'selected' : '' }}>USD ($)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Min Salary</label>
+                                    <input type="number" name="salary_min" class="form-control" value="{{ old('salary_min') }}" placeholder="e.g. 100000">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Max Salary (Optional)</label>
+                                    <input type="number" name="salary_max" class="form-control" value="{{ old('salary_max') }}" placeholder="e.g. 150000">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold">Salary Period</label>
+                                    <select name="salary_period" class="form-select">
+                                        <option value="monthly" {{ old('salary_period', 'monthly') === 'monthly' ? 'selected' : '' }}>Monthly</option>
+                                        <option value="yearly" {{ old('salary_period') === 'yearly' ? 'selected' : '' }}>Yearly</option>
+                                        <option value="hourly" {{ old('salary_period') === 'hourly' ? 'selected' : '' }}>Hourly</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold">Max Salary (Optional)</label>
-                                <input type="number" name="salary_max" class="form-control" value="{{ old('salary_max') }}" placeholder="e.g. 150000">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold">Salary Period</label>
-                                <select name="salary_period" class="form-select">
-                                    <option value="monthly" {{ old('salary_period', 'monthly') === 'monthly' ? 'selected' : '' }}>Monthly</option>
-                                    <option value="yearly" {{ old('salary_period') === 'yearly' ? 'selected' : '' }}>Yearly</option>
-                                    <option value="hourly" {{ old('salary_period') === 'hourly' ? 'selected' : '' }}>Hourly</option>
-                                </select>
+
+                            <!-- Revenue Share Percentage Inputs -->
+                            <div id="revshare_fields_box" class="row g-3 mt-1 d-none">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Min Revenue Share (%)</label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.01" name="revenue_share_min" class="form-control" value="{{ old('revenue_share_min') }}" placeholder="e.g. 5.00">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Max Revenue Share (%)</label>
+                                    <div class="input-group">
+                                        <input type="number" step="0.01" name="revenue_share_max" class="form-control" value="{{ old('revenue_share_max') }}" placeholder="e.g. 15.00">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -169,7 +236,25 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
 <script>
+    function toggleCompFields() {
+        const selected = document.querySelector('input[name="compensation_type"]:checked')?.value || 'salary';
+        const salaryBox = document.getElementById('salary_fields_box');
+        const revBox = document.getElementById('revshare_fields_box');
+
+        if (selected === 'salary') {
+            salaryBox.classList.remove('d-none');
+            revBox.classList.add('d-none');
+        } else if (selected === 'revenue_share') {
+            salaryBox.classList.add('d-none');
+            revBox.classList.remove('d-none');
+        } else if (selected === 'hybrid') {
+            salaryBox.classList.remove('d-none');
+            revBox.classList.remove('d-none');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
+        toggleCompFields();
         if (typeof $ !== 'undefined' && $.fn.summernote) {
             $('.js-summernote').summernote({
                 height: 180,

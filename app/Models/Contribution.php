@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Contribution extends Model
 {
     use HasFactory;
-    protected $fillable = ['portfolio_id', 'title', 'description', 'link'];
+    protected $fillable = ['portfolio_id', 'title', 'description', 'link', 'is_active'];
+    protected $casts = ['is_active' => 'boolean'];
     public function portfolio()
     {
         return $this->belongsTo(Portfolio::class);

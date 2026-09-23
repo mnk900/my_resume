@@ -79,7 +79,8 @@ class CVController extends Controller
         // 2. Technical Section: 5 categories max
         $skillsData = [];
         if ($portfolio->skills) {
-            foreach ($portfolio->skills->groupBy('category') as $category => $items) {
+            $activeSkills = $portfolio->skills->where('is_active', true);
+            foreach ($activeSkills->groupBy('category') as $category => $items) {
                 $categorySkills = [];
                 foreach ($items as $item) {
                     $categorySkills[] = $item->name;
@@ -95,6 +96,7 @@ class CVController extends Controller
         $projectsData = [];
         if ($portfolio->projects) {
             $projects = $portfolio->projects()
+                ->where('is_active', true)
                 ->orderBy('id', 'desc')
                 ->limit(4)
                 ->get();
@@ -110,6 +112,7 @@ class CVController extends Controller
         $certifications = [];
         if ($portfolio->certifications) {
             $certifications = $portfolio->certifications()
+                ->where('is_active', true)
                 ->orderBy('date', 'desc')
                 ->orderBy('id', 'desc')
                 ->limit(5)
@@ -128,6 +131,7 @@ class CVController extends Controller
         $trainings = [];
         if ($portfolio->trainings) {
             $trainings = $portfolio->trainings()
+                ->where('is_active', true)
                 ->orderBy('date', 'desc')
                 ->orderBy('id', 'desc')
                 ->limit(5)
@@ -146,6 +150,7 @@ class CVController extends Controller
         $education = [];
         if ($portfolio->education) {
             $education = $portfolio->education()
+                ->where('is_active', true)
                 ->orderBy('start_date', 'desc')
                 ->orderBy('id', 'desc')
                 ->limit(5)
@@ -165,6 +170,7 @@ class CVController extends Controller
         $experienceData = [];
         if ($portfolio->experiences) {
             $experiences = $portfolio->experiences()
+                ->where('is_active', true)
                 ->orderBy('start_date', 'desc')
                 ->orderBy('id', 'desc')
                 ->get();
