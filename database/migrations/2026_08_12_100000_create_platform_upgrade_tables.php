@@ -113,7 +113,7 @@ return new class extends Migration
             Schema::create('job_applications', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('opportunity_id')->constrained('opportunities')->onDelete('cascade');
-                $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+                $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
                 $table->text('cover_letter')->nullable();
                 $table->string('resume_version_path')->nullable();
                 $table->string('status')->default('applied'); // applied, under_review, shortlisted, interview, selected, rejected, withdrawn
@@ -154,7 +154,7 @@ return new class extends Migration
             Schema::create('candidate_notes', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
-                $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+                $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
                 $table->foreignId('author_id')->constrained('users')->onDelete('cascade');
                 $table->text('note');
                 $table->timestamps();

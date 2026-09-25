@@ -238,11 +238,42 @@
                             <div class="small text-muted mt-1">The application deadline for this job posting has passed.</div>
                         </div>
                     @else
-                        <button type="button" class="btn btn-primary btn-lg w-100 fw-bold rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#guestApplyModal">
-                            <i class="fa-solid fa-paper-plane me-1"></i> Apply Now with Portfolio
+                        <a href="{{ route('opportunities.apply_public', $opportunity->slug) }}" class="btn btn-primary btn-lg w-100 fw-bold rounded-pill shadow-sm mb-2">
+                            <i class="fa-solid fa-paper-plane me-1"></i> Apply for this Position
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary btn-sm w-100 rounded-pill" data-bs-toggle="modal" data-bs-target="#guestApplyModal">
+                            <i class="fa-solid fa-user-plus me-1"></i> Sign In / Create Account
                         </button>
                     @endif
                 @endauth
+
+                <!-- Social Share Bar for Job Owner & Visitors -->
+                <div class="mt-4 pt-3 border-top text-start">
+                    <div class="small text-secondary fw-bold mb-2">
+                        <i class="fa-solid fa-share-nodes text-primary me-1"></i> Share Job / Application Form:
+                    </div>
+                    @php
+                        $shareUrl = rawurlencode(route('opportunities.apply_public', $opportunity->slug));
+                        $shareTitle = rawurlencode("Hiring: " . $opportunity->title . ($opportunity->company ? " at " . $opportunity->company->name : "") . " - Apply Now!");
+                    @endphp
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ $shareUrl }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-circle" title="Share on LinkedIn" style="width: 34px; height: 34px; padding: 5px 0; text-align: center;">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ $shareUrl }}&text={{ $shareTitle }}" target="_blank" class="btn btn-sm btn-outline-dark rounded-circle" title="Share on X / Twitter" style="width: 34px; height: 34px; padding: 5px 0; text-align: center;">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ $shareUrl }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-circle" title="Share on Facebook" style="width: 34px; height: 34px; padding: 5px 0; text-align: center;">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="https://api.whatsapp.com/send?text={{ $shareTitle }}%20{{ $shareUrl }}" target="_blank" class="btn btn-sm btn-outline-success rounded-circle" title="Share on WhatsApp" style="width: 34px; height: 34px; padding: 5px 0; text-align: center;">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <button type="button" onclick="navigator.clipboard.writeText('{{ route('opportunities.apply_public', $opportunity->slug) }}'); alert('Application link copied!');" class="btn btn-sm btn-outline-secondary rounded-pill px-2.5" style="font-size: 0.78rem;">
+                            <i class="fa-solid fa-copy me-1"></i> Copy Link
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -289,18 +320,20 @@
                 </div>
                 <h4 class="fw-bold text-dark mb-2">Apply for {{ $opportunity->title }}</h4>
                 <p class="text-secondary small mb-4">
-                    Job postings are publicly visible on MyResume.cloud. To submit your application and match your skills with this role, please sign in or create a free portfolio account.
+                    Apply directly using our public registration form, or sign in to attach your portfolio profile.
                 </p>
 
                 <div class="d-grid gap-2 col-11 mx-auto mb-3">
-                    <a href="{{ route('register') }}" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm">
+                    <a href="{{ route('opportunities.apply_public', $opportunity->slug) }}" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm">
+                        <i class="fa-solid fa-paper-plane me-2"></i> Fill Public Application Form
+                    </a>
+                    <a href="{{ route('register') }}" class="btn btn-outline-primary btn-lg rounded-pill fw-semibold">
                         <i class="fa-solid fa-user-plus me-2"></i> Create Portfolio Account
                     </a>
                     <a href="{{ route('login') }}" class="btn btn-outline-secondary btn-lg rounded-pill fw-semibold">
                         <i class="fa-solid fa-right-to-bracket me-2"></i> Sign In to Existing Account
                     </a>
                 </div>
-                <small class="text-muted" style="font-size: 0.78rem;">Takes less than 1 minute to setup your professional portfolio.</small>
             </div>
         </div>
     </div>

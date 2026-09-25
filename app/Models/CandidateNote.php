@@ -11,6 +11,7 @@ class CandidateNote extends Model
 
     protected $fillable = [
         'company_id',
+        'job_application_id',
         'user_id',
         'author_id',
         'note',
@@ -19,6 +20,11 @@ class CandidateNote extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function jobApplication()
+    {
+        return $this->belongsTo(JobApplication::class);
     }
 
     public function user()

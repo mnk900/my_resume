@@ -120,10 +120,10 @@
                 <div class="pt-3 border-top d-flex justify-content-between align-items-center mt-auto">
                     <span class="fw-bold text-dark small"><i class="fa-solid fa-coins me-1 text-success"></i> {{ $opp->compensation_text }}</span>
                     <div class="d-flex gap-1 align-items-center">
+                        <a href="{{ route('opportunities.apply_public', $opp->slug) }}" class="btn btn-sm btn-outline-success rounded-circle p-1 px-2" title="Share / Public Apply Link" onclick="event.preventDefault(); navigator.clipboard.writeText('{{ route('opportunities.apply_public', $opp->slug) }}'); alert('Public Application Link copied to clipboard!\n' + '{{ route('opportunities.apply_public', $opp->slug) }}');">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </a>
                         @auth
-                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-2.5" data-bs-toggle="modal" data-bs-target="#shareModal-{{ $opp->id }}" title="Share to Social Feed">
-                                <i class="fa-solid fa-share-nodes me-1"></i> Share
-                            </button>
                             @if(Auth::id() === $opp->posted_by_user_id || ($opp->company && $opp->company->user_id === Auth::id()) || Auth::user()->isAdmin())
                                 <a href="{{ route('opportunities.edit', $opp->id) }}" class="btn btn-sm btn-outline-secondary rounded-circle p-1 px-2" title="Edit Job"><i class="fa-solid fa-pen-to-square"></i></a>
                             @endif

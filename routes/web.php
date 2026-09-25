@@ -144,6 +144,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/applications/{application}/status', [\App\Http\Controllers\JobApplicationController::class, 'updateStatus'])->name('applications.status');
     Route::post('/applications/{application}/note', [\App\Http\Controllers\JobApplicationController::class, 'storeNote'])->name('applications.note');
     Route::post('/applications/{application}/shortlist', [\App\Http\Controllers\JobApplicationController::class, 'toggleShortlist'])->name('applications.shortlist');
+    Route::get('/applications/{application}/download-resume', [\App\Http\Controllers\JobApplicationController::class, 'downloadResume'])->name('applications.download-resume');
+    Route::get('/applications/{application}/download-cover-letter', [\App\Http\Controllers\JobApplicationController::class, 'downloadCoverLetter'])->name('applications.download-cover-letter');
+    Route::post('/applications/{application}/send-email', [\App\Http\Controllers\JobApplicationController::class, 'sendEmailToCandidate'])->name('applications.send-email');
 
     // AI Mock Interview Engine
     Route::post('/mock-interviews/start', [\App\Http\Controllers\MockInterviewController::class, 'start'])->name('mock-interviews.start');
@@ -181,6 +184,8 @@ Route::middleware('throttle:60,1')->group(function() {
     Route::get('/company/{slug}', [\App\Http\Controllers\CompanyController::class, 'show'])->name('companies.show');
     Route::get('/jobs', [\App\Http\Controllers\OpportunityController::class, 'index'])->name('opportunities.index');
     Route::get('/job/{slug}', [\App\Http\Controllers\OpportunityController::class, 'show'])->name('opportunities.show');
+    Route::get('/job/{slug}/apply', [\App\Http\Controllers\JobApplicationController::class, 'showPublicForm'])->name('opportunities.apply_public');
+    Route::post('/opportunities/{opportunity}/apply-public', [\App\Http\Controllers\JobApplicationController::class, 'storePublic'])->name('opportunities.apply_public.store');
     Route::get('/talent', [\App\Http\Controllers\TalentDiscoveryController::class, 'index'])->name('talent.index');
     Route::get('/search', [\App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
 });

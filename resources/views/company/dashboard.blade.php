@@ -143,8 +143,13 @@
                                 @forelse($recentApplications as $app)
                                 <tr>
                                     <td>
-                                        <div class="fw-bold text-dark small">{{ $app->user->name }}</div>
-                                        <span class="text-muted small" style="font-size: 0.75rem;">{{ $app->applied_at->diffForHumans() }}</span>
+                                        <div class="fw-bold text-dark small">{{ $app->candidate_name }}</div>
+                                        <span class="text-muted small" style="font-size: 0.75rem;">
+                                            @if($app->is_public_applicant)
+                                                <span class="badge bg-success-subtle text-success me-1" style="font-size: 0.65rem;">Public</span>
+                                            @endif
+                                            {{ $app->applied_at ? $app->applied_at->diffForHumans() : 'Recently' }}
+                                        </span>
                                     </td>
                                     <td><span class="small text-truncate d-block" style="max-width: 120px; font-size: 0.75rem;">{{ $app->opportunity->title }}</span></td>
                                     <td>
